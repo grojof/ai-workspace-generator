@@ -1,0 +1,8 @@
+## PostgreSQL (entorno)
+
+- Ejecútalo en local con Docker/compose para tener paridad con producción. Fija la versión major.
+- Todo cambio de esquema va por **migraciones** (nunca edites prod a mano). Migraciones revisadas y reversibles.
+- Conexión por variables de entorno (`DATABASE_URL`); nunca commitees credenciales. Usuarios de BD con mínimo privilegio.
+- Indexa según los patrones reales de consulta; evita N+1; usa transacciones para escrituras multi-paso.
+
+> Para detalles de versión/funcionalidad, consulta **context7** (o la doc de PostgreSQL).

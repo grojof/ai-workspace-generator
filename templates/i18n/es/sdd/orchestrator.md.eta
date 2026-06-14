@@ -1,0 +1,29 @@
+## Desarrollo guiado por specs (SDD)
+
+Planifica los cambios sustanciales con artefactos estructurados antes de programar. Backend: **<%= it.sdd.backend %>**.
+
+**Ciclo de vida**
+
+```mermaid
+flowchart LR
+  P[propuesta] --> S[specs]
+  P --> D[diseño]
+  S --> T[tareas]
+  D --> T
+  T --> A[aplicar]
+  A --> V[verificar]
+  V --> R[archivar]
+```
+
+**Comandos** (Claude: `/sdd-*`; Copilot: prompts en `.github/prompts/`)
+- `/sdd-explore <tema>` — investiga antes de comprometerte.
+- `/sdd-propose` → `/sdd-spec` + `/sdd-design` → `/sdd-tasks` → `/sdd-apply` → `/sdd-verify` → `/sdd-archive`.
+
+**Artefactos**: <% if (it.sdd.backend === "none") { %>viven en la conversación (no se persisten — activa un backend para conservarlos).<% } else { %>en `openspec/changes/<nombre-cambio>/` y **versionados en git** (revisables en PRs, legibles por cualquier IA).<% } %>
+
+**Reglas**
+- Para funcionalidades no triviales, crea una propuesta/spec antes de implementar.
+- Las specs son la verdad sobre el *qué*; el diseño sobre el *cómo*; las tareas marcan el progreso.
+- Tras implementar, ejecuta `/sdd-verify` contra la spec y luego `/sdd-archive`.
+<% if (it.sdd.backend === "hybrid") { %>- Engram (si está instalado) refuerza la memoria entre sesiones; los ficheros del repo siguen siendo canónicos.
+<% } %>

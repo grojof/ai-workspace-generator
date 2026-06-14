@@ -1,0 +1,10 @@
+## Next.js (Layer 2 — framework) · target v<%= it.entry.version %>
+
+- **App Router** by default. Server Components unless interactivity requires `"use client"`; keep client
+  boundaries small.
+- Data fetching on the server (RSC / route handlers); avoid client-side waterfalls. Cache deliberately.
+- Co-locate route segments; keep `loading.tsx`/`error.tsx` per segment. No secrets in client components.
+- Server Actions for mutations; validate input at the boundary (e.g. `zod`). Never trust client data.
+- Images via `next/image`; fonts via `next/font`. Avoid blocking the main thread.
+- Versions: follow the project's versioning policy above — for existing apps stay on the current major
+  and migrate only via `dependency-upgrade`. Confirm exact APIs in **context7** for `next@<%= it.entry.version %>`.

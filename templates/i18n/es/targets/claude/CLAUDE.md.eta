@@ -1,0 +1,13 @@
+# <%= it.project.name %> — Claude Code
+
+La guía canónica de este repo vive en **AGENTS.md**. Se importa abajo; no dupliques reglas aquí —
+edita `AGENTS.md` y ejecuta `ai-workspace sync`.
+
+@AGENTS.md
+
+## Notas específicas de Claude
+
+- Las skills viven en `.claude/skills/`; cárgalas por su trigger, no de forma preventiva.
+- Los slash commands viven en `.claude/commands/` (incl. `/doc-sync`<% if (it.sdd.enabled) { %> y `/sdd-*`<% } %>).
+- Los servidores MCP se configuran en `.mcp.json`<% if (it.mcp.includes("context7")) { %> (incluye **context7** para documentación al día)<% } %>.
+- Los overrides locales van en `.claude/settings.local.json` (ignorado por git).

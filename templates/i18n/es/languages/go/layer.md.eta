@@ -1,0 +1,9 @@
+## Go (Capa 1 — lenguaje) · objetivo v<%= it.entry.version %>
+
+- Formatea con `gofmt`/`goimports`; revisa con `go vet` (y `golangci-lint` si está). CI falla ante diffs.
+- Los errores son valores: envuélvelos con `%w`, nunca los ignores; sin `panic` entre paquetes.
+- Acepta interfaces, devuelve structs. Paquetes pequeños y cohesivos; evita dependencias cíclicas.
+- Concurrencia: pasa `context.Context` primero; no filtres goroutines; protege el estado compartido.
+- Tests table-driven con el paquete `testing` estándar; nombra los ficheros `*_test.go`.
+- Versiones: respeta la directiva `go` del módulo y los pins de `go.mod`; sigue la política de versiones y
+  sube solo vía `dependency-upgrade`. Confirma detalles en **context7** para `go@<%= it.entry.version %>`.

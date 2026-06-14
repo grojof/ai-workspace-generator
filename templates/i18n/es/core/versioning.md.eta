@@ -1,0 +1,18 @@
+## Política de versiones (Capa 0)
+
+Este proyecto se trata como **<%= it.project.mode === "existing" ? "EXISTENTE (brownfield)" : "NUEVO (greenfield)" %>**.
+
+<% if (it.project.mode === "existing") { %>**Proyecto existente — conservador por defecto.**
+- **Mantén las versiones major actuales** de lenguajes, frameworks y paquetes. **No** subas versiones
+  como efecto colateral de una tarea no relacionada.
+- Subir versión o migrar es un **cambio deliberado**: solo tras que la skill `dependency-upgrade` lo
+  apruebe y el usuario lo autorice.
+- Si necesitas una API más nueva, comprueba primero si la **versión fijada** ya la soporta (vía context7)
+  antes de proponer una actualización.
+<% } else { %>**Proyecto nuevo — actual y estable.**
+- Elige versiones **estables actuales** (prefiere LTS si existe), no pre-releases de última hora.
+- Escoge versiones **compatibles entre sí** en todo el conjunto de dependencias; verifica los rangos de
+  peer-dependencies antes de fijar.
+- Fija las versiones explícitamente y regístralas en `workspace.config.yaml`.
+<% } %>
+Para datos de versión y compatibilidad exactos y al día, consulta **context7** para cada librería — no adivines.

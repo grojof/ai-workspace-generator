@@ -1,0 +1,9 @@
+## Python (Capa 1 — lenguaje) · objetivo v<%= it.entry.version %>
+
+- Formatea con **ruff** (o black) y linta con **ruff**; CI falla ante violaciones. Ordena los imports.
+- **Type hints** en todo lo público; comprueba con mypy/pyright. Evita `Any` en los límites.
+- Usa un virtualenv y un lockfile (uv/poetry/pip-tools). Fija versiones; no instales global.
+- Prefiere dataclasses/pydantic para datos estructurados; valida la entrada externa explícitamente.
+- Tests con pytest; nombra `test_*.py`. Sin `except:` desnudo — captura excepciones concretas.
+- Versiones: sigue la política de versiones de arriba; en apps existentes mantén el minor actual y sube
+  solo vía `dependency-upgrade`. Confirma detalles en **context7** para `python@<%= it.entry.version %>`.

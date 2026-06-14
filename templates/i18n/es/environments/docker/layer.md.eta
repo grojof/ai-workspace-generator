@@ -1,0 +1,8 @@
+## Docker / contenedores
+
+- Entornos reproducibles con `Dockerfile` + `docker-compose.yml`. Fija los tags de imagen base (sin `latest` pelado).
+- Builds multi-stage; imágenes finales pequeñas. Usa `.dockerignore` (node_modules, .git, build).
+- Nunca metas secretos en las imágenes; pásalos por env/secrets en tiempo de ejecución.
+- Una responsabilidad por contenedor; usa compose para BD/servicios en local.
+
+> Para detalles de imagen/configuración, consulta **context7** (o la doc de Docker).

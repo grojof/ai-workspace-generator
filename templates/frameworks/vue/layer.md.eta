@@ -1,0 +1,9 @@
+## Vue (Layer 2 — framework) · target v<%= it.entry.version %>
+
+- **Composition API + `<script setup>`** by default. One component per file; PascalCase component names.
+- Type props/emits explicitly. Prefer `computed` over duplicated reactive state. Keep `watch` minimal.
+- Side effects in lifecycle hooks/handlers, not in setup body. Clean up listeners/timers.
+- State: use the project's store (e.g. Pinia); don't hand-roll global singletons.
+- Accessibility: semantic elements, labels, keyboard support.
+- Versions: follow the versioning policy above. Vue 2 vs 3 is a major migration — never assume it; assess
+  with `dependency-upgrade`. Confirm APIs in **context7** for `vue@<%= it.entry.version %>`.

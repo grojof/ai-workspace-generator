@@ -1,0 +1,9 @@
+## Vue (Capa 2 — framework) · objetivo v<%= it.entry.version %>
+
+- **Composition API + `<script setup>`** por defecto. Un componente por fichero; nombres en PascalCase.
+- Tipa props/emits explícitamente. Prefiere `computed` a estado reactivo duplicado. Minimiza `watch`.
+- Efectos secundarios en hooks de ciclo de vida/handlers, no en el cuerpo de setup. Limpia listeners/timers.
+- Estado: usa el store del proyecto (p. ej. Pinia); no improvises singletons globales.
+- Accesibilidad: elementos semánticos, labels, soporte de teclado.
+- Versiones: sigue la política de versiones de arriba. Vue 2 vs 3 es una migración major — nunca la
+  asumas; evalúala con `dependency-upgrade`. Confirma APIs en **context7** para `vue@<%= it.entry.version %>`.

@@ -1,0 +1,10 @@
+## Next.js (Capa 2 — framework) · objetivo v<%= it.entry.version %>
+
+- **App Router** por defecto. Server Components salvo que la interactividad exija `"use client"`; mantén
+  pequeños los límites de cliente.
+- Fetching en servidor (RSC / route handlers); evita cascadas en cliente. Cachea de forma deliberada.
+- Coloca juntos los segmentos de ruta; `loading.tsx`/`error.tsx` por segmento. Sin secretos en componentes cliente.
+- Server Actions para mutaciones; valida la entrada en el límite (p. ej. `zod`). Nunca confíes en datos del cliente.
+- Imágenes con `next/image`; fuentes con `next/font`. No bloquees el hilo principal.
+- Versiones: sigue la política de versiones de arriba — en apps existentes mantén el major actual y migra
+  solo vía `dependency-upgrade`. Confirma las APIs exactas en **context7** para `next@<%= it.entry.version %>`.

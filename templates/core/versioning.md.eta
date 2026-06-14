@@ -1,0 +1,18 @@
+## Versioning policy (Layer 0)
+
+This project is treated as **<%= it.project.mode === "existing" ? "EXISTING (brownfield)" : "NEW (greenfield)" %>**.
+
+<% if (it.project.mode === "existing") { %>**Existing project — conservative by default.**
+- **Keep the current major versions** of languages, frameworks and packages. Do **not** bump versions
+  as a side effect of an unrelated task.
+- A version bump or migration is a **deliberate change**: only after the `dependency-upgrade` assessment
+  approves it and the user authorizes it.
+- When you need a newer API, first check whether the **pinned version** already supports it (via context7)
+  before proposing an upgrade.
+<% } else { %>**New project — current and stable.**
+- Choose **current stable** versions (prefer LTS where it exists), not bleeding-edge pre-releases.
+- Pick versions that are **mutually compatible** across the whole dependency set; verify peer-dependency
+  ranges before pinning.
+- Pin versions explicitly and record them in `workspace.config.yaml`.
+<% } %>
+For exact, up-to-date version facts and compatibility, query **context7** for each library — do not guess.

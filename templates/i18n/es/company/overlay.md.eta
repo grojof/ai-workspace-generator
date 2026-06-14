@@ -1,0 +1,15 @@
+## Convenciones de empresa (Capa 3 — overlay de organización)
+
+Reutilizable entre proyectos de esta organización. Rellénalo en `workspace.config.yaml` (`conventions:`).
+
+- **Nomenclatura de ficheros:** <%= it.conventions.fileNaming %>
+<% const prefixes = Object.entries(it.conventions.prefixes || {}); %><% if (prefixes.length) { %>- **Prefijos / tokens dinámicos:**
+<% for (const [k, v] of prefixes) { %>  - `<%= k %>` → `<%= v %>`
+<% } %><% } else { %>- **Prefijos / tokens dinámicos:** _(ninguno definido — añádelos en `conventions.prefixes`)_
+<% } %><% if ((it.conventions.banned || []).length) { %>- **Patrones prohibidos:**
+<% for (const b of it.conventions.banned) { %>  - <%= b %>
+<% } %><% } %><% if ((it.conventions.notes || []).length) { %>- **Notas:**
+<% for (const n of it.conventions.notes) { %>  - <%= n %>
+<% } %><% } %>
+> Esta capa contiene reglas propias de la organización (prefijos, librerías internas, patrones prohibidos).
+> Actualizar las capas base nunca la sobrescribe.

@@ -1,0 +1,70 @@
+# AI Workspace — what was generated here
+
+This project's AI workspace was scaffolded and adapted by **ai-workspace**. This document is your
+index: what exists, why, and how to use it. Re-run `ai-workspace sync` to refresh it.
+
+## Stack adapted for
+- **Languages:** <% if (it.stack.languages.length) { %><%= it.stack.languages.map(l => l.id + "@" + l.version).join(", ") %><% } else { %>_(none)_<% } %>
+- **Frameworks:** <% if (it.stack.frameworks.length) { %><%= it.stack.frameworks.map(f => f.id + "@" + f.version).join(", ") %><% } else { %>_(none)_<% } %>
+- **Targets:** <%= it.targets.join(", ") %>
+<% if (it.stack.runtime) { %>- **Runtime:** <%= it.stack.runtime %>
+<% } %>
+
+## Layers applied
+| Layer | Source |
+|-------|--------|
+| 0 · Universal core | always on |
+| 1 · Language | <%= it.stack.languages.map(l => l.id).join(", ") || "—" %> |
+| 2 · Framework | <%= it.stack.frameworks.map(f => f.id).join(", ") || "—" %> |
+| 3 · Company overlay | `conventions:` in workspace.config.yaml |
+| 4 · Business/domain | `business:` in workspace.config.yaml |
+
+## Index of generated artifacts
+<% for (const a of it.artifacts) { %>- `<%= a.path %>` — <%= a.desc %>
+<% } %>
+
+## How it fits together
+
+```mermaid
+flowchart TD
+  CFG[workspace.config.yaml] --> GEN[ai-workspace]
+  GEN --> AG[AGENTS.md<br/>single source of truth]
+  AG --> CL[CLAUDE.md<br/>imports @AGENTS.md]
+  AG --> CO[.github/copilot-instructions.md<br/>generated mirror]
+  GEN --> MCP[.mcp.json / .vscode/mcp.json]
+  GEN --> IGN[.claudeignore / .copilotignore]
+<% if (it.sdd.enabled) { %>  GEN --> SDD[openspec/ + /sdd-* commands + skills]
+<% } %><% if (it.livingDocs) { %>  GEN --> DOCS[docs/ai/*  ·  /doc-sync]
+<% } %>
+```
+
+## Daily use
+
+> **You don't need to memorize commands.** Just describe what you want in chat — the AI detects the
+> intent and applies the right flow (SDD, dependency assessment, commit, docs…). The commands below are
+> optional manual shortcuts.
+
+- **Edit rules** in `AGENTS.md`, then run `ai-workspace sync` (regenerates adapters, preserves your edits outside markers).
+- **Add a stack module:** `ai-workspace add <module>`.
+- **Upgrade templates:** `ai-workspace upgrade` (shows a diff first).
+- **Check health:** `ai-workspace doctor` (token budgets, broken refs).
+<% if (it.sdd.enabled) { %>- **Plan a change:** `/sdd-explore` → `/sdd-propose` → … → `/sdd-archive`.
+<% } %><% if (it.livingDocs) { %>- **Refresh project state for the AI:** `/doc-sync`.
+<% } %>
+
+## Governance & commits
+- **Project mode:** <%= it.project.mode %> — <%= it.project.mode === "existing" ? "conservative versions; upgrade only via assessment" : "current stable versions" %>.
+- **Commits:** <%= it.workflow.commits.coAuthor ? "with" : "no" %> co-author trailers; <%= it.workflow.commits.automate === "with-approval" ? "committed only after your approval (use /commit)" : "manual (you commit)" %>.
+- **Safety gate:** the AI must stop and ask before version bumps, migrations, conflicts or risky changes.
+<% if (it.workflow.commits.gitHook) { %>- **Enforcement:** activate the commit hook once → `git config core.hooksPath .githooks`
+<% } %>
+## Scope & ignore
+- **Excluded from AI context** (`.claudeignore` / `.copilotignore`): <%= it.scope.ignore.join(", ") %>
+- **Git-ignored (not shared):** <%= it.scope.gitignoreManaged.join(", ") %>
+- Everything else under `.claude/`, `.github/`, `docs/ai/`, `AGENTS.md`, `CLAUDE.md` and
+  `workspace.config.yaml` is **committed** so the whole team shares the same AI setup.
+<% if (it.ingest.sources.length) { %>
+## Provenance (ingested assets)
+Imported from: <%= it.ingest.sources.join(", ") %>.
+<% if (it.ingest.reconcileWithContext7) { %>Reconciled against current best practices via context7; company/business rules take precedence on conflict.<% } %>
+<% } %>

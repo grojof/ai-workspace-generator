@@ -1,0 +1,19 @@
+## Enrutado por intención (Capa 0)
+
+**El usuario no debería tener que recordar comandos.** A partir de lenguaje natural, detecta la intención
+y aplica tú el flujo correcto. Los slash commands (`/...`) y prompts son **atajos manuales opcionales** —
+prefiere hacer el trabajo a pedirle al usuario que ejecute un comando (menciónalo solo de pasada).
+
+| El usuario dice (con cualquier redacción)… | Tú haces… |
+|--------------------------------------------|-----------|
+<% if (it.sdd.enabled) { %>| "vamos a construir / añadir / implementar <feature>", algo no trivial | Aplica el **flujo SDD** (explore → propose → spec → design → tasks → apply → verify → archive). |
+<% } %>| Un cambio pequeño y bien entendido | Impleméntalo directo y luego refresca las docs vivas. |
+| "actualiza / sube / migra / instala una versión más nueva" | **NO lo hagas sin más.** Aplica primero la evaluación `dependency-upgrade` (viabilidad + seguridad) y espera la decisión. |
+| "commitea / guarda los cambios", o acabas de terminar un cambio | Usa el flujo **secure-commit**: prepara un commit convencional, sin co-author, y <%= it.workflow.commits.automate === "with-approval" ? "pide aprobación antes de commitear" : "deja que el usuario commitee" %>. |
+| "soy nuevo / cómo funciona esto / explícame SDD / cómo empiezo" | Usa **ai-workspace-guide**. |
+| "configura el editor / qué extensiones / perfiles" | Usa la guía **vscode-setup**. |
+| Cualquier cosa arriesgada, un conflicto, o cambio de versión/migración | Respeta la **Barrera de seguridad**: para, verifica viabilidad, recomienda, espera la decisión. |
+| Terminaste una tarea y cambió el estado del proyecto | Refresca las docs vivas (`docs/ai/*`). |
+
+Si la intención es ambigua, haz una pregunta breve de aclaración y procede. Nunca te saltes en silencio
+la Barrera de seguridad ni la política de commits porque el usuario lo pida de forma casual.

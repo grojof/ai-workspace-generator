@@ -1,0 +1,33 @@
+## Convenciones universales (Capa 0)
+
+Aplican a todas las personas y a todos los ficheros, sea cual sea el lenguaje.
+
+### Codificación y fin de línea
+- Ficheros en **UTF-8**, sin BOM. Saltos de línea **LF**. Nueva línea final al final del fichero.
+- `.editorconfig` y `.gitattributes` lo imponen — no luches contra ellos.
+
+### Commits
+- **Conventional Commits** en **modo imperativo**: `feat:`, `fix:`, `refactor:`, `docs:`, `test:`, `chore:`.
+- Asunto ≤ 72 caracteres, presente ("añade", no "añadido"). Explica el *porqué* en el cuerpo.
+- Un cambio lógico por commit. No mezcles refactors con cambios de comportamiento.
+
+### Estilo de código
+- Imita el código de alrededor: nombres, estructura, densidad de comentarios, idioms.
+- Nombres descriptivos y en **inglés**. Sin abreviaturas no estándar.
+- Funciones pequeñas y de única responsabilidad. Prefiere retornos tempranos a anidar mucho.
+- Sin código muerto, sin bloques comentados, sin logs de depuración olvidados.
+
+### Revisiones y seguridad
+- Nunca subas secretos. Nunca debilites auth, validación o escapado para "que funcione".
+- Valida las entradas en los límites. Maneja errores explícitamente — sin catches silenciosos.
+- Los cambios difíciles de revertir o de cara al exterior requieren confirmación explícita.
+
+### Eficiencia de tokens (cómo deben trabajar los agentes aquí)
+- **Referencia, no dupliques.** Enlaza a skills/docs en vez de repetir su contenido.
+- Carga el detalle bajo demanda: lee instrucciones/skills con ámbito solo cuando sean relevantes.
+- Prefiere las docs vivas (`docs/ai/PROJECT-STATE.md`) a re-escanear todo el repo.
+- Usa **context7** (MCP) para documentación al día y fijada por versión, en vez de adivinar.
+
+### Diagramas
+- Usa **Mermaid** para arquitectura, flujo de datos, dependencias de módulos y el ciclo SDD.
+- Mantén los diagramas en `docs/ai/ARCHITECTURE.md`; regenéralos con `/doc-sync`.

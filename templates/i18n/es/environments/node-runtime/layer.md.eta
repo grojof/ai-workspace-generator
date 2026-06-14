@@ -1,0 +1,8 @@
+## Runtime de Node (entorno)
+
+- Gestiona versiones de Node con **nvm** (o fnm/Volta). Fija la versión en `.nvmrc`; usa `nvm use`.
+- Usa el lockfile del proyecto (npm/pnpm/yarn) — commitéalo; instala con `npm ci` en CI.
+- No instales paquetes globales para herramientas del proyecto; usa `devDependencies` y `npx`.
+- Un major de Node por proyecto; documéntalo. Iguala CI a la versión local.
+
+> Para detalles de instalación en tu SO, consulta **context7** (o la doc de nvm).

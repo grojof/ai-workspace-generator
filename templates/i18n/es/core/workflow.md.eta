@@ -1,0 +1,21 @@
+## Flujo de desarrollo (Capa 0)<% if (it.workflow.enforceFlow) { %> — **obligatorio**<% } %>
+
+Una única forma estructurada de trabajar. <% if (it.workflow.enforceFlow) { %>Este flujo **no es opcional**: no te saltes
+pasos aunque te lo pidan "rápido y ya". Si piden un atajo, explica el riesgo y sigue el flujo.<% } %>
+
+**El flujo para cualquier cambio**
+<% if (it.sdd.enabled) { %>1. **Cambio no trivial** → usa SDD: `/sdd-explore` → `/sdd-propose` → `/sdd-spec` + `/sdd-design` → `/sdd-tasks` → `/sdd-apply` → `/sdd-verify` → `/sdd-archive`.
+2. **Cambio pequeño** → impleméntalo directo y luego ejecuta `/doc-sync`.
+<% } else { %>1. Planifica brevemente, implementa el cambio correcto más pequeño y ejecuta `/doc-sync`.
+<% } %>3. Respeta la **Barrera de seguridad** de arriba para cualquier cosa arriesgada.
+4. **Commitea** siguiendo la política de abajo.
+
+**Política de commits**
+- <% if (it.workflow.commits.conventional) { %>**Conventional Commits**, en imperativo (`feat:`, `fix:`, `refactor:`, `docs:`, `test:`, `chore:`). Un cambio lógico por commit.<% } else { %>Mensajes claros, en imperativo. Un cambio lógico por commit.<% } %>
+- Los commits van con la **identidad de git del propio usuario**.<% if (!it.workflow.commits.coAuthor) { %> **No** añadas `Co-Authored-By:` ni ningún trailer de atribución a la IA.<% } %>
+- <% if (it.workflow.commits.automate === "with-approval") { %>**Automatiza con aprobación:** tras un cambio terminado (con spec o pequeño), prepara el commit y pide confirmación; commitea **solo** cuando el usuario apruebe. Usa el comando `/commit`.<% } else { %>**Commits manuales:** nunca commitees automáticamente. Prepara el mensaje y deja que el usuario commitee.<% } %>
+- Nunca uses `--no-verify` ni te saltes los hooks.
+<% if (it.workflow.commits.gitHook) { %>
+> Refuerzo: un hook de git `commit-msg` en `.githooks/` bloquea los commits no permitidos. Actívalo una
+> vez con `git config core.hooksPath .githooks`.
+<% } %>

@@ -1,0 +1,29 @@
+## Spec-Driven Development (SDD)
+
+Plan substantial changes through structured artifacts before writing code. Backend: **<%= it.sdd.backend %>**.
+
+**Lifecycle**
+
+```mermaid
+flowchart LR
+  P[proposal] --> S[specs]
+  P --> D[design]
+  S --> T[tasks]
+  D --> T
+  T --> A[apply]
+  A --> V[verify]
+  V --> R[archive]
+```
+
+**Commands** (Claude: `/sdd-*`; Copilot: prompt files in `.github/prompts/`)
+- `/sdd-explore <topic>` — investigate before committing.
+- `/sdd-propose` → `/sdd-spec` + `/sdd-design` → `/sdd-tasks` → `/sdd-apply` → `/sdd-verify` → `/sdd-archive`.
+
+**Artifacts** live in <% if (it.sdd.backend === "none") { %>the conversation (not persisted — enable a backend to keep them).<% } else { %>`openspec/changes/<change-name>/` and are **versioned in git** (reviewable in PRs, readable by any AI tool).<% } %>
+
+**Rules**
+- For non-trivial features, create a proposal/spec before implementing.
+- Specs are the source of truth for *what*; design for *how*; tasks track progress.
+- After implementing, run `/sdd-verify` against the spec, then `/sdd-archive`.
+<% if (it.sdd.backend === "hybrid") { %>- Engram (if installed) augments cross-session memory; the in-repo files remain canonical.
+<% } %>

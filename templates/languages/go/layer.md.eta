@@ -1,0 +1,9 @@
+## Go (Layer 1 — language) · target v<%= it.entry.version %>
+
+- Format with `gofmt`/`goimports`; lint with `go vet` (and `golangci-lint` if present). CI fails on diffs.
+- Errors are values: wrap with `%w`, never ignore them; no `panic` across package boundaries.
+- Accept interfaces, return structs. Keep packages small and cohesive; avoid cyclic deps.
+- Concurrency: pass `context.Context` first; never leak goroutines; protect shared state.
+- Table-driven tests with the standard `testing` package; name files `*_test.go`.
+- Versions: respect the module's `go` directive and `go.mod` pins; follow the versioning policy above and
+  upgrade only via `dependency-upgrade`. Confirm specifics in **context7** for `go@<%= it.entry.version %>`.

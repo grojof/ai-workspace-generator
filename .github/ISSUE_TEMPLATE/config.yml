@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 📖 Quickstart (Español)
+    url: https://github.com/grojof/ai-workspace-generator/blob/main/docs/es/QUICKSTART.md
+    about: How to install and use ai-workspace — start here before opening an issue.
+  - name: 📖 Documentation (English)
+    url: https://github.com/grojof/ai-workspace-generator/blob/main/docs/
+    about: Architecture, extending and maintaining guides.

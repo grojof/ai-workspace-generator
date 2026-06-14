@@ -1,0 +1,63 @@
+{
+  "name": "ai-workspace-generator",
+  "version": "0.1.0",
+  "description": "Generate and adapt an AI workspace (Claude Code + GitHub Copilot) for any project: layered instructions, skills, SDD, MCPs, living docs and token-efficient config.",
+  "type": "module",
+  "bin": {
+    "ai-workspace": "dist/cli.js",
+    "ai-workspace-generator": "dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "templates"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsx src/cli.ts",
+    "start": "node dist/cli.js",
+    "typecheck": "tsc --noEmit",
+    "pretest": "tsc -p tsconfig.json",
+    "test": "node --test"
+  },
+  "keywords": [
+    "ai",
+    "claude-code",
+    "copilot",
+    "agents",
+    "agents-md",
+    "scaffold",
+    "generator",
+    "sdd",
+    "mcp",
+    "context7"
+  ],
+  "author": "Guillermo Rojo <guillermo.rojo.fdez@gmail.com>",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/grojof/ai-workspace-generator#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/grojof/ai-workspace-generator.git"
+  },
+  "bugs": {
+    "url": "https://github.com/grojof/ai-workspace-generator/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@clack/prompts": "^0.7.0",
+    "commander": "^12.1.0",
+    "eta": "^3.4.0",
+    "picocolors": "^1.1.0",
+    "yaml": "^2.5.1",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0"
+  }
+}

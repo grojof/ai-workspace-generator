@@ -1,0 +1,8 @@
+## Entorno de Python
+
+- **Usa siempre un entorno virtual** (`python -m venv .venv`, o uv/poetry). Nunca instales en el Python del sistema.
+- Actívalo antes de trabajar; mantén `.venv/` ignorado por git. Fija dependencias en un lockfile.
+- Por qué: aísla las dependencias del proyecto, evita choques de versiones entre proyectos y hace los installs reproducibles.
+- Gestiona versiones del intérprete con **pyenv** cuando necesites varias versiones de Python.
+
+> Para los comandos exactos en tu SO, consulta **context7** (o la doc de venv/uv/poetry).

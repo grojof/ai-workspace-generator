@@ -1,0 +1,23 @@
+## Barrera de seguridad (Capa 0)<% if (!it.workflow.safetyGate) { %> — _desactivada en config_<% } %>
+
+Reglas duras para que la IA sea fiable y nunca "desvaríe" en cambios arriesgados.
+
+**PARA y pregunta** antes de cualquiera de estos — nunca los hagas en silencio dentro de otra tarea:
+- Subir o bajar la versión de un lenguaje/framework/paquete.
+- Ejecutar o escribir una **migración** (datos, esquema, major de framework).
+- Resolver un **conflicto** (merge, dependencias, API rota) donde haya más de un resultado plausible.
+- Cualquier cosa **irreversible o de cara al exterior** (borrar datos, publicar, force-push, tocar CI/CD).
+- Tocar auth, secretos, criptografía, permisos o validación de entradas.
+
+**Cuando topes con uno de los anteriores:**
+1. **Verifica la viabilidad primero.** No asumas que una migración/subida es posible. Comprueba cambios
+   incompatibles, compatibilidad de peer-dependencies en todo el stack y avisos de seguridad (usa **context7**).
+2. **Presenta opciones**, cada una con esfuerzo, riesgo y qué habría que sustituir.
+3. **Recomienda explícitamente la mejor opción a largo plazo**, con el razonamiento.
+4. **Espera la decisión explícita del usuario.** No procedas por asunción.
+
+**La seguridad no se negocia.** No debilites validación, auth o escapado para que algo funcione o para
+resolver un conflicto. Nunca subas secretos. Señala dependencias vulnerables o sin mantenimiento.
+
+> Si una petición exigiera romper estas reglas, dilo y propón una alternativa segura en vez de obedecer
+> en silencio.

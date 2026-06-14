@@ -1,0 +1,70 @@
+# Workspace de IA — qué se ha generado aquí
+
+El workspace de IA de este proyecto fue creado y adaptado por **ai-workspace**. Este documento es tu
+índice: qué existe, por qué y cómo usarlo. Vuelve a ejecutar `ai-workspace sync` para refrescarlo.
+
+## Stack adaptado
+- **Lenguajes:** <% if (it.stack.languages.length) { %><%= it.stack.languages.map(l => l.id + "@" + l.version).join(", ") %><% } else { %>_(ninguno)_<% } %>
+- **Frameworks:** <% if (it.stack.frameworks.length) { %><%= it.stack.frameworks.map(f => f.id + "@" + f.version).join(", ") %><% } else { %>_(ninguno)_<% } %>
+- **Targets:** <%= it.targets.join(", ") %>
+<% if (it.stack.runtime) { %>- **Runtime:** <%= it.stack.runtime %>
+<% } %>
+
+## Capas aplicadas
+| Capa | Origen |
+|------|--------|
+| 0 · Núcleo universal | siempre activo |
+| 1 · Lenguaje | <%= it.stack.languages.map(l => l.id).join(", ") || "—" %> |
+| 2 · Framework | <%= it.stack.frameworks.map(f => f.id).join(", ") || "—" %> |
+| 3 · Overlay de empresa | `conventions:` en workspace.config.yaml |
+| 4 · Negocio/dominio | `business:` en workspace.config.yaml |
+
+## Índice de artefactos generados
+<% for (const a of it.artifacts) { %>- `<%= a.path %>` — <%= a.desc %>
+<% } %>
+
+## Cómo encaja todo
+
+```mermaid
+flowchart TD
+  CFG[workspace.config.yaml] --> GEN[ai-workspace]
+  GEN --> AG[AGENTS.md<br/>fuente única de verdad]
+  AG --> CL[CLAUDE.md<br/>importa @AGENTS.md]
+  AG --> CO[.github/copilot-instructions.md<br/>espejo generado]
+  GEN --> MCP[.mcp.json / .vscode/mcp.json]
+  GEN --> IGN[.claudeignore / .copilotignore]
+<% if (it.sdd.enabled) { %>  GEN --> SDD[openspec/ + comandos /sdd-* + skills]
+<% } %><% if (it.livingDocs) { %>  GEN --> DOCS[docs/ai/*  ·  /doc-sync]
+<% } %>
+```
+
+## Uso diario
+
+> **No necesitas memorizar comandos.** Solo describe en el chat lo que quieres — la IA detecta la
+> intención y aplica el flujo correcto (SDD, evaluación de versiones, commit, docs…). Los comandos de
+> abajo son atajos manuales opcionales.
+
+- **Edita las reglas** en `AGENTS.md` y ejecuta `ai-workspace sync` (regenera adaptadores, preserva tus ediciones fuera de los marcadores).
+- **Añade un módulo de stack:** `ai-workspace add <language|framework|mcp> <id>`.
+- **Actualiza plantillas:** `ai-workspace upgrade` (muestra un diff primero).
+- **Comprueba la salud:** `ai-workspace doctor` (presupuesto de tokens, referencias rotas).
+<% if (it.sdd.enabled) { %>- **Planifica un cambio:** `/sdd-explore` → `/sdd-propose` → … → `/sdd-archive`.
+<% } %><% if (it.livingDocs) { %>- **Refresca el estado del proyecto para la IA:** `/doc-sync`.
+<% } %>- **¿Empiezas con IA?** Pregunta por la skill `ai-workspace-guide` o usa `/aiws-guide`.
+
+## Gobernanza y commits
+- **Modo de proyecto:** <%= it.project.mode %> — <%= it.project.mode === "existing" ? "versiones conservadoras; sube solo tras evaluación" : "versiones estables actuales" %>.
+- **Commits:** <%= it.workflow.commits.coAuthor ? "con" : "sin" %> trailers de co-author; <%= it.workflow.commits.automate === "with-approval" ? "se commitea solo tras tu aprobación (usa /commit)" : "manual (commiteas tú)" %>.
+- **Barrera de seguridad:** la IA debe parar y preguntar antes de subir versiones, migrar, resolver conflictos o cambios arriesgados.
+<% if (it.workflow.commits.gitHook) { %>- **Refuerzo:** activa el hook de commit una vez → `git config core.hooksPath .githooks`
+<% } %>
+## Ámbito y exclusiones (scope & ignore)
+- **Excluido del contexto de IA** (`.claudeignore` / `.copilotignore`): <%= it.scope.ignore.join(", ") %>
+- **Ignorado por git (no compartido):** <%= it.scope.gitignoreManaged.join(", ") %>
+- Todo lo demás bajo `.claude/`, `.github/`, `docs/ai/`, `AGENTS.md`, `CLAUDE.md` y
+  `workspace.config.yaml` se **versiona** para que todo el equipo comparta la misma configuración de IA.
+<% if (it.ingest.sources.length) { %>
+## Procedencia (activos ingeridos)
+Importado de: <%= it.ingest.sources.join(", ") %>.
+<% if (it.ingest.reconcileWithContext7) { %>Reconciliado con las buenas prácticas actuales vía context7; las reglas de empresa/negocio prevalecen en caso de conflicto.<% } %>
+<% } %>

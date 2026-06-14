@@ -1,0 +1,9 @@
+## WSL (Windows + Linux)
+
+- Mantén el proyecto **dentro del sistema de ficheros de Linux** (`~/...`), no en `/mnt/c` — es mucho más
+  rápido y evita problemas de permisos y de fin de línea.
+- Fin de línea **LF** (ya lo imponen `.gitattributes`/`.editorconfig`). Configura git `core.autocrlf=input`.
+- Instala las herramientas (Node con nvm, Python, etc.) **dentro de WSL**, no en Windows.
+- Usa la extensión "WSL" de VS Code; abre la carpeta con `code .` desde la shell de WSL.
+
+> Para la configuración según tu distro, consulta **context7** (o la doc de WSL).

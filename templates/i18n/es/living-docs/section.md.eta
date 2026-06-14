@@ -1,0 +1,10 @@
+## Documentación viva
+
+El proyecto mantiene una foto siempre actualizada y barata en tokens de su propio estado, para que los
+agentes tengan contexto sin re-escanear todo.
+
+- `docs/ai/PROJECT-STATE.md` — visión general, mapa de módulos, registro ligero de decisiones, estado actual.
+- `docs/ai/ARCHITECTURE.md` — arquitectura con diagramas **Mermaid**.
+
+**Mantenla fresca:** ejecuta `/doc-sync` (Claude) o el prompt `doc-sync` (Copilot) al terminar una tarea.
+<% if (it.sdd.backend !== "none") { %>Deriva el estado de los cambios desde `openspec/changes/*`.<% } %> Lee estos ficheros primero; son más baratos que escanear el repo.

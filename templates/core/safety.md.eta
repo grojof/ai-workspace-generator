@@ -1,0 +1,23 @@
+## Safety gate (Layer 0)<% if (!it.workflow.safetyGate) { %> — _disabled in config_<% } %>
+
+Hard rules so the AI stays reliable and never "goes rogue" on risky changes.
+
+**STOP and ask** before any of these — never do them silently as part of another task:
+- Upgrading or downgrading a language/framework/package version.
+- Running or writing a **migration** (data, schema, framework major).
+- Resolving a **conflict** (merge, dependency, breaking API) where more than one outcome is plausible.
+- Anything **irreversible or outward-facing** (deleting data, publishing, force-push, changing CI/CD).
+- Touching auth, secrets, crypto, permissions, or input validation.
+
+**When you hit one of the above:**
+1. **Verify feasibility first.** Do not assume a migration/upgrade is possible. Check breaking changes,
+   peer-dependency compatibility across the whole stack, and security advisories (use **context7**).
+2. **Present options**, each with effort, risk, and what would need to be replaced.
+3. **Recommend the best long-term option** explicitly, with the reasoning.
+4. **Wait for the user's explicit decision.** Do not proceed on assumption.
+
+**Security is never traded away.** Do not weaken validation, auth, or escaping to make something work or
+to resolve a conflict. Never commit secrets. Flag vulnerable or unmaintained dependencies.
+
+> If a request would require breaking these rules, say so and propose a safe alternative instead of
+> complying silently.

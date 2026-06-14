@@ -1,0 +1,15 @@
+## Company conventions (Layer 3 — organization overlay)
+
+Reusable across projects of this organization. Fill in via `workspace.config.yaml` (`conventions:`).
+
+- **File naming:** <%= it.conventions.fileNaming %>
+<% const prefixes = Object.entries(it.conventions.prefixes || {}); %><% if (prefixes.length) { %>- **Naming prefixes / dynamic tokens:**
+<% for (const [k, v] of prefixes) { %>  - `<%= k %>` → `<%= v %>`
+<% } %><% } else { %>- **Naming prefixes / dynamic tokens:** _(none defined — add under `conventions.prefixes`)_
+<% } %><% if ((it.conventions.banned || []).length) { %>- **Banned patterns:**
+<% for (const b of it.conventions.banned) { %>  - <%= b %>
+<% } %><% } %><% if ((it.conventions.notes || []).length) { %>- **Notes:**
+<% for (const n of it.conventions.notes) { %>  - <%= n %>
+<% } %><% } %>
+> This layer holds organization-specific rules (prefixes, internal libraries, forbidden patterns).
+> Updating the base layers never overwrites it.

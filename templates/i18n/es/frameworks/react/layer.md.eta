@@ -1,0 +1,12 @@
+## React (Capa 2 — framework) · objetivo v<%= it.entry.version %>
+
+- **Solo componentes de función + hooks.** Sin componentes de clase.
+- Un componente por fichero; el nombre del fichero coincide con el export.
+- Coloca juntos componente, estilos y test. Componentes pequeños; extrae hooks para la lógica.
+- Reglas de los Hooks: nunca los llames condicionalmente. Dependencias exhaustivas en `useEffect`.
+- Prefiere estado derivado a estado duplicado. Eleva el estado solo lo necesario.
+- Los efectos secundarios van en effects/handlers, no en el render.
+- La accesibilidad no es opcional: elementos semánticos, labels, soporte de teclado.
+- Fetching de datos: usa la librería elegida (p. ej. TanStack Query / RSC) — no implementes caches a mano.
+
+> Para detalles de API/buenas prácticas actuales, consulta **context7** para `react@<%= it.entry.version %>`.

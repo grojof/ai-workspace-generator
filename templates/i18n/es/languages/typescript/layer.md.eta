@@ -1,0 +1,12 @@
+## TypeScript (Capa 1 — lenguaje) · objetivo v<%= it.entry.version %>
+
+- **Modo estricto activado.** `strict: true`, `noUncheckedIndexedAccess`, sin `any` implícito.
+- Prefiere `type`/`interface` a `any`. Usa `unknown` en los límites y acota antes de usar.
+- Sin `// @ts-ignore` sin un comentario de una línea explicando el motivo. Arregla el tipo.
+- Formatea con **Prettier**, linta con **ESLint** (`@typescript-eslint`). CI falla ante errores de lint.
+- `import type { … }` para imports de solo tipos. Sin default exports en módulos compartidos — exports nombrados.
+- Async: `async/await`, nunca promesas flotantes. Maneja los rechazos explícitamente.
+- Valida datos externos con un schema (p. ej. `zod`) en el borde; confía en los tipos solo tras parsear.
+- Tests colocados o en `__tests__`; usa el runner del proyecto (vitest/jest). Nombre: `*.test.ts`.
+
+> Para detalles de API/buenas prácticas actuales, consulta **context7** para `typescript@<%= it.entry.version %>`.

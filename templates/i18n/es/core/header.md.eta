@@ -1,0 +1,10 @@
+# <%= it.project.name %> — Guía para agentes de IA (AGENTS.md)
+
+<% if (it.project.description) { %><%= it.project.description %>
+
+<% } %>Este fichero es la **fuente única de verdad** para los agentes de IA (Claude Code, GitHub Copilot, Cursor…).
+Los ficheros específicos de cada herramienta (`CLAUDE.md`, `.github/copilot-instructions.md`) son adaptadores
+generados que reflejan o importan este contenido — **edita las reglas aquí** y ejecuta `ai-workspace sync`.
+
+Las secciones entre los marcadores `ai-workspace:begin/end` se generan. Añade tus notas **fuera** de ellos;
+sobreviven a la regeneración.

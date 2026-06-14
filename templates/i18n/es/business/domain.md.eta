@@ -1,0 +1,16 @@
+## Lógica de negocio / dominio (Capa 4 — proyecto)
+
+Conocimiento de dominio propio del proyecto. Mantenlo preciso — es el mapa de la IA sobre *qué* construyes.
+
+<% if (it.business.domain) { %>**Dominio:** <%= it.business.domain %>
+
+<% } %><% if ((it.business.glossary || []).length) { %>**Lenguaje ubicuo (glosario):**
+<% for (const g of it.business.glossary) { %>- **<%= g.term %>** — <%= g.definition %>
+<% } %>
+<% } else { %>**Lenguaje ubicuo (glosario):** _(añade términos en `business.glossary`)_
+
+<% } %><% if ((it.business.invariants || []).length) { %>**Invariantes de negocio (siempre deben cumplirse):**
+<% for (const inv of it.business.invariants) { %>- <%= inv %>
+<% } %><% } else { %>**Invariantes de negocio:** _(añade reglas en `business.invariants`)_
+<% } %>
+> Mantén esta sección y `docs/ai/PROJECT-STATE.md` sincronizados con `/doc-sync`.
