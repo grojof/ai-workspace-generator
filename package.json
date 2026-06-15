@@ -20,7 +20,8 @@
     "start": "node dist/cli.js",
     "typecheck": "tsc --noEmit",
     "pretest": "tsc -p tsconfig.json",
-    "test": "node --test"
+    "test": "node --test",
+    "test:coverage": "node --test --experimental-test-coverage"
   },
   "keywords": [
     "ai",
