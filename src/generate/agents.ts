@@ -41,7 +41,7 @@ function renderEnvironment(config: Config, entry: { id: string; version: string 
     return renderTemplate(path, { ...config, entry });
   }
   return [
-    `## ${entry.id} (environment) · ${entry.version}`,
+    `## ${entry.id} (Layer 3 — environment) · ${entry.version}`,
     "",
     "- Document the setup steps and gotchas for this environment in this block.",
     "",

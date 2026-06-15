@@ -16,8 +16,9 @@ El workspace de IA de este proyecto fue creado y adaptado por **ai-workspace**. 
 | 0 · Núcleo universal | siempre activo |
 | 1 · Lenguaje | <%= it.stack.languages.map(l => l.id).join(", ") || "—" %> |
 | 2 · Framework | <%= it.stack.frameworks.map(f => f.id).join(", ") || "—" %> |
-| 3 · Overlay de empresa | `conventions:` en workspace.config.yaml |
-| 4 · Negocio/dominio | `business:` en workspace.config.yaml |
+| 3 · Entornos | <%= it.stack.environments.map(e => e.id).join(", ") || "—" %> |
+| 4 · Overlay de empresa | `conventions:` en workspace.config.yaml |
+| 5 · Negocio/dominio | `business:` en workspace.config.yaml |
 
 ## Índice de artefactos generados
 <% for (const a of it.artifacts) { %>- `<%= a.path %>` — <%= a.desc %>

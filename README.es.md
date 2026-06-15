@@ -103,9 +103,9 @@ flowchart TD
 | 0 · Núcleo | codificación, commits, seguridad, flujo seguro, enrutado por intención | la herramienta |
 | 1 · Lenguaje | formatters, idioms, testing (según versión) | la herramienta |
 | 2 · Framework | estructura y patrones (fijados por versión) | la herramienta |
-| · Entornos | WSL, Docker, Node (nvm), Python (venv), bases de datos… | la herramienta |
-| 3 · Empresa | tus prefijos, naming, librerías internas, patrones prohibidos | **tú** |
-| 4 · Negocio | tu glosario de dominio, reglas e invariantes | **tú** |
+| 3 · Entornos | WSL, Docker, Node (nvm), Python (venv), bases de datos… | la herramienta |
+| 4 · Empresa | tus prefijos, naming, librerías internas, patrones prohibidos | **tú** |
+| 5 · Negocio | tu glosario de dominio, reglas e invariantes | **tú** |
 
 ### Por qué las reglas de lenguaje/framework son breves (es intencional)
 
@@ -117,13 +117,13 @@ Las reglas integradas de React, Go, Python… son una **base común y estable**,
   **no** se congela en un fichero. Las reglas apuntan a la IA al **MCP context7** para traer
   documentación al día y fijada por versión *en tu entorno* — así nunca se queda obsoleta.
 - **Tus estándares son lo valioso:** la base genérica es solo el suelo. Las normas y patrones reales de
-  tu equipo viven en las **capas 3 y 4**, y puedes traer tus ficheros de reglas existentes (siguiente apartado).
+  tu equipo viven en las **capas 4 y 5**, y puedes traer tus ficheros de reglas existentes (siguiente apartado).
 
 ```mermaid
 flowchart LR
   BASE["Base integrada<br/>estable y ligera"] --> AG["AGENTS.md"]
   C7["context7 MCP<br/>al día por versión"] -. en tiempo de ejecución .-> AI[la IA]
-  COMP["Reglas de tu empresa<br/>Capas 3 y 4"] --> AG
+  COMP["Reglas de tu empresa<br/>Capas 4 y 5"] --> AG
   AG --> AI
 ```
 

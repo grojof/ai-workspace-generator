@@ -39,7 +39,7 @@ flowchart LR
 
 ## The layer model
 
-Instructions are composed from five layers so the common base never collides with company/business
+Instructions are composed from six layers so the common base never collides with company/business
 rules. Layers map to template folders and to config sections:
 
 | Layer | Template folder | Config source | Block id in AGENTS.md |
@@ -47,14 +47,15 @@ rules. Layers map to template folders and to config sections:
 | 0 · Core | [`templates/core/`](../templates/core/) | always on | `header`, `core` |
 | 1 · Language | [`templates/languages/<id>/`](../templates/languages/) | `stack.languages` | `lang-<id>` |
 | 2 · Framework | [`templates/frameworks/<id>/`](../templates/frameworks/) | `stack.frameworks` | `fw-<id>` |
-| 3 · Company | [`templates/company/`](../templates/company/) | `conventions` | `company` |
-| 4 · Business | [`templates/business/`](../templates/business/) | `business` | `business` |
+| 3 · Environments | [`templates/environments/<id>/`](../templates/environments/) | `stack.environments` | `env-<id>` |
+| 4 · Company | [`templates/company/`](../templates/company/) | `conventions` | `company` |
+| 5 · Business | [`templates/business/`](../templates/business/) | `business` | `business` |
 
 Plus feature blocks: `sdd` (when `sdd.enabled`), `living-docs` (when `livingDocs`), and `imported`
 (appended by `ai-workspace import`).
 
-Block **order** is fixed in `composeBlocks`: `header → core → languages → frameworks → company →
-business → sdd → living-docs`.
+Block **order** is fixed in `composeBlocks`: `header → core → languages → frameworks → environments →
+company → business → sdd → living-docs`.
 
 ## Managed regions — the idempotency contract
 

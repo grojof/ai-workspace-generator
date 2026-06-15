@@ -1,4 +1,4 @@
-## Runtime de Node (entorno)
+## Runtime de Node (Capa 3 — entorno)
 
 - Gestiona versiones de Node con **nvm** (o fnm/Volta). Fija la versión en `.nvmrc`; usa `nvm use`.
 - Usa el lockfile del proyecto (npm/pnpm/yarn) — commitéalo; instala con `npm ci` en CI.

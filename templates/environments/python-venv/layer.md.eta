@@ -1,4 +1,4 @@
-## Python environment
+## Python (Layer 3 — environment)
 
 - **Always use a virtual environment** (`python -m venv .venv`, or uv/poetry). Never install into system Python.
 - Activate it before working; keep `.venv/` git-ignored. Pin deps in a lockfile.

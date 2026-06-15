@@ -1,4 +1,4 @@
-## PostgreSQL (environment)
+## PostgreSQL (Layer 3 — environment)
 
 - Run it locally via Docker/compose for parity with production. Pin the major version.
 - All schema changes go through **migrations** (never hand-edit prod). Migrations are reviewed and reversible.

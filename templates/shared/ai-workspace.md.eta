@@ -16,8 +16,9 @@ index: what exists, why, and how to use it. Re-run `ai-workspace sync` to refres
 | 0 · Universal core | always on |
 | 1 · Language | <%= it.stack.languages.map(l => l.id).join(", ") || "—" %> |
 | 2 · Framework | <%= it.stack.frameworks.map(f => f.id).join(", ") || "—" %> |
-| 3 · Company overlay | `conventions:` in workspace.config.yaml |
-| 4 · Business/domain | `business:` in workspace.config.yaml |
+| 3 · Environments | <%= it.stack.environments.map(e => e.id).join(", ") || "—" %> |
+| 4 · Company overlay | `conventions:` in workspace.config.yaml |
+| 5 · Business/domain | `business:` in workspace.config.yaml |
 
 ## Index of generated artifacts
 <% for (const a of it.artifacts) { %>- `<%= a.path %>` — <%= a.desc %>

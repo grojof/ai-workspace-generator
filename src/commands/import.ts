@@ -102,7 +102,7 @@ export function runImport(cwd: string, sources: string[]): void {
 
   // 3. Reference block in AGENTS.md (managed; persists across syncs).
   const refLines = [
-    "## Imported standards (Layer 3 source · review with context7)",
+    "## Imported standards (Layer 4 source · review with context7)",
     "",
     "Imported from existing company assets. **Company/business rules take precedence**; the items",
     "below were brought in and must be reconciled against current best practices.",
@@ -126,7 +126,7 @@ export function runImport(cwd: string, sources: string[]): void {
     "",
     "## How to reconcile",
     config.ingest.reconcileWithContext7
-      ? "1. For each imported practice, query context7 for the relevant library@version.\n2. Mark items that are outdated/deprecated and note the current recommendation.\n3. Update the base layers (0–2) where safe; leave company/business (3–4) intact unless explicitly approved."
+      ? "1. For each imported practice, query context7 for the relevant library@version.\n2. Mark items that are outdated/deprecated and note the current recommendation.\n3. Update the base layers (0–3) where safe; leave company/business (4–5) intact unless explicitly approved."
       : "Reconciliation with context7 is disabled in config (`ingest.reconcileWithContext7: false`).",
   ].join("\n");
   writeFile(resolve(cwd, "docs/ai/INGEST-RECONCILE.md"), checklist);

@@ -1,4 +1,4 @@
-## WSL (Windows + Linux)
+## WSL (Capa 3 — entorno) · Windows + Linux
 
 - Mantén el proyecto **dentro del sistema de ficheros de Linux** (`~/...`), no en `/mnt/c` — es mucho más
   rápido y evita problemas de permisos y de fin de línea.

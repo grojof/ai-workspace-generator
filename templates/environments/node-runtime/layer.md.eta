@@ -1,4 +1,4 @@
-## Node runtime (environment)
+## Node runtime (Layer 3 — environment)
 
 - Manage Node versions with **nvm** (or fnm/Volta). Pin the version in `.nvmrc`; run `nvm use`.
 - Prefer the project's lockfile (npm/pnpm/yarn) — commit it; install with `npm ci` in CI.
