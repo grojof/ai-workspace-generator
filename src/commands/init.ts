@@ -109,7 +109,7 @@ export async function runInit(cwd: string, options: InitOptions = {}): Promise<v
   const name = await text({
     message: "Project name",
     initialValue: detectName(cwd),
-    validate: (v) => (v.trim() ? undefined : "Required"),
+    validate: (v) => (v?.trim() ? undefined : "Required"),
   });
   bail(name);
 

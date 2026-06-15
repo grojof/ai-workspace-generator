@@ -29,7 +29,7 @@ export const StackSchema = z.object({
 });
 
 export const ConventionsSchema = z.object({
-  prefixes: z.record(z.string()).default({}),
+  prefixes: z.record(z.string(), z.string()).default({}),
   fileNaming: z
     .enum(["kebab-case", "camelCase", "PascalCase", "snake_case"])
     .default("kebab-case"),
@@ -86,7 +86,7 @@ export const CommitsSchema = z.object({
 });
 
 export const WorkflowSchema = z.object({
-  commits: CommitsSchema.default({}),
+  commits: CommitsSchema.prefault({}),
   /** Require explicit user approval on conflicts, migrations, and version changes. */
   safetyGate: z.boolean().default(true),
   /** Make the structured development flow mandatory (the AI must not skip it). */
@@ -106,19 +106,19 @@ export const ConfigSchema = z.object({
   targets: z.array(z.enum(["claude", "copilot"])).default(["claude", "copilot"]),
   /** Language of generated, human-facing content (instructions, guides, docs). */
   language: z.enum(["es", "en"]).default("es"),
-  stack: StackSchema.default({}),
-  conventions: ConventionsSchema.default({}),
-  business: BusinessSchema.default({}),
-  sdd: SddSchema.default({}),
-  ingest: IngestSchema.default({}),
-  scope: ScopeSchema.default({}),
+  stack: StackSchema.prefault({}),
+  conventions: ConventionsSchema.prefault({}),
+  business: BusinessSchema.prefault({}),
+  sdd: SddSchema.prefault({}),
+  ingest: IngestSchema.prefault({}),
+  scope: ScopeSchema.prefault({}),
   mcp: z.array(z.string()).default(["context7"]),
   skills: z.array(z.string()).default([]),
   livingDocs: z.boolean().default(true),
-  workflow: WorkflowSchema.default({}),
+  workflow: WorkflowSchema.prefault({}),
   /** When true, add a Claude Stop hook that reminds to run /doc-sync. */
   livingDocsHook: z.boolean().default(false),
-  tokenBudget: TokenBudgetSchema.default({}),
+  tokenBudget: TokenBudgetSchema.prefault({}),
   /** Template generation that produced the current artifacts. Used by `upgrade`. */
   templatesVersion: z.string().default("0.0.0"),
 });
