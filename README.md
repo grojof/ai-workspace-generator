@@ -140,7 +140,10 @@ and leaves a checklist so the AI can reconcile them against current best practic
 ## What gets generated
 
 - **`AGENTS.md`** + adapters (`CLAUDE.md`, `.github/copilot-instructions.md`) kept in sync.
-- **SDD (Spec-Driven Development):** plan big changes with short specs in `openspec/` (git-versioned).
+- **SDD (Spec-Driven Development):** a **methodology** blending the best ideas of **Spec-Kit**
+  (constitution + clarify to bootstrap from scratch) and **OpenSpec** (delta changes against a living
+  baseline). These are *concepts, not dependencies*: artifacts are Markdown in `openspec/` (git-versioned),
+  with no external CLI. New projects start with a constitution; existing ones treat each feature as a delta.
 - **Living docs:** `docs/ai/*` kept current so the AI always has fresh project context.
 - **Governance:** version policy (new vs existing), a **safety gate** (the AI stops and asks before risky
   changes), and a **commit policy** (no AI co-author, you approve) enforced by a `commit-msg` git hook.
@@ -214,6 +217,8 @@ Entry points: [`src/cli.ts`](src/cli.ts) · [`src/generate/index.ts`](src/genera
   [Maintaining](docs/MAINTAINING.md) · [Contributing](CONTRIBUTING.md)
 - 🇪🇸 **Español:** [Arquitectura](docs/es/ARCHITECTURE.md) · [Extender](docs/es/EXTENDING.md) ·
   [Mantener](docs/es/MAINTAINING.md)
+- **SDD (mixed methodology):** [ADR 0001 — Mixed SDD](docs/decisions/0001-mixed-sdd.md) ·
+  [Upstream provenance](docs/SDD-UPSTREAM.md)
 - Repo conventions for AI agents: [`AGENTS.md`](AGENTS.md) (dogfooding).
 
 ## Development

@@ -80,7 +80,7 @@ conserven entre regeneraciones.
 |---------|----------------|-------------|
 | `writeManaged` | upsert de bloques, preserva el resto | AGENTS.md, CLAUDE.md, copilot-instructions, ignore, .gitattributes |
 | `writeFile` | sobrescritura completa (contenido determinista) | `.mcp.json`, `.vscode/mcp.json`, comandos, skills, onboarding |
-| `writeIfMissing` | crea una vez, nunca sobrescribe (del usuario) | `.editorconfig`, seed de `settings.json`, scaffold `openspec/`, seeds `docs/ai/*`, copias importadas |
+| `writeIfMissing` | crea una vez, nunca sobrescribe (del usuario) | `.editorconfig`, seed de `settings.json`, scaffold `openspec/` (incl. `constitution.md` en proyectos nuevos), seeds `docs/ai/*`, copias importadas |
 
 También hay un modo **dry-run** (`setDryRun` / `getPlanned`) que usa `upgrade --check` para calcular
 cambios sin tocar el disco.

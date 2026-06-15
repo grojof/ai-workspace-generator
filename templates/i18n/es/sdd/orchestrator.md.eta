@@ -1,29 +1,46 @@
-## Desarrollo guiado por specs (SDD)
+<% const constitution = it.sdd.enabled && it.sdd.constitution && it.project.mode === "new"; %>## Desarrollo guiado por specs (SDD)
 
-Planifica los cambios sustanciales con artefactos estructurados antes de programar. Backend: **<%= it.sdd.backend %>**.
+Una **metodología ligera — no una dependencia de herramientas**. Adoptamos las mejores *ideas* de dos
+proyectos SDD y mantenemos cada artefacto como Markdown plano; **no se requiere ni se instala ningún CLI
+externo**:
+
+- **Spec-Kit** → el *arranque* greenfield: una **constitución** del proyecto (principios) y un paso de **clarify**.
+- **OpenSpec** → el estado estacionario: los cambios como **deltas** sobre una baseline viva de specs, que luego se archivan.
+
+Backend: **<%= it.sdd.backend %>**.
 
 **Ciclo de vida**
 
 ```mermaid
 flowchart LR
-  P[propuesta] --> S[specs]
+<% if (constitution) { %>  C[constitución] -.una vez.-> E
+<% } %>  E[explorar] --> P[proponer] --> CL[clarificar] --> S[spec]
   P --> D[diseño]
   S --> T[tareas]
   D --> T
-  T --> A[aplicar]
-  A --> V[verificar]
-  V --> R[archivar]
+  T --> A[aplicar] --> V[verificar] --> R[archivar]
 ```
 
-**Comandos** (Claude: `/sdd-*`; Copilot: prompts en `.github/prompts/`)
-- `/sdd-explore <tema>` — investiga antes de comprometerte.
-- `/sdd-propose` → `/sdd-spec` + `/sdd-design` → `/sdd-tasks` → `/sdd-apply` → `/sdd-verify` → `/sdd-archive`.
+**Qué idea aplica, según el modo del proyecto**
+<% if (it.project.mode === "new") { %>- **Es un proyecto nuevo** (`mode: new`): escribe la **constitución** una sola vez (idea de Spec-Kit) y
+  luego evoluciona mediante cambios delta (idea de OpenSpec).
+<% } else { %>- **Es un proyecto existente** (`mode: existing`): **sin arranque de constitución** — cada feature nueva
+  es un **cambio delta** (idea de OpenSpec) sobre las specs actuales. Este es el caso normal del día a día.
+<% } %>- El *modo* del proyecto gobierna la rampa inicial (una vez); por feature, el tamaño/riesgo del cambio
+  decide si merece el flujo completo.
 
-**Artefactos**: <% if (it.sdd.backend === "none") { %>viven en la conversación (no se persisten — activa un backend para conservarlos).<% } else { %>en `openspec/changes/<nombre-cambio>/` y **versionados en git** (revisables en PRs, legibles por cualquier IA).<% } %>
+**Comandos** (Claude: `/sdd-*`; Copilot: prompts en `.github/prompts/`)
+<% if (constitution) { %>- `/sdd-constitution` — define los principios del proyecto (una vez).
+<% } %>- `/sdd-explore <tema>` — investiga antes de comprometerte.
+- `/sdd-propose` → `/sdd-clarify` → `/sdd-spec` + `/sdd-design` → `/sdd-tasks` → `/sdd-apply` → `/sdd-verify` → `/sdd-archive`.
+
+**Artefactos**: <% if (it.sdd.backend === "none") { %>viven en la conversación (no se persisten — activa un backend para conservarlos).<% } else { %>en `openspec/changes/<nombre-cambio>/` y **versionados en git** (revisables en PRs, legibles por cualquier IA). El nombre de carpeta `openspec/` sigue la *disposición* de OpenSpec como convención — **no** es el CLI de OpenSpec.<% } %>
 
 **Reglas**
 - Para funcionalidades no triviales, crea una propuesta/spec antes de implementar.
-- Las specs son la verdad sobre el *qué*; el diseño sobre el *cómo*; las tareas marcan el progreso.
-- Tras implementar, ejecuta `/sdd-verify` contra la spec y luego `/sdd-archive`.
+- `clarify` resuelve la ambigüedad *antes* de cerrar la spec. Las specs son la verdad sobre el *qué*;
+  el diseño sobre el *cómo*; las tareas marcan el progreso.
+<% if (constitution) { %>- Las specs y diseños nuevos deben respetar `openspec/constitution.md`.
+<% } %>- Tras implementar, ejecuta `/sdd-verify` contra la spec y luego `/sdd-archive` (funde el delta en `openspec/specs/`).
 <% if (it.sdd.backend === "hybrid") { %>- Engram (si está instalado) refuerza la memoria entre sesiones; los ficheros del repo siguen siendo canónicos.
 <% } %>

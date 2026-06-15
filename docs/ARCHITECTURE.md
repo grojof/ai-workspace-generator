@@ -79,7 +79,7 @@ them across regenerations.
 |----------|----------|----------|
 | `writeManaged` | upsert managed blocks, preserve the rest | AGENTS.md, CLAUDE.md, copilot-instructions, ignore files, .gitattributes |
 | `writeFile` | full overwrite (deterministic content) | `.mcp.json`, `.vscode/mcp.json`, slash commands, skills, onboarding |
-| `writeIfMissing` | create once, never overwrite (user-owned) | `.editorconfig`, `.claude/settings.json` seed, `openspec/` scaffold, `docs/ai/*` seeds, imported copies |
+| `writeIfMissing` | create once, never overwrite (user-owned) | `.editorconfig`, `.claude/settings.json` seed, `openspec/` scaffold (incl. `constitution.md` for new projects), `docs/ai/*` seeds, imported copies |
 
 There is also a **dry-run** mode (`setDryRun` / `getPlanned` / internal `commit`) used by
 `upgrade --check` to compute changes without touching disk.

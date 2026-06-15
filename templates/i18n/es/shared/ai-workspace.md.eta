@@ -33,7 +33,7 @@ flowchart TD
   AG --> CO[.github/copilot-instructions.md<br/>espejo generado]
   GEN --> MCP[.mcp.json / .vscode/mcp.json]
   GEN --> IGN[.claudeignore / .copilotignore]
-<% if (it.sdd.enabled) { %>  GEN --> SDD[openspec/ + comandos /sdd-* + skills]
+<% if (it.sdd.enabled) { %>  GEN --> SDD["Metodología SDD: openspec/ + comandos /sdd-* (sin CLI externo)"]
 <% } %><% if (it.livingDocs) { %>  GEN --> DOCS[docs/ai/*  ·  /doc-sync]
 <% } %>
 ```
@@ -48,7 +48,7 @@ flowchart TD
 - **Añade un módulo de stack:** `ai-workspace add <language|framework|mcp> <id>`.
 - **Actualiza plantillas:** `ai-workspace upgrade` (muestra un diff primero).
 - **Comprueba la salud:** `ai-workspace doctor` (presupuesto de tokens, referencias rotas).
-<% if (it.sdd.enabled) { %>- **Planifica un cambio:** `/sdd-explore` → `/sdd-propose` → … → `/sdd-archive`.
+<% if (it.sdd.enabled) { %>- **Planifica un cambio:** `/sdd-explore` → `/sdd-propose` → `/sdd-clarify` → … → `/sdd-archive` (es una metodología — los artefactos son Markdown en `openspec/`, sin CLI externo).
 <% } %><% if (it.livingDocs) { %>- **Refresca el estado del proyecto para la IA:** `/doc-sync`.
 <% } %>- **¿Empiezas con IA?** Pregunta por la skill `ai-workspace-guide` o usa `/aiws-guide`.
 

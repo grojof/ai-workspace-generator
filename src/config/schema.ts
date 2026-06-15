@@ -45,7 +45,16 @@ export const BusinessSchema = z.object({
 
 export const SddSchema = z.object({
   enabled: z.boolean().default(true),
+  /**
+   * Where SDD artifacts live. `openspec` uses the OpenSpec *folder layout* (specs/ + changes/
+   * + archive/) — a convention we borrow, NOT a dependency on the OpenSpec CLI.
+   */
   backend: z.enum(["openspec", "hybrid", "none"]).default("openspec"),
+  /**
+   * Seed a project `constitution.md` (project principles) at init. A bootstrap idea borrowed from
+   * Spec-Kit; only meaningful for greenfield repos, so it is gated to `project.mode === "new"`.
+   */
+  constitution: z.boolean().default(true),
   vendorSkills: z.boolean().default(true),
 });
 
