@@ -17,8 +17,3 @@ updates:
     groups:
       dev-dependencies:
         dependency-type: development
-    ignore:
-      # TypeScript 6.0 changes NodeNext type resolution (breaks the build); adopt it as a
-      # deliberate migration, not an auto-PR. Minor/patch 5.x updates still flow.
-      - dependency-name: "typescript"
-        update-types: ["version-update:semver-major"]
