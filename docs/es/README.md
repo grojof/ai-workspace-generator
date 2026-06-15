@@ -3,8 +3,7 @@
 Guías para **usar, mantener y extender** el generador `ai-workspace`.
 
 ## Para usuarios
-- **[Guía rápida (Quickstart)](QUICKSTART.md)** — qué es, cómo empezar (proyecto nuevo o existente), qué
-  ofrece y **SDD explicado para aprender**. Empieza por aquí.
+- Empieza por el **[README en español](../../README.es.md)** — qué es, instalación, guía paso a paso y qué se genera.
 - Tras ejecutar `init`, cada repo generado incluye además un `AI-WORKSPACE.md` que explica su propia configuración.
 
 ## Para mantenedores y colaboradores
@@ -19,10 +18,10 @@ Guías para **usar, mantener y extender** el generador `ai-workspace`.
 
 ```mermaid
 flowchart LR
-  CFG[workspace.config.yaml] --> GEN[ai-workspace generate]
-  TPL[templates/*.eta] --> GEN
-  GEN --> AG[AGENTS.md fuente única de verdad]
-  AG --> ADAPT[CLAUDE.md + ficheros de Copilot]
+  CFG["workspace.config.yaml"] --> GEN[ai-workspace generate]
+  TPL["templates/*.eta"] --> GEN
+  GEN --> AG["AGENTS.md fuente única de verdad"]
+  AG --> ADAPT["CLAUDE.md + ficheros de Copilot"]
   GEN --> REST[MCP, SDD, docs vivas, ignore, onboarding]
 ```
 

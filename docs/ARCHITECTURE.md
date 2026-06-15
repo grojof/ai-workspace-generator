@@ -11,11 +11,11 @@ safe because writes are **idempotent** and user edits are preserved via **manage
 
 ```mermaid
 flowchart LR
-  CFG[workspace.config.yaml] --> LOAD[loadConfig + zod validate]
+  CFG["workspace.config.yaml"] --> LOAD["loadConfig + zod validate"]
   LOAD --> COMPOSE[composeBlocks]
-  TPL[templates/*.eta] --> COMPOSE
-  COMPOSE --> WRITE[writeManaged / writeFile / writeIfMissing]
-  WRITE --> OUT[AGENTS.md, CLAUDE.md, .github/*, .mcp.json, openspec/, docs/ai/*, ...]
+  TPL["templates/*.eta"] --> COMPOSE
+  COMPOSE --> WRITE["writeManaged / writeFile / writeIfMissing"]
+  WRITE --> OUT["AGENTS.md, CLAUDE.md, .github/*, .mcp.json, openspec/, docs/ai/*, ..."]
 ```
 
 ## The pipeline, file by file
@@ -92,10 +92,10 @@ There is also a **dry-run** mode (`setDryRun` / `getPlanned` / internal `commit`
 
 ```mermaid
 flowchart TD
-  AG[AGENTS.md managed blocks] --> CL["CLAUDE.md (imports @AGENTS.md)"]
+  AG["AGENTS.md managed blocks"] --> CL["CLAUDE.md (imports @AGENTS.md)"]
   AG --> CO[".github/copilot-instructions.md (mirror, same blocks minus header)"]
-  CFG[config.mcp] --> M1[.mcp.json]
-  CFG --> M2[.vscode/mcp.json]
+  CFG["config.mcp"] --> M1[".mcp.json"]
+  CFG --> M2[".vscode/mcp.json"]
 ```
 
 Claude imports AGENTS.md via `@AGENTS.md`, so its adapter is thin. Copilot can't import, so the CLI

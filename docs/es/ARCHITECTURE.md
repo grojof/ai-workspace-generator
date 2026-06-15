@@ -13,11 +13,11 @@ preservan mediante **regiones gestionadas**.
 
 ```mermaid
 flowchart LR
-  CFG[workspace.config.yaml] --> LOAD[loadConfig + validación zod]
+  CFG["workspace.config.yaml"] --> LOAD["loadConfig + validación zod"]
   LOAD --> COMPOSE[composeBlocks]
-  TPL[templates/*.eta] --> COMPOSE
-  COMPOSE --> WRITE[writeManaged / writeFile / writeIfMissing]
-  WRITE --> OUT[AGENTS.md, CLAUDE.md, .github/*, .mcp.json, openspec/, docs/ai/*, ...]
+  TPL["templates/*.eta"] --> COMPOSE
+  COMPOSE --> WRITE["writeManaged / writeFile / writeIfMissing"]
+  WRITE --> OUT["AGENTS.md, CLAUDE.md, .github/*, .mcp.json, openspec/, docs/ai/*, ..."]
 ```
 
 ## El pipeline, fichero a fichero
@@ -93,10 +93,10 @@ cambios sin tocar el disco.
 
 ```mermaid
 flowchart TD
-  AG[AGENTS.md bloques gestionados] --> CL["CLAUDE.md (importa @AGENTS.md)"]
+  AG["AGENTS.md bloques gestionados"] --> CL["CLAUDE.md (importa @AGENTS.md)"]
   AG --> CO[".github/copilot-instructions.md (espejo, mismos bloques sin header)"]
-  CFG[config.mcp] --> M1[.mcp.json]
-  CFG --> M2[.vscode/mcp.json]
+  CFG["config.mcp"] --> M1[".mcp.json"]
+  CFG --> M2[".vscode/mcp.json"]
 ```
 
 Claude importa AGENTS.md con `@AGENTS.md`, así que su adaptador es fino. Copilot no puede importar, así

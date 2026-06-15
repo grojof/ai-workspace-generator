@@ -23,10 +23,10 @@ Suggested semver discipline for templates:
 
 ```mermaid
 flowchart LR
-  PUB[publish new templates + bump TEMPLATES_VERSION] --> USER[user runs `ai-workspace upgrade --check`]
+  PUB["publish new templates + bump TEMPLATES_VERSION"] --> USER["user runs ai-workspace upgrade --check"]
   USER --> DIFF[line diff shown]
-  DIFF --> APPLY[user runs `ai-workspace upgrade`]
-  APPLY --> BUMP[config.templatesVersion updated]
+  DIFF --> APPLY["user runs ai-workspace upgrade"]
+  APPLY --> BUMP["config.templatesVersion updated"]
 ```
 
 `upgrade` ([`src/commands/upgrade.ts`](../src/commands/upgrade.ts)) renders in **dry-run** mode

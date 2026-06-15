@@ -3,7 +3,7 @@
 Guides for **using, maintaining and extending** the `ai-workspace` generator.
 
 > 🇪🇸 **¿Prefieres español?** La documentación está también en castellano: **[docs/es/](es/)**
-> (empieza por la [Guía rápida](es/QUICKSTART.md)).
+> (empieza por el [README en español](../README.es.md)).
 
 ## For users (consuming the generator in a project)
 - Start with the root [README](../README.md) — install, quick start, what gets generated.
@@ -22,10 +22,10 @@ Guides for **using, maintaining and extending** the `ai-workspace` generator.
 
 ```mermaid
 flowchart LR
-  CFG[workspace.config.yaml] --> GEN[ai-workspace generate]
-  TPL[templates/*.eta] --> GEN
-  GEN --> AG[AGENTS.md single source of truth]
-  AG --> ADAPT[CLAUDE.md + Copilot files]
+  CFG["workspace.config.yaml"] --> GEN[ai-workspace generate]
+  TPL["templates/*.eta"] --> GEN
+  GEN --> AG["AGENTS.md single source of truth"]
+  AG --> ADAPT["CLAUDE.md + Copilot files"]
   GEN --> REST[MCP, SDD, living docs, ignore, onboarding]
 ```
 

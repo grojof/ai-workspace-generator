@@ -21,6 +21,8 @@ correcto automáticamente.
 
 ## Instalación
 
+**Requisitos:** Node.js ≥ 20, y VS Code con Copilot y/o Claude Code.
+
 > ⚠️ **Aún no está publicado en npm.** De momento instálalo desde el código (esto te da el comando `ai-workspace`):
 
 ```bash
@@ -52,7 +54,7 @@ Y ya está. Si más tarde editas las reglas (en `AGENTS.md`) o cambias la config
 
 ```mermaid
 flowchart LR
-  A[npx ai-workspace init] --> B[responder asistente]
+  A[ai-workspace init] --> B[responder asistente]
   B --> C["workspace.config.yaml + ficheros creados"]
   C --> D[hablar a la IA en lenguaje natural]
   D --> E["aplica el flujo correcto: construir / commitear / actualizar / docs"]
@@ -162,6 +164,36 @@ Re-ejecutar cualquier comando es **idempotente** — tus ediciones manuales fuer
 
 ---
 
+## Guía paso a paso (para empezar)
+
+¿Empiezas de cero? Este es el recorrido completo, con los detalles que el inicio rápido omite.
+
+**El asistente `init` te pregunta:**
+1. **Idioma** de la documentación generada (español o inglés).
+2. Nombre y descripción del proyecto.
+3. Herramientas objetivo (Claude, Copilot o ambas).
+4. Lenguajes y frameworks — se **autodetectan** desde `package.json`, `tsconfig`, etc.
+5. Si incluir **SDD** y con qué backend (recomendado: `openspec`).
+6. Si incluir **docs vivas** y **context7**.
+
+Al terminar, abre **`AI-WORKSPACE.md`**: el índice de todo lo que se ha creado y cómo usarlo.
+
+**Activa el hook de commit seguro (una vez).** Los commits usan tu identidad de git, **sin
+`Co-Authored-By`**, en formato Conventional, y solo tras tu aprobación. Un hook `commit-msg` generado lo
+refuerza:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+A partir de ahí, git rechaza commits con co-author o sin formato convencional, aunque algo intente colarlo.
+
+**Configura VS Code.** Acepta las extensiones recomendadas (`.vscode/extensions.json`). Para no mezclar
+entornos, crea un **perfil** de VS Code para este proyecto (Settings → Profiles) — la skill `vscode-setup`
+te guía paso a paso.
+
+---
+
 ## Referencia de comandos (opcional — rara vez los necesitas)
 
 | Comando | Qué hace |
@@ -179,7 +211,8 @@ En Claude Code también puedes instalar este repo como **plugin** (`.claude-plug
 
 ## Más ayuda para usar la herramienta
 
-- 🇪🇸 **[Guía rápida (Quickstart)](docs/es/QUICKSTART.md)** — el mejor punto de partida si empiezas.
+- 🇬🇧 **[English version](README.md)** — the same guide in English.
+- 🛠️ **[Documentación técnica](docs/es/)** — Arquitectura, Extender, Mantener.
 - En cada proyecto generado tienes además `AI-WORKSPACE.md` (índice) y la skill `/aiws-guide`.
 
 <br>

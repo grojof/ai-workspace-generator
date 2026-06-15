@@ -19,6 +19,8 @@ feature", "update this library", "save my changes") and it applies the right flo
 
 ## Install
 
+**Requirements:** Node.js ≥ 20, plus VS Code with Copilot and/or Claude Code.
+
 > ⚠️ **Not published to npm yet.** Install from source for now (this gives you the `ai-workspace` command):
 
 ```bash
@@ -50,7 +52,7 @@ to regenerate.
 
 ```mermaid
 flowchart LR
-  A[npx ai-workspace init] --> B[answer the wizard]
+  A[ai-workspace init] --> B[answer the wizard]
   B --> C["workspace.config.yaml + files created"]
   C --> D[talk to the AI in plain language]
   D --> E["it applies the right flow: build / commit / upgrade / docs"]
@@ -158,6 +160,35 @@ always survive.
 
 ---
 
+## Step-by-step (newcomer walkthrough)
+
+New to this? Here's the full path, with the details the quick start skips.
+
+**The `init` wizard asks for:**
+1. **Language** of the generated docs (English or Spanish).
+2. Project name and description.
+3. Target tools (Claude, Copilot, or both).
+4. Languages and frameworks — **auto-detected** from `package.json`, `tsconfig`, etc.
+5. Whether to include **SDD** and its backend (recommended: `openspec`).
+6. Whether to include **living docs** and **context7**.
+
+When it finishes, open **`AI-WORKSPACE.md`** — the index of everything that was created and how to use it.
+
+**Turn on the commit safety hook (once).** Commits use your git identity, **no `Co-Authored-By`**,
+Conventional format, and only after you approve. A generated `commit-msg` hook enforces it:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+From then on, git rejects co-authored or non-conventional commits — even if a tool tries to sneak one in.
+
+**Set up VS Code.** Accept the recommended extensions (`.vscode/extensions.json`). To avoid mixing
+environments, create a VS Code **profile** for this project (Settings → Profiles) — the `vscode-setup`
+skill walks you through it.
+
+---
+
 ## Command reference (optional — you rarely need these)
 
 | Command | What it does |
@@ -176,7 +207,7 @@ Inside Claude Code you can also install this repo as a **plugin** (`.claude-plug
 ## More help using the tool
 
 - 🇬🇧 **[Documentation](docs/)** — Architecture, Extending, Maintaining.
-- 🇪🇸 **[Guía rápida (español)](docs/es/QUICKSTART.md)** — the best starting point for beginners.
+- 🇪🇸 **[Versión en español](README.es.md)** — the same guide in Spanish.
 - Every generated project also ships `AI-WORKSPACE.md` (an index) and the `/aiws-guide` skill.
 
 <br>

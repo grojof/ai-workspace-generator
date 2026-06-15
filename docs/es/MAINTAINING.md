@@ -24,10 +24,10 @@ Disciplina semver sugerida para plantillas:
 
 ```mermaid
 flowchart LR
-  PUB[publicar plantillas + subir TEMPLATES_VERSION] --> USER[el usuario ejecuta `ai-workspace upgrade --check`]
+  PUB["publicar plantillas + subir TEMPLATES_VERSION"] --> USER["el usuario ejecuta ai-workspace upgrade --check"]
   USER --> DIFF[se muestra el diff por líneas]
-  DIFF --> APPLY[el usuario ejecuta `ai-workspace upgrade`]
-  APPLY --> BUMP[se actualiza config.templatesVersion]
+  DIFF --> APPLY["el usuario ejecuta ai-workspace upgrade"]
+  APPLY --> BUMP["se actualiza config.templatesVersion"]
 ```
 
 `upgrade` ([`src/commands/upgrade.ts`](../../src/commands/upgrade.ts)) renderiza en **dry-run**
