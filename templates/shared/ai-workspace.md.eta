@@ -27,14 +27,14 @@ index: what exists, why, and how to use it. Re-run `ai-workspace sync` to refres
 
 ```mermaid
 flowchart TD
-  CFG[workspace.config.yaml] --> GEN[ai-workspace]
-  GEN --> AG[AGENTS.md<br/>single source of truth]
-  AG --> CL[CLAUDE.md<br/>imports @AGENTS.md]
-  AG --> CO[.github/copilot-instructions.md<br/>generated mirror]
-  GEN --> MCP[.mcp.json / .vscode/mcp.json]
-  GEN --> IGN[.claudeignore / .copilotignore]
+  CFG["workspace.config.yaml"] --> GEN[ai-workspace]
+  GEN --> AG["AGENTS.md<br/>single source of truth"]
+  AG --> CL["CLAUDE.md<br/>imports @AGENTS.md"]
+  AG --> CO[".github/copilot-instructions.md<br/>generated mirror"]
+  GEN --> MCP[".mcp.json / .vscode/mcp.json"]
+  GEN --> IGN[".claudeignore / .copilotignore"]
 <% if (it.sdd.enabled) { %>  GEN --> SDD["SDD methodology: openspec/ + /sdd-* commands (no external CLI)"]
-<% } %><% if (it.livingDocs) { %>  GEN --> DOCS[docs/ai/*  ·  /doc-sync]
+<% } %><% if (it.livingDocs) { %>  GEN --> DOCS["docs/ai/*  ·  /doc-sync"]
 <% } %>
 ```
 

@@ -109,7 +109,7 @@ function architectureSeed(config: Config): string {
 \`\`\`mermaid
 flowchart TD
   A[${es ? "Punto de entrada" : "Entry point"}] --> B[${es ? "Módulos" : "Modules"}]
-  B --> C[(${es ? "Datos / servicios externos" : "Data / external services"})]
+  B --> C[("${es ? "Datos / servicios externos" : "Data / external services"}")]
 \`\`\`
 
 ${placeholder}

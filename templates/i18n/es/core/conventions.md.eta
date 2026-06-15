@@ -31,3 +31,4 @@ Aplican a todas las personas y a todos los ficheros, sea cual sea el lenguaje.
 ### Diagramas
 - Usa **Mermaid** para arquitectura, flujo de datos, dependencias de módulos y el ciclo SDD.
 - Mantén los diagramas en `docs/ai/ARCHITECTURE.md`; regenéralos con `/doc-sync`.
+- **Entrecomilla siempre las etiquetas de nodo** que contengan caracteres especiales (`/`, `.`, `:`, `+`, `@`, `·`, `*`, `()`, `&`, `<br/>`): escribe `A["src/index.ts<br/>entrada"]`, nunca `A[src/index.ts<br/>entrada]`. Los caracteres especiales sin comillas provocan renderizados intermitentes entre versiones de Mermaid (p. ej. el error esporádico `translate(undefined, NaN)` de GitHub).

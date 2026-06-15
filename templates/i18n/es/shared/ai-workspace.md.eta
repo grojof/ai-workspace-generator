@@ -27,14 +27,14 @@ El workspace de IA de este proyecto fue creado y adaptado por **ai-workspace**. 
 
 ```mermaid
 flowchart TD
-  CFG[workspace.config.yaml] --> GEN[ai-workspace]
-  GEN --> AG[AGENTS.md<br/>fuente única de verdad]
-  AG --> CL[CLAUDE.md<br/>importa @AGENTS.md]
-  AG --> CO[.github/copilot-instructions.md<br/>espejo generado]
-  GEN --> MCP[.mcp.json / .vscode/mcp.json]
-  GEN --> IGN[.claudeignore / .copilotignore]
+  CFG["workspace.config.yaml"] --> GEN[ai-workspace]
+  GEN --> AG["AGENTS.md<br/>fuente única de verdad"]
+  AG --> CL["CLAUDE.md<br/>importa @AGENTS.md"]
+  AG --> CO[".github/copilot-instructions.md<br/>espejo generado"]
+  GEN --> MCP[".mcp.json / .vscode/mcp.json"]
+  GEN --> IGN[".claudeignore / .copilotignore"]
 <% if (it.sdd.enabled) { %>  GEN --> SDD["Metodología SDD: openspec/ + comandos /sdd-* (sin CLI externo)"]
-<% } %><% if (it.livingDocs) { %>  GEN --> DOCS[docs/ai/*  ·  /doc-sync]
+<% } %><% if (it.livingDocs) { %>  GEN --> DOCS["docs/ai/*  ·  /doc-sync"]
 <% } %>
 ```
 

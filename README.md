@@ -51,9 +51,9 @@ to regenerate.
 ```mermaid
 flowchart LR
   A[npx ai-workspace init] --> B[answer the wizard]
-  B --> C[workspace.config.yaml + files created]
+  B --> C["workspace.config.yaml + files created"]
   C --> D[talk to the AI in plain language]
-  D --> E[it applies the right flow: build / commit / upgrade / docs]
+  D --> E["it applies the right flow: build / commit / upgrade / docs"]
 ```
 
 ---
@@ -86,11 +86,11 @@ written into `AGENTS.md` — the single source of truth that both Claude and Cop
 
 ```mermaid
 flowchart TD
-  CFG[workspace.config.yaml] --> GEN[ai-workspace]
-  GEN --> AG[AGENTS.md  ·  single source of truth]
-  AG --> CL[CLAUDE.md  ·  imports @AGENTS.md]
-  AG --> CO[.github/copilot-instructions.md  ·  mirror]
-  GEN --> REST[MCP · SDD · living docs · ignore · onboarding]
+  CFG["workspace.config.yaml"] --> GEN[ai-workspace]
+  GEN --> AG["AGENTS.md  ·  single source of truth"]
+  AG --> CL["CLAUDE.md  ·  imports @AGENTS.md"]
+  AG --> CO[".github/copilot-instructions.md  ·  mirror"]
+  GEN --> REST["MCP · SDD · living docs · ignore · onboarding"]
 ```
 
 ### The layers
@@ -118,9 +118,9 @@ The built-in rules for React, Go, Python… are a **stable, common baseline** �
 
 ```mermaid
 flowchart LR
-  BASE[Bundled baseline<br/>stable, lean] --> AG[AGENTS.md]
-  C7[context7 MCP<br/>up-to-date per version] -. at runtime .-> AI[the AI]
-  COMP[Your company rules<br/>Layers 3 & 4] --> AG
+  BASE["Bundled baseline<br/>stable, lean"] --> AG["AGENTS.md"]
+  C7["context7 MCP<br/>up-to-date per version"] -. at runtime .-> AI[the AI]
+  COMP["Your company rules<br/>Layers 3 & 4"] --> AG
   AG --> AI
 ```
 
@@ -199,9 +199,9 @@ into `AGENTS.md` and its adapters, written idempotently via managed regions.
 
 ```mermaid
 flowchart LR
-  CFG[workspace.config.yaml] --> LOAD[loadConfig + zod]
+  CFG["workspace.config.yaml"] --> LOAD["loadConfig + zod"]
   TPL["templates/*.eta<br/>(+ i18n/es)"] --> COMP[composeBlocks]
-  REG[registry.ts] --> COMP
+  REG["registry.ts"] --> COMP
   LOAD --> COMP
   COMP --> WR["writer<br/>(managed regions)"]
   WR --> OUT["AGENTS.md · adapters · skills · etc."]

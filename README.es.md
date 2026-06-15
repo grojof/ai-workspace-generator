@@ -53,9 +53,9 @@ Y ya está. Si más tarde editas las reglas (en `AGENTS.md`) o cambias la config
 ```mermaid
 flowchart LR
   A[npx ai-workspace init] --> B[responder asistente]
-  B --> C[workspace.config.yaml + ficheros creados]
+  B --> C["workspace.config.yaml + ficheros creados"]
   C --> D[hablar a la IA en lenguaje natural]
-  D --> E[aplica el flujo correcto: construir / commitear / actualizar / docs]
+  D --> E["aplica el flujo correcto: construir / commitear / actualizar / docs"]
 ```
 
 ---
@@ -89,11 +89,11 @@ plantillas por capas**, que se vuelca en `AGENTS.md` — la fuente única de ver
 
 ```mermaid
 flowchart TD
-  CFG[workspace.config.yaml] --> GEN[ai-workspace]
-  GEN --> AG[AGENTS.md  ·  fuente única de verdad]
-  AG --> CL[CLAUDE.md  ·  importa @AGENTS.md]
-  AG --> CO[.github/copilot-instructions.md  ·  espejo]
-  GEN --> REST[MCP · SDD · docs vivas · ignore · onboarding]
+  CFG["workspace.config.yaml"] --> GEN[ai-workspace]
+  GEN --> AG["AGENTS.md  ·  fuente única de verdad"]
+  AG --> CL["CLAUDE.md  ·  importa @AGENTS.md"]
+  AG --> CO[".github/copilot-instructions.md  ·  espejo"]
+  GEN --> REST["MCP · SDD · docs vivas · ignore · onboarding"]
 ```
 
 ### Las capas
@@ -121,9 +121,9 @@ Las reglas integradas de React, Go, Python… son una **base común y estable**,
 
 ```mermaid
 flowchart LR
-  BASE[Base integrada<br/>estable y ligera] --> AG[AGENTS.md]
-  C7[context7 MCP<br/>al día por versión] -. en tiempo de ejecución .-> AI[la IA]
-  COMP[Reglas de tu empresa<br/>Capas 3 y 4] --> AG
+  BASE["Base integrada<br/>estable y ligera"] --> AG["AGENTS.md"]
+  C7["context7 MCP<br/>al día por versión"] -. en tiempo de ejecución .-> AI[la IA]
+  COMP["Reglas de tu empresa<br/>Capas 3 y 4"] --> AG
   AG --> AI
 ```
 
@@ -202,9 +202,9 @@ se componen en `AGENTS.md` y sus adaptadores, escritos de forma idempotente medi
 
 ```mermaid
 flowchart LR
-  CFG[workspace.config.yaml] --> LOAD[loadConfig + zod]
+  CFG["workspace.config.yaml"] --> LOAD["loadConfig + zod"]
   TPL["templates/*.eta<br/>(+ i18n/es)"] --> COMP[composeBlocks]
-  REG[registry.ts] --> COMP
+  REG["registry.ts"] --> COMP
   LOAD --> COMP
   COMP --> WR["writer<br/>(regiones gestionadas)"]
   WR --> OUT["AGENTS.md · adaptadores · skills · etc."]
