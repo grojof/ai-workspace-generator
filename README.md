@@ -100,9 +100,9 @@ flowchart TD
 | 0 · Core | encoding, commits, security, the safe workflow, intent routing | the tool |
 | 1 · Language | formatters, idioms, testing (version-aware) | the tool |
 | 2 · Framework | structure & patterns (version-pinned) | the tool |
-| · Environments | WSL, Docker, Node (nvm), Python (venv), databases… | the tool |
-| 3 · Company | your prefixes, naming, internal libraries, banned patterns | **you** |
-| 4 · Business | your domain glossary, rules and invariants | **you** |
+| 3 · Environments | WSL, Docker, Node (nvm), Python (venv), databases… | the tool |
+| 4 · Company | your prefixes, naming, internal libraries, banned patterns | **you** |
+| 5 · Business | your domain glossary, rules and invariants | **you** |
 
 ### Why the bundled language/framework rules are short (this is intentional)
 
@@ -114,13 +114,13 @@ The built-in rules for React, Go, Python… are a **stable, common baseline** �
   in a file. The rules point the AI to the **context7 MCP** to fetch up-to-date, version-pinned docs *at
   your runtime* — so guidance never goes stale.
 - **Your standards are the real value:** the generic baseline is just the floor. Your team's actual norms
-  and patterns live in **Layers 3/4**, and you can bring your existing rule files in (next section).
+  and patterns live in **Layers 4/5**, and you can bring your existing rule files in (next section).
 
 ```mermaid
 flowchart LR
   BASE["Bundled baseline<br/>stable, lean"] --> AG["AGENTS.md"]
   C7["context7 MCP<br/>up-to-date per version"] -. at runtime .-> AI[the AI]
-  COMP["Your company rules<br/>Layers 3 & 4"] --> AG
+  COMP["Your company rules<br/>Layers 4 & 5"] --> AG
   AG --> AI
 ```
 

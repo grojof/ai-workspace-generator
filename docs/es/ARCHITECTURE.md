@@ -39,7 +39,7 @@ flowchart LR
 
 ## El modelo de capas
 
-Las instrucciones se componen en cinco capas, para que la base común no choque con las reglas de
+Las instrucciones se componen en seis capas, para que la base común no choque con las reglas de
 empresa/negocio. Las capas mapean a carpetas de plantillas y a secciones de config:
 
 | Capa | Carpeta de plantillas | Origen en config | Id de bloque en AGENTS.md |
@@ -47,14 +47,15 @@ empresa/negocio. Las capas mapean a carpetas de plantillas y a secciones de conf
 | 0 · Núcleo | [`templates/core/`](../../templates/core/) | siempre activo | `header`, `core` |
 | 1 · Lenguaje | [`templates/languages/<id>/`](../../templates/languages/) | `stack.languages` | `lang-<id>` |
 | 2 · Framework | [`templates/frameworks/<id>/`](../../templates/frameworks/) | `stack.frameworks` | `fw-<id>` |
-| 3 · Empresa | [`templates/company/`](../../templates/company/) | `conventions` | `company` |
-| 4 · Negocio | [`templates/business/`](../../templates/business/) | `business` | `business` |
+| 3 · Entornos | [`templates/environments/<id>/`](../../templates/environments/) | `stack.environments` | `env-<id>` |
+| 4 · Empresa | [`templates/company/`](../../templates/company/) | `conventions` | `company` |
+| 5 · Negocio | [`templates/business/`](../../templates/business/) | `business` | `business` |
 
 Más bloques de funcionalidad: `sdd` (si `sdd.enabled`), `living-docs` (si `livingDocs`), e `imported`
 (añadido por `ai-workspace import`).
 
 El **orden** de bloques está fijado en `composeBlocks`: `header → core → lenguajes → frameworks →
-company → business → sdd → living-docs`.
+entornos → company → business → sdd → living-docs`.
 
 ## Regiones gestionadas — el contrato de idempotencia
 

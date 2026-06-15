@@ -62,7 +62,7 @@ in [`agents.ts`](../src/generate/agents.ts).
 
 ## Add an environment module (e.g. WSL, Docker, a database)
 
-Environments are a parallel dimension to languages/frameworks (block id `env-<id>`), for tooling/runtime
+Environments are Layer 3 — a parallel dimension to languages/frameworks (block id `env-<id>`), for tooling/runtime
 conventions (OS, version managers, containers, databases). Same mechanism:
 
 1. Register it in `ENVIRONMENTS` in [`src/modules/registry.ts`](../src/modules/registry.ts).

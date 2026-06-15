@@ -1,4 +1,4 @@
-## WSL (Windows + Linux)
+## WSL (Layer 3 — environment) · Windows + Linux
 
 - Keep the project **inside the Linux filesystem** (`~/...`), not under `/mnt/c` — it's far faster and
   avoids permission/line-ending issues.

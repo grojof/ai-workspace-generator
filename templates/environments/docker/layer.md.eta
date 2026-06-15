@@ -1,4 +1,4 @@
-## Docker / containers
+## Docker (Layer 3 — environment) · containers
 
 - Reproducible envs via `Dockerfile` + `docker-compose.yml`. Pin base image tags (no bare `latest`).
 - Multi-stage builds; small final images. Use `.dockerignore` (node_modules, .git, build output).

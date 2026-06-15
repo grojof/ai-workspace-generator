@@ -1,4 +1,4 @@
-## Docker / contenedores
+## Docker (Capa 3 — entorno) · contenedores
 
 - Entornos reproducibles con `Dockerfile` + `docker-compose.yml`. Fija los tags de imagen base (sin `latest` pelado).
 - Builds multi-stage; imágenes finales pequeñas. Usa `.dockerignore` (node_modules, .git, build).

@@ -36,9 +36,9 @@ y 4**. Así nada se queda obsoleto y el contexto no se infla.
 
 ```mermaid
 flowchart LR
-  BASE[Base integrada<br/>estable y ligera] --> AG[AGENTS.md]
-  C7[context7 MCP<br/>al día por versión] -. en tiempo de ejecución .-> AI[la IA]
-  COMP[Reglas de tu empresa<br/>Capas 3 y 4] --> AG
+  BASE["Base integrada<br/>estable y ligera"] --> AG["AGENTS.md"]
+  C7["context7 MCP<br/>al día por versión"] -. en tiempo de ejecución .-> AI[la IA]
+  COMP["Reglas de tu empresa<br/>Capas 4 y 5"] --> AG
   AG --> AI
 ```
 

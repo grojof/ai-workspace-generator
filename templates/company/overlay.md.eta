@@ -1,4 +1,4 @@
-## Company conventions (Layer 3 — organization overlay)
+## Company conventions (Layer 4 — organization overlay)
 
 Reusable across projects of this organization. Fill in via `workspace.config.yaml` (`conventions:`).
 

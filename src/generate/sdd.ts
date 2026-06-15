@@ -8,7 +8,7 @@ export type { Phase } from "../i18n/strings.js";
 /**
  * Whether this workspace seeds a project `constitution.md`. The constitution is a *greenfield
  * bootstrap* idea borrowed from Spec-Kit, so it only applies to brand-new repos; existing projects
- * derive their principles from the code and from Layers 3/4 instead.
+ * derive their principles from the code and from Layers 4/5 instead.
  */
 export function usesConstitution(config: Config): boolean {
   return config.sdd.enabled && config.sdd.constitution && config.project.mode === "new";

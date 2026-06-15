@@ -52,7 +52,7 @@ de bloque es `fw-<id>` y el fallback (sin plantilla) lo maneja `renderFramework`
 
 ## Añadir un módulo de entorno (p. ej. WSL, Docker, una base de datos)
 
-Los entornos son una dimensión paralela a lenguajes/frameworks (id de bloque `env-<id>`), para
+Los entornos son la Capa 3 — una dimensión paralela a lenguajes/frameworks (id de bloque `env-<id>`), para
 convenciones de herramientas/runtime (SO, gestores de versiones, contenedores, bases de datos). Mismo mecanismo:
 
 1. Regístralo en `ENVIRONMENTS` en [`src/modules/registry.ts`](../../src/modules/registry.ts).

@@ -1,4 +1,4 @@
-## PostgreSQL (entorno)
+## PostgreSQL (Capa 3 — entorno)
 
 - Ejecútalo en local con Docker/compose para tener paridad con producción. Fija la versión major.
 - Todo cambio de esquema va por **migraciones** (nunca edites prod a mano). Migraciones revisadas y reversibles.

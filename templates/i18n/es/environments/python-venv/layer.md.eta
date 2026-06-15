@@ -1,4 +1,4 @@
-## Entorno de Python
+## Python (Capa 3 — entorno)
 
 - **Usa siempre un entorno virtual** (`python -m venv .venv`, o uv/poetry). Nunca instales en el Python del sistema.
 - Actívalo antes de trabajar; mantén `.venv/` ignorado por git. Fija dependencias en un lockfile.
