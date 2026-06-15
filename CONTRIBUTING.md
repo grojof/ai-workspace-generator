@@ -10,9 +10,14 @@ Thanks for improving `ai-workspace`. Start here, then dive into the docs.
 ## Setup
 ```bash
 npm install
-npm run build      # tsc → dist/
-npm run dev -- sync
+npm run build                          # tsc → dist/
+git config core.hooksPath .githooks    # enforce the commit policy (no Co-Authored-By, Conventional)
 ```
+
+> The `commit-msg` hook in `.githooks/` is the same one the generator emits — we dogfood it so this
+> repo's own commits follow the policy in [AGENTS.md](AGENTS.md). To exercise generation, run
+> `npm run dev -- init` / `sync` against a **scratch repo** (this repo intentionally keeps a hand-written
+> `AGENTS.md`; it is a CLI, not a generated workspace).
 
 ## Before opening a PR
 - `npm run build` is clean.
