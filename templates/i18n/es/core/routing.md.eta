@@ -6,7 +6,8 @@ prefiere hacer el trabajo a pedirle al usuario que ejecute un comando (mencióna
 
 | El usuario dice (con cualquier redacción)… | Tú haces… |
 |--------------------------------------------|-----------|
-<% if (it.sdd.enabled) { %>| "vamos a construir / añadir / implementar <feature>", algo no trivial | Aplica el **flujo SDD** (explore → propose → spec → design → tasks → apply → verify → archive). |
+<% if (it.sdd.enabled && it.sdd.constitution && it.project.mode === "new") { %>| "arranquemos este proyecto / fijemos las reglas base", y `openspec/constitution.md` sigue siendo la plantilla inicial | Primero establece la **constitución** (principios del proyecto) — arranque estilo Spec-Kit, una vez — y luego continúa. |
+<% } %><% if (it.sdd.enabled) { %>| "vamos a construir / añadir / implementar <feature>", algo no trivial | Aplica el **flujo SDD** (explore → propose → **clarify** → spec → design → tasks → apply → verify → archive). Es una metodología, no una herramienta — los artefactos son Markdown en `openspec/`. |
 <% } %>| Un cambio pequeño y bien entendido | Impleméntalo directo y luego refresca las docs vivas. |
 | "actualiza / sube / migra / instala una versión más nueva" | **NO lo hagas sin más.** Aplica primero la evaluación `dependency-upgrade` (viabilidad + seguridad) y espera la decisión. |
 | "commitea / guarda los cambios", o acabas de terminar un cambio | Usa el flujo **secure-commit**: prepara un commit convencional, sin co-author, y <%= it.workflow.commits.automate === "with-approval" ? "pide aprobación antes de commitear" : "deja que el usuario commitee" %>. |

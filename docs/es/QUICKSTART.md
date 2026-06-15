@@ -111,12 +111,22 @@ flowchart TD
 **SDD (Spec-Driven Development)** = planificar un cambio con documentos cortos *antes* de programar.
 Sirve para cambios no triviales y para que tanto tú como la IA tengáis claro el objetivo.
 
+> 💡 **Es una metodología, no una herramienta.** Combinamos las mejores ideas de dos proyectos pero **no
+> dependemos de sus CLIs**: todo son ficheros Markdown en `openspec/`.
+> - De **Spec-Kit** tomamos el *arranque* de un proyecto nuevo: una **constitución** (principios) y un
+>   paso de **clarify** para resolver dudas antes de la spec.
+> - De **OpenSpec** tomamos el día a día: cada feature es un **cambio delta** sobre una baseline viva de
+>   specs, que al terminar se **archiva** e integra. Esto vale igual para features nuevas dentro de un
+>   proyecto **ya existente** (su caso fuerte).
+
 Cada paso genera un fichero en `openspec/changes/<tu-cambio>/`:
 
 ```mermaid
 flowchart LR
+  C[/sdd-constitution/ una vez, proyecto nuevo] -.-> E
   E[/sdd-explore/] --> P[/sdd-propose/]
-  P --> S[/sdd-spec/]
+  P --> CL[/sdd-clarify/]
+  CL --> S[/sdd-spec/]
   P --> D[/sdd-design/]
   S --> T[/sdd-tasks/]
   D --> T
@@ -125,14 +135,16 @@ flowchart LR
   V --> R[/sdd-archive/]
 ```
 
+0. **constitution** — _(solo proyectos nuevos, una vez)_ los principios no-negociables del proyecto.
 1. **explore** — entiende el problema y las opciones.
 2. **propose** — qué vas a hacer y por qué.
-3. **spec** — QUÉ debe cumplirse (requisitos + escenarios de aceptación).
-4. **design** — CÓMO lo harás (diseño técnico, diagramas).
-5. **tasks** — la checklist de implementación.
-6. **apply** — programas marcando tareas.
-7. **verify** — compruebas contra la spec.
-8. **archive** — integras y cierras el cambio.
+3. **clarify** — resuelve ambigüedades antes de cerrar la spec.
+4. **spec** — QUÉ debe cumplirse (requisitos + escenarios de aceptación).
+5. **design** — CÓMO lo harás (diseño técnico, diagramas).
+6. **tasks** — la checklist de implementación.
+7. **apply** — programas marcando tareas.
+8. **verify** — compruebas contra la spec.
+9. **archive** — integras el delta en `openspec/specs/` y cierras el cambio.
 
 > Para cambios pequeños puedes saltarte SDD, pero ejecuta `/doc-sync` al terminar para que la IA
 > mantenga el contexto del proyecto al día.

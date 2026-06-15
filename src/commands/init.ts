@@ -182,19 +182,27 @@ export async function runInit(cwd: string, options: InitOptions = {}): Promise<v
   bail(purpose);
 
   const sddEnabled = await confirm({
-    message: "Include Spec-Driven Development (SDD)?",
+    message: "Include Spec-Driven Development (SDD)? / ¿Incluir desarrollo guiado por specs (SDD)?",
     initialValue: true,
   });
   bail(sddEnabled);
 
+  // The SDD flow is a *methodology* that borrows ideas from two tools — it does NOT depend on their
+  // CLIs. The "backend" only chooses where the (plain-Markdown) artifacts are stored.
   let sddBackend: "openspec" | "hybrid" | "none" = "openspec";
   if (sddEnabled) {
+    note(
+      projectMode === "new"
+        ? "SDD method: Spec-Kit-style bootstrap (constitution + clarify) for this new project, then OpenSpec-style delta changes (specs/ + changes/ + archive/) as it evolves. Concepts only — no external CLI."
+        : "SDD method: OpenSpec-style delta changes (specs/ + changes/ + archive/) for every new feature in this existing project. Concepts only — no external CLI (no constitution bootstrap for existing repos).",
+      "How SDD works here / Cómo funciona SDD aquí",
+    );
     const backend = await select({
-      message: "SDD backend",
+      message: "Where should SDD artifacts live? / ¿Dónde se guardan los artefactos SDD?",
       options: [
-        { value: "openspec", label: "openspec (files in repo)", hint: "recommended — portable, git-versioned" },
-        { value: "hybrid", label: "hybrid (openspec + engram)", hint: "adds cross-session memory if available" },
-        { value: "none", label: "none", hint: "inline only, not persisted" },
+        { value: "openspec", label: "Files in repo (OpenSpec layout)", hint: "recomendado — portable, versionado en git, sin dependencias" },
+        { value: "hybrid", label: "Files + cross-session memory (engram)", hint: "añade memoria entre sesiones si está disponible; los ficheros siguen siendo canónicos" },
+        { value: "none", label: "Inline only", hint: "en la conversación, no se persisten" },
       ],
       initialValue: "openspec",
     });
@@ -234,7 +242,13 @@ export async function runInit(cwd: string, options: InitOptions = {}): Promise<v
       environments: (envIds as string[]).map((id) => ({ id, version: versionOf(id, detected.environments) })),
       runtime: detected.runtime,
     },
-    sdd: { enabled: Boolean(sddEnabled), backend: sddBackend, vendorSkills: true },
+    sdd: {
+      enabled: Boolean(sddEnabled),
+      backend: sddBackend,
+      // Constitution is a greenfield bootstrap; only seed it for new projects.
+      constitution: projectMode === "new",
+      vendorSkills: true,
+    },
     livingDocs: Boolean(livingDocs),
     mcp: useContext7 ? ["context7"] : [],
     ingest: { sources: options.from ?? [], reconcileWithContext7: true, preferCompanyOnConflict: true },

@@ -88,8 +88,21 @@ Invariants to verify after any change:
 2. `npm run build` and smoke-test the commands above.
 3. Update the root `README.md` roadmap and any new commands; note changes in a changelog entry.
 4. If you added/renamed block ids, document the migration.
+4b. Once per release cycle, run `/sdd-upstream-check` to reconcile the SDD methodology with upstream.
 5. Publish: `npm publish --access public` (the package ships `dist/` and `templates/` per the `files`
    field in `package.json`).
+
+## Keeping the SDD methodology in sync with upstream
+
+Our SDD flow borrows *concepts* (not code) from Spec-Kit and OpenSpec — see
+[ADR 0001](decisions/0001-mixed-sdd.md). The entire maintenance surface is the provenance table in
+[SDD-UPSTREAM.md](SDD-UPSTREAM.md): three concepts, each pinned to an upstream anchor and a "last
+reviewed" date. We do **not** vendor or track their CLIs.
+
+To reconcile after either project evolves, run the **`/sdd-upstream-check`** command
+([`.claude/commands/sdd-upstream-check.md`](../.claude/commands/sdd-upstream-check.md)): the agent fetches
+each upstream's changes since the reviewed date, keeps only philosophy/workflow changes, proposes edits to
+our concept implementation, and bumps `TEMPLATES_VERSION`. Tooling-only changes are ignored by design.
 
 ## Plugin packaging
 

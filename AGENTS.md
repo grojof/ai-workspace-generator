@@ -34,6 +34,7 @@ and tool adapters, written idempotently via managed regions. See [docs/ARCHITECT
 | Which blocks exist / order | `composeBlocks` in `src/generate/agents.ts` |
 | Files written & how | `src/generate/*.ts` |
 | Config shape / defaults | `src/config/schema.ts` |
+| SDD phases / methodology | `src/i18n/strings.ts` (phases) + `src/generate/sdd.ts` (gating). Mixed-SDD design: `docs/decisions/0001-mixed-sdd.md`; upstream sync: `docs/SDD-UPSTREAM.md` + `/sdd-upstream-check` |
 
 ## Workflow
 - For non-trivial changes, read [docs/EXTENDING.md](docs/EXTENDING.md) and [docs/MAINTAINING.md](docs/MAINTAINING.md) first.

@@ -1,29 +1,45 @@
-## Spec-Driven Development (SDD)
+<% const constitution = it.sdd.enabled && it.sdd.constitution && it.project.mode === "new"; %>## Spec-Driven Development (SDD)
 
-Plan substantial changes through structured artifacts before writing code. Backend: **<%= it.sdd.backend %>**.
+A lightweight **methodology — not a tool dependency**. We adopt the best *ideas* from two SDD projects
+and keep every artifact as plain Markdown; **no external CLI is required or installed**:
+
+- **Spec-Kit** → the greenfield *bootstrap*: a project **constitution** (principles) and a **clarify** step.
+- **OpenSpec** → the steady state: changes as **deltas** against a living spec baseline, then archived.
+
+Backend: **<%= it.sdd.backend %>**.
 
 **Lifecycle**
 
 ```mermaid
 flowchart LR
-  P[proposal] --> S[specs]
+<% if (constitution) { %>  C[constitution] -.once.-> E
+<% } %>  E[explore] --> P[propose] --> CL[clarify] --> S[spec]
   P --> D[design]
   S --> T[tasks]
   D --> T
-  T --> A[apply]
-  A --> V[verify]
-  V --> R[archive]
+  T --> A[apply] --> V[verify] --> R[archive]
 ```
 
-**Commands** (Claude: `/sdd-*`; Copilot: prompt files in `.github/prompts/`)
-- `/sdd-explore <topic>` — investigate before committing.
-- `/sdd-propose` → `/sdd-spec` + `/sdd-design` → `/sdd-tasks` → `/sdd-apply` → `/sdd-verify` → `/sdd-archive`.
+**Which idea applies, by project mode**
+<% if (it.project.mode === "new") { %>- **This is a new project** (`mode: new`): write the **constitution** once (Spec-Kit idea), then evolve
+  through delta changes (OpenSpec idea).
+<% } else { %>- **This is an existing project** (`mode: existing`): **no constitution bootstrap** — every new feature
+  is a **delta change** (OpenSpec idea) against the current specs. This is the normal, everyday case.
+<% } %>- Project *mode* governs the one-time ramp; per-feature, the size/risk of the change decides whether the
+  full flow is worth it.
 
-**Artifacts** live in <% if (it.sdd.backend === "none") { %>the conversation (not persisted — enable a backend to keep them).<% } else { %>`openspec/changes/<change-name>/` and are **versioned in git** (reviewable in PRs, readable by any AI tool).<% } %>
+**Commands** (Claude: `/sdd-*`; Copilot: prompt files in `.github/prompts/`)
+<% if (constitution) { %>- `/sdd-constitution` — define the project's principles (once).
+<% } %>- `/sdd-explore <topic>` — investigate before committing.
+- `/sdd-propose` → `/sdd-clarify` → `/sdd-spec` + `/sdd-design` → `/sdd-tasks` → `/sdd-apply` → `/sdd-verify` → `/sdd-archive`.
+
+**Artifacts** live in <% if (it.sdd.backend === "none") { %>the conversation (not persisted — enable a backend to keep them).<% } else { %>`openspec/changes/<change-name>/` and are **versioned in git** (reviewable in PRs, readable by any AI tool). The `openspec/` folder name follows OpenSpec's *layout* as a convention — it is **not** the OpenSpec CLI.<% } %>
 
 **Rules**
 - For non-trivial features, create a proposal/spec before implementing.
-- Specs are the source of truth for *what*; design for *how*; tasks track progress.
-- After implementing, run `/sdd-verify` against the spec, then `/sdd-archive`.
+- `clarify` resolves ambiguity *before* the spec is finalized. Specs are the source of truth for *what*;
+  design for *how*; tasks track progress.
+<% if (constitution) { %>- New specs and designs must honor `openspec/constitution.md`.
+<% } %>- After implementing, run `/sdd-verify` against the spec, then `/sdd-archive` (folds the delta into `openspec/specs/`).
 <% if (it.sdd.backend === "hybrid") { %>- Engram (if installed) augments cross-session memory; the in-repo files remain canonical.
 <% } %>

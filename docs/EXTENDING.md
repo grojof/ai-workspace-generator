@@ -104,8 +104,9 @@ Project-local skills live under `.claude/skills/` and are produced by
 
 - For a one-off skill, append a writer call in `generateSkills` using the `frontmatter` helper (so the
   `SKILL.md` has the right `name`/`description`/`Trigger`).
-- For a family (like the SDD phases), drive it from a data list — the SDD set is generated from `PHASES`
-  in [`src/generate/sdd.ts`](../src/generate/sdd.ts).
+- For a family (like the SDD phases), drive it from a data list — the SDD set is generated from the
+  localized `phases` in [`src/i18n/strings.ts`](../src/i18n/strings.ts), filtered per config by
+  `phasesFor` / `usesConstitution` in [`src/generate/sdd.ts`](../src/generate/sdd.ts).
 
 Skills are emitted **only when `targets` includes `claude`**. Copilot equivalents are prompt files under
 `.github/prompts/` (see how SDD does both).

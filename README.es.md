@@ -143,7 +143,10 @@ y deja una checklist para que la IA los reconcilie con las buenas prácticas act
 ## Qué se genera
 
 - **`AGENTS.md`** + adaptadores (`CLAUDE.md`, `.github/copilot-instructions.md`) sincronizados.
-- **SDD (desarrollo guiado por specs):** planifica cambios grandes con specs cortos en `openspec/` (versionado en git).
+- **SDD (desarrollo guiado por specs):** una **metodología** que combina las mejores ideas de **Spec-Kit**
+  (constitución + clarify para arrancar de cero) y **OpenSpec** (cambios delta sobre una baseline viva).
+  Son *conceptos*, no dependencias: los artefactos son Markdown en `openspec/` (versionado en git), sin
+  CLI externo. Para proyectos nuevos arranca con la constitución; en existentes, cada feature es un delta.
 - **Docs vivas:** `docs/ai/*` siempre al día para que la IA tenga contexto fresco del proyecto.
 - **Gobernanza:** política de versiones (nuevo vs existente), una **barrera de seguridad** (la IA para y
   pregunta antes de cambios arriesgados) y una **política de commits** (sin co-author de IA, tú apruebas)
@@ -217,6 +220,8 @@ Puntos de entrada del código: [`src/cli.ts`](src/cli.ts) · [`src/generate/inde
   [Mantener](docs/es/MAINTAINING.md)
 - 🇬🇧 **English:** [Architecture](docs/ARCHITECTURE.md) · [Extending](docs/EXTENDING.md) ·
   [Maintaining](docs/MAINTAINING.md) · [Contributing](CONTRIBUTING.md)
+- **SDD (metodología mixta):** [ADR 0001 — SDD mixto](docs/decisions/0001-mixed-sdd.md) ·
+  [Procedencia upstream](docs/es/SDD-UPSTREAM.md)
 - Convenciones del propio repo para agentes de IA: [`AGENTS.md`](AGENTS.md) (dogfooding).
 
 ## Entorno de desarrollo
