@@ -242,10 +242,12 @@ test("reasons schema mode generates the spec-schema skill + routing; lean does n
 test("package builds a plugin + marketplace + org-skill zips; idempotent and valid zip", () => {
   const cwd = tmpRepo();
   try {
-    writeFileSync(join(cwd, "workspace.config.yaml"), "project:\n  name: Acme Portal\ncompany: example\nsdd:\n  schema: reasons\n");
+    writeFileSync(join(cwd, "workspace.config.yaml"), "project:\n  name: Acme Portal\ncompany: example\nprofile:\n  userType: technical\nsdd:\n  schema: reasons\nstack:\n  environments:\n    - id: odoo\n      version: latest\n");
     runPackage(cwd);
     // umbrella plugin + private marketplace exist with the expected identifiers.
     assert.ok(existsSync(resolve(cwd, "plugins/acme-portal/.claude-plugin/plugin.json")));
+    // companion subagents (from the odoo pack) are bundled into the plugin's agents/.
+    assert.ok(existsSync(resolve(cwd, "plugins/acme-portal/agents/odoo-code-review.md")));
     const mkt = JSON.parse(readFileSync(resolve(cwd, ".claude-plugin/marketplace.json"), "utf8"));
     assert.equal(mkt.name, "example-tools");
     assert.equal(mkt.plugins[0].name, "acme-portal");
@@ -394,6 +396,30 @@ test("stack packs: a bound pack (odoo) is copied for technical; gated by stack +
     rmSync(odoo, { recursive: true, force: true });
     rmSync(plain, { recursive: true, force: true });
     rmSync(biz, { recursive: true, force: true });
+  }
+});
+
+test("pack companion agents ship to .claude/agents; generic overlay merges into SKILL.md", () => {
+  const odoo = tmpRepo();
+  const plain = tmpRepo();
+  try {
+    const odooStack = { environments: [{ id: "odoo", version: "latest" }] };
+    generate(odoo, ConfigSchema.parse({ project: { name: "t" }, profile: { userType: "technical", experience: "standard" }, stack: odooStack }));
+    generate(plain, ConfigSchema.parse({ project: { name: "t" }, profile: { userType: "technical", experience: "standard" } }));
+    // odoo pack applies → its companion subagents land in .claude/agents/ (not under the skill dir).
+    for (const a of ["odoo-code-review", "odoo-code-tracer"]) {
+      assert.ok(readFileSync(resolve(odoo, `.claude/agents/${a}.md`), "utf8"));
+      assert.equal(existsSync(resolve(odoo, `.claude/skills/odoo-18.0/agents/${a}.md`)), false);
+    }
+    // the generic overlay.md is merged into the shipped SKILL.md as a managed block (conventions linkage).
+    const skill = readFileSync(resolve(odoo, ".claude/skills/odoo-18.0/SKILL.md"), "utf8");
+    assert.match(skill, /ai-workspace:begin:pack-overlay/);
+    assert.match(skill, /Project conventions for Odoo addons/);
+    // no odoo in the stack → no odoo agents shipped.
+    assert.equal(existsSync(resolve(plain, ".claude/agents/odoo-code-review.md")), false);
+  } finally {
+    rmSync(odoo, { recursive: true, force: true });
+    rmSync(plain, { recursive: true, force: true });
   }
 });
 

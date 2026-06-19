@@ -1,7 +1,7 @@
 import { execSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { existsSync, readFileSync, readdirSync, writeFileSync, rmSync, mkdirSync, mkdtempSync, copyFileSync } from "node:fs";
-import { resolve, join, dirname } from "node:path";
+import { resolve, join, dirname, basename } from "node:path";
 import { tmpdir } from "node:os";
 import pc from "picocolors";
 import { parse } from "yaml";
@@ -97,18 +97,29 @@ function propagateToPacks(root: string): string[] {
     if (!e.isDirectory()) continue;
     const manifestPath = join(packsRoot, e.name, "pack.yaml");
     if (!existsSync(manifestPath)) continue;
-    const manifest = parse(readFileSync(manifestPath, "utf8")) as { base?: string };
-    if (!manifest.base) continue;
-    const baseDir = join(root, manifest.base);
-    if (!existsSync(baseDir)) continue;
+    const manifest = parse(readFileSync(manifestPath, "utf8")) as { base?: string; agents?: string[] };
+    let didCopy = false;
     // Copy the WHOLE base tree (SKILL.md + references/ + scripts/ + examples/ + LICENSE.txt …): the base is
     // pure upstream content, so pack.yaml and overlay.*.md (which live only in the pack, never in the base)
     // are preserved. Binaries are never vendored, so they are skipped here too.
-    for (const rel of listRel(baseDir)) {
-      if (BINARY.test(rel)) continue;
-      copyInto(join(baseDir, rel), join(packsRoot, e.name, rel));
+    if (manifest.base) {
+      const baseDir = join(root, manifest.base);
+      if (existsSync(baseDir)) {
+        for (const rel of listRel(baseDir)) {
+          if (BINARY.test(rel)) continue;
+          copyInto(join(baseDir, rel), join(packsRoot, e.name, rel));
+        }
+        didCopy = true;
+      }
     }
-    touched.push(e.name);
+    // Companion subagents: refresh `agents/<name>.md` from each vendored `<dir>/SKILL.md`.
+    for (const agentPath of manifest.agents ?? []) {
+      const src = join(root, agentPath, "SKILL.md");
+      if (!existsSync(src)) continue;
+      copyInto(src, join(packsRoot, e.name, "agents", `${basename(agentPath)}.md`));
+      didCopy = true;
+    }
+    if (didCopy) touched.push(e.name);
   }
   return touched;
 }

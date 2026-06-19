@@ -44,6 +44,11 @@ const PackManifestSchema = z.object({
   id: z.string(),
   /** Repo-relative path to the vendored BASE (e.g. `vendor/agent-skills/skills/odoo-18.0`). Drives `skills sync` propagation. */
   base: z.string().optional(),
+  /**
+   * Companion subagents shipped to `.claude/agents/<name>.md` when this pack applies. Each entry is a
+   * repo-relative vendor dir; `skills sync` refreshes `skill-packs/<id>/agents/<name>.md` from `<dir>/SKILL.md`.
+   */
+  agents: z.array(z.string()).default([]),
   stackBinding: z
     .object({
       environments: z.array(z.string()).default([]),
@@ -225,17 +230,26 @@ export function stackPackSkillEntries(config: Config): SkillEntry[] {
   return entries;
 }
 
+/** Append `content` to `skill` wrapped in a named managed block. */
+function appendBlock(skill: string, id: string, content: string): string {
+  return `${skill.trimEnd()}\n\n<!-- ai-workspace:begin:${id} -->\n${content.trim()}\n<!-- ai-workspace:end:${id} -->\n`;
+}
+
 /**
- * Layer the company overlay (`overlay.<company>.md`) onto the base SKILL.md as a managed block — keeping
- * the upstream base and our company requirements as separate files (sync updates the base; the overlay is
- * ours). No-op when `company` is `none` or no overlay file exists for it.
+ * Layer pack overlays onto the base SKILL.md as managed blocks — keeping the upstream base and our additions
+ * as separate files (sync updates the base; overlays are ours):
+ *  - `overlay.md` — generic, ALWAYS applied (e.g. surfaces project conventions into the skill).
+ *  - `overlay.<company>.md` — only when a matching `company` is selected.
  */
-function applyCompanyOverlay(skill: string, dir: string, config: Config): string {
-  if (config.company === "none") return skill;
-  const overlayPath = join(dir, `overlay.${config.company}.md`);
-  if (!existsSync(overlayPath)) return skill;
-  const overlay = readFileSync(overlayPath, "utf8").trim();
-  return `${skill.trimEnd()}\n\n<!-- ai-workspace:begin:company-overlay -->\n${overlay}\n<!-- ai-workspace:end:company-overlay -->\n`;
+function applyOverlays(skill: string, dir: string, config: Config): string {
+  let out = skill;
+  const genericPath = join(dir, "overlay.md");
+  if (existsSync(genericPath)) out = appendBlock(out, "pack-overlay", readFileSync(genericPath, "utf8"));
+  if (config.company !== "none") {
+    const overlayPath = join(dir, `overlay.${config.company}.md`);
+    if (existsSync(overlayPath)) out = appendBlock(out, "company-overlay", readFileSync(overlayPath, "utf8"));
+  }
+  return out;
 }
 
 function listFiles(dir: string): string[] {
@@ -262,8 +276,14 @@ export function generateStackPacks(cwd: string, config: Config): WriteResult[] {
     for (const file of listFiles(dir)) {
       const name = basename(file);
       if (name === "pack.yaml") continue; // routing/gating metadata — not shipped to the workspace
-      if (name.startsWith("overlay.")) continue; // company overlay — merged into SKILL.md below, not copied
+      if (name.startsWith("overlay.")) continue; // overlays — merged into SKILL.md below, not copied
       const rel = relative(dir, file).split(/[\\/]/).join("/");
+      // Companion subagents DECLARED in pack.yaml (`agents:`) ship to `.claude/agents/`. A pack that merely
+      // bundles an internal `agents/` dir (e.g. skill-creator) keeps it under the skill dir, untouched.
+      if (manifest.agents.length > 0 && rel.startsWith("agents/")) {
+        results.push(writeFile(resolve(cwd, ".claude/agents", name), readFileSync(file, "utf8")));
+        continue;
+      }
       const dest = resolve(cwd, ".claude/skills", manifest.id, rel);
       // Binary assets (templates, logos) must be copied byte-for-byte, never utf8-normalized.
       if (BINARY_ASSET.test(name)) {
@@ -271,7 +291,7 @@ export function generateStackPacks(cwd: string, config: Config): WriteResult[] {
         continue;
       }
       let content = readFileSync(file, "utf8");
-      if (name === "SKILL.md") content = applyCompanyOverlay(content, dir, config);
+      if (name === "SKILL.md") content = applyOverlays(content, dir, config);
       if (manifest.templated) content = resolveTokens(content, tokens);
       results.push(writeFile(dest, content));
     }

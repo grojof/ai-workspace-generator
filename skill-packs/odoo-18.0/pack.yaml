@@ -4,6 +4,11 @@
 # config's stack and the active profile is allowed.
 id: odoo-18.0
 base: vendor/agent-skills/skills/odoo-18.0
+# Companion subagents shipped to .claude/agents/ when this pack applies. Source dirs are vendor mirrors;
+# `skills sync` refreshes skill-packs/odoo-18.0/agents/<name>.md from each <path>/SKILL.md.
+agents:
+  - vendor/agent-skills/agents/odoo-code-review
+  - vendor/agent-skills/agents/odoo-code-tracer
 stackBinding:
   environments: [odoo]
 profile:

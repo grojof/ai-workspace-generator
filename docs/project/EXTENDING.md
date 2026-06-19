@@ -122,12 +122,18 @@ Estructura de un pack:
 - `skill-packs/<id>/SKILL.md` — índice + frontmatter (la skill, *model-invoked*).
 - `skill-packs/<id>/references/*.md` — guías on-demand (recomendado para stacks; disclosure progresivo).
 - `skill-packs/<id>/pack.yaml` — **metadatos de gating/routing** (no se copia al workspace).
+- `skill-packs/<id>/overlay.md` — overlay **genérico** opcional, **siempre** anexado al `SKILL.md` como bloque
+  gestionado (p. ej. para enlazar las **convenciones del proyecto** desde `conventions.prefixes`).
 - `skill-packs/<id>/overlay.<company>.md` — overlay de empresa opcional (se anexa como bloque gestionado).
+- `skill-packs/<id>/agents/<name>.md` — **subagentes acompañantes** que se shippean a `.claude/agents/`
+  (solo si el pack los declara en `pack.yaml` con `agents:`); el `package` también los incluye en el plugin.
 
 `pack.yaml`:
 ```yaml
 id: react-19
 base: vendor/<repo>/...      # si viene de un origen vendorizado (para `skills sync`)
+agents:                      # subagentes acompañantes → .claude/agents/; sync los refresca desde <dir>/SKILL.md
+  - vendor/<repo>/agents/<name>
 stackBinding:                 # se copia cuando el stack está activo en la config
   frameworks: [react]         # o languages / environments
 profile:
