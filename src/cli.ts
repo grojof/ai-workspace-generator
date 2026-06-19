@@ -8,6 +8,7 @@ import { runAdd } from "./commands/add.js";
 import { runRemove } from "./commands/remove.js";
 import { runList } from "./commands/list.js";
 import { runImport } from "./commands/import.js";
+import { runDetect } from "./commands/detect.js";
 import { runUpgrade } from "./commands/upgrade.js";
 import { runPackage } from "./commands/package.js";
 import { runSkillsSync } from "./commands/skillsSync.js";
@@ -27,6 +28,19 @@ program
   .action(async (opts) => {
     try {
       await runInit(process.cwd(), opts);
+    } catch (err) {
+      console.error(pc.red(`\n${(err as Error).message}\n`));
+      process.exit(1);
+    }
+  });
+
+program
+  .command("detect")
+  .description("Detect the stack (languages/frameworks/environments). Reads manifests only; writes nothing.")
+  .option("--json", "emit raw JSON (a deterministic seed for the configure-workspace skill / tooling)")
+  .action((opts) => {
+    try {
+      runDetect(process.cwd(), opts);
     } catch (err) {
       console.error(pc.red(`\n${(err as Error).message}\n`));
       process.exit(1);

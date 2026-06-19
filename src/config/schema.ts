@@ -161,6 +161,16 @@ export const WorkflowSchema = z.object({
   hooks: HooksSchema.prefault({}),
 });
 
+/**
+ * A repo governed by a multi-repo workspace. `stack` overrides the root default; `path` is workspace-root
+ * relative. An empty top-level `repos[]` means single-repo (this directory) — see `resolveRepos`.
+ */
+export const RepoSchema = z.object({
+  path: z.string(),
+  name: z.string().optional(),
+  stack: StackSchema.optional(),
+});
+
 const BaseConfigSchema = z.object({
   version: z.literal(1).default(1),
   project: z.object({
@@ -190,6 +200,11 @@ const BaseConfigSchema = z.object({
   ingest: IngestSchema.prefault({}),
   /** Distribution identity for `ai-workspace package` (stable org plugin name/owner). */
   distribution: DistributionSchema.prefault({}),
+  /**
+   * Optional multi-repo: a workspace governing >1 linked repo. Empty = single-repo (this directory).
+   * Additive — existing single-repo configs are unaffected. Normalize with `resolveRepos`.
+   */
+  repos: z.array(RepoSchema).default([]),
   scope: ScopeSchema.prefault({}),
   mcp: z.array(z.string()).default(["context7"]),
   skills: z.array(z.string()).default([]),
@@ -215,6 +230,26 @@ export const ConfigSchema = BaseConfigSchema.transform((config) => {
 });
 
 export type Config = z.infer<typeof ConfigSchema>;
+
+/** A repo with its effective (resolved) stack — single- and multi-repo collapse to this one shape. */
+export interface ResolvedRepo {
+  path: string;
+  name: string;
+  stack: Config["stack"];
+}
+
+/**
+ * Normalize single- and multi-repo configs to one shape. Empty `repos[]` → the workspace dir itself as a
+ * single repo; otherwise each repo's effective stack is its own `stack` or the root default. Downstream
+ * per-repo logic iterates this so both cases share one code path.
+ */
+export function resolveRepos(config: Config): ResolvedRepo[] {
+  if (!config.repos.length) {
+    return [{ path: ".", name: config.project.name, stack: config.stack }];
+  }
+  return config.repos.map((r) => ({ path: r.path, name: r.name ?? r.path, stack: r.stack ?? config.stack }));
+}
+
 export type Profile = z.infer<typeof ProfileSchema>;
 export type Docs = z.infer<typeof DocsSchema>;
 export type Distribution = z.infer<typeof DistributionSchema>;

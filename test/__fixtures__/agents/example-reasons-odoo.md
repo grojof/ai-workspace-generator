@@ -187,6 +187,7 @@ Load skills by their *trigger*, not preemptively. Selection for the **technical*
 | `sdd-handoff` | packaging the app for IT review | suggested |
 | `living-docs` | after finishing a task or when project state changed | suggested |
 | `ai-workspace-guide` | new here — how this workspace works | suggested |
+| `configure-workspace` | configuring or re-configuring the workspace (analyze an existing repo, or set up a new one) | suggested |
 | `dependency-upgrade` | before any version bump or migration (assess first) | on-demand · high risk |
 | `sdd-onboarding` | starting a new app / choosing profile A or B | on-demand |
 | `sdd-spec-schema` | authoring/validating a spec in REASONS mode | on-demand |

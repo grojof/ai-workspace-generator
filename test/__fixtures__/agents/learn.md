@@ -179,6 +179,7 @@ Load skills by their *trigger*, not preemptively. Selection for the **technical*
 | `sdd-*` | planning/implementing a non-trivial change | suggested |
 | `living-docs` | after finishing a task or when project state changed | suggested |
 | `ai-workspace-guide` | new here — how this workspace works | suggested |
+| `configure-workspace` | configuring or re-configuring the workspace (analyze an existing repo, or set up a new one) | suggested |
 | `learn` | learning a topic with exercises | suggested |
 | `dependency-upgrade` | before any version bump or migration (assess first) | on-demand · high risk |
 | `vscode-setup` | setting up VS Code / extensions | on-demand |
