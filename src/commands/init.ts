@@ -14,19 +14,20 @@ import {
   note,
   log,
 } from "@clack/prompts";
-import { normalizeConfig, saveConfig, configExists } from "../config/loader.js";
+import { saveConfig, configExists } from "../config/loader.js";
 import { detectStack } from "../detect/stack.js";
 import { generate } from "../generate/index.js";
 import { routedSkills } from "../generate/skillRouting.js";
 import { availablePacks } from "../generate/stackPacks.js";
 import { catalog, type ModuleEntry } from "../modules/registry.js";
 import { printArtifacts } from "../util/report.js";
-import type { Config } from "../config/schema.js";
-import { TEMPLATES_VERSION } from "../version.js";
+import { buildConfig, simpleDefaults, type WizardInputs } from "./wizard.js";
 
 interface InitOptions {
   from?: string[];
   yes?: boolean;
+  simple?: boolean;
+  advanced?: boolean;
 }
 
 function bail(value: unknown): asserts value {
@@ -73,6 +74,28 @@ export async function runInit(cwd: string, options: InitOptions = {}): Promise<v
     note(detected.notes.join("\n"), "Stack detection");
   }
 
+  // Setup mode. The richest path is the AI-guided `configure-workspace` skill (/configure); for the manual
+  // wizard, Simple = few questions + smart defaults (accept the detected stack), Advanced = fully parametrized.
+  let mode: "simple" | "advanced";
+  if (options.advanced) mode = "advanced";
+  else if (options.simple || options.yes) mode = "simple";
+  else {
+    const m = await select({
+      message: "Setup mode / Modo de configuración",
+      options: [
+        { value: "simple", label: "Simple (recommended)", hint: "pocas preguntas + defaults; acepta el stack detectado" },
+        { value: "advanced", label: "Advanced / Avanzado", hint: "controla todas las capas" },
+      ],
+      initialValue: "simple",
+    });
+    bail(m);
+    mode = m as "simple" | "advanced";
+    note("For the richest setup, run the configure-workspace skill (/configure) and let the AI propose your config.", "AI-guided (recommended)");
+  }
+
+  let inputs: WizardInputs;
+
+  if (mode === "advanced") {
   const language = await select({
     message: "Language for generated docs & instructions / Idioma de la documentación generada",
     options: [
@@ -279,54 +302,74 @@ export async function runInit(cwd: string, options: InitOptions = {}): Promise<v
     safetyGuard = guard as typeof safetyGuard;
   }
 
-  // Map detected versions when available.
-  const versionOf = (id: string, list: { id: string; version: string }[]) =>
-    list.find((x) => x.id === id)?.version ?? "latest";
-
-  const config: Config = normalizeConfig({
-    version: 1,
-    project: {
-      name: String(name).trim(),
-      description: String(description).trim(),
-      mode: projectMode as "new" | "existing",
-      purpose: purpose as "build" | "learn",
-    },
-    profile: {
-      userType: userType as "business" | "technical",
-      experience: experience as "beginner" | "standard" | "advanced",
-    },
+  inputs = {
+    name: String(name),
+    description: String(description),
+    language: language as "es" | "en",
+    mode: projectMode as "new" | "existing",
+    purpose,
+    userType: userType as "business" | "technical",
+    experience: experience as "beginner" | "standard" | "advanced",
     company: company as "none" | "example",
     targets: targets as ("claude" | "copilot")[],
-    language: language as "es" | "en",
-    stack: {
-      languages: (langIds as string[]).map((id) => ({ id, version: versionOf(id, detected.languages) })),
-      frameworks: (fwIds as string[]).map((id) => ({ id, version: versionOf(id, detected.frameworks) })),
-      environments: (envIds as string[]).map((id) => ({ id, version: versionOf(id, detected.environments) })),
-      runtime: detected.runtime,
-    },
-    sdd: {
-      enabled: Boolean(sddEnabled),
-      backend: sddBackend,
-      // Constitution is a greenfield bootstrap; only seed it for new projects.
-      constitution: projectMode === "new",
-      vendorSkills: true,
-      methodology: sddMethodology,
-      // Enterprise orgs get the stricter REASONS schema by default; others keep it lean.
-      // (SPDD forces `reasons` via the ConfigSchema transform regardless of this seed.)
-      schema: company === "none" ? "lean" : "reasons",
-    },
-    livingDocs: Boolean(livingDocs),
-    workflow: { hooks: { safetyGuard } },
-    mcp: useContext7 ? ["context7"] : [],
-    ingest: { sources: options.from ?? [], reconcileWithContext7: true, preferCompanyOnConflict: true },
-    templatesVersion: TEMPLATES_VERSION,
-  });
+    langIds: langIds as string[],
+    fwIds: fwIds as string[],
+    envIds: envIds as string[],
+    sddEnabled: Boolean(sddEnabled),
+    sddBackend,
+    sddMethodology,
+    livingDocs,
+    useContext7,
+    safetyGuard,
+    from: options.from,
+  };
+  } else {
+    // Simple: name + docs language + targets; accept the detected stack; defaults for everything else.
+    const sName = await text({
+      message: "Project name",
+      initialValue: detectName(cwd),
+      validate: (v) => (v?.trim() ? undefined : "Required"),
+    });
+    bail(sName);
+    const sLang = await select({
+      message: "Language for generated docs & instructions / Idioma de la documentación generada",
+      options: [
+        { value: "es", label: "Español", hint: "recomendado para el equipo" },
+        { value: "en", label: "English" },
+      ],
+      initialValue: "es",
+    });
+    bail(sLang);
+    const sTargets = await multiselect({
+      message: "Which AI tools should this workspace target?",
+      options: [
+        { value: "claude", label: "Claude Code", hint: "CLAUDE.md, skills, .mcp.json" },
+        { value: "copilot", label: "GitHub Copilot", hint: ".github/*, .vscode/mcp.json" },
+      ],
+      initialValues: ["claude", "copilot"],
+      required: true,
+    });
+    bail(sTargets);
+    const fmt = (a: { id: string }[]) => a.map((x) => x.id).join(", ") || "—";
+    note(
+      `Languages: ${fmt(detected.languages)}\nFrameworks: ${fmt(detected.frameworks)}\nEnvironments: ${fmt(detected.environments)}\n\nDefaults: build · SDD (files) · living docs · context7 · company none. Confirm at the end.`,
+      "Using detected stack (Simple) / Stack detectado",
+    );
+    inputs = simpleDefaults(detected, {
+      name: String(sName),
+      language: sLang as "es" | "en",
+      targets: sTargets as ("claude" | "copilot")[],
+      from: options.from,
+    });
+  }
+
+  const config = buildConfig(inputs, detected);
 
   // Skill selection: offer the available *library* packs (recommended pre-checked) with a description each, so
   // the choices are explicit. Beginners skip this (keep the recommended set — fewer questions). Saved as
   // `config.skills` (empty = all recommended). Core/feature skills (commit, SDD phases, living-docs, corp/sdd
   // bundles) are governed by their own flags, not this list.
-  if (config.targets.includes("claude") && experience !== "beginner") {
+  if (mode === "advanced" && config.targets.includes("claude") && inputs.experience !== "beginner") {
     const packs = availablePacks(config);
     if (packs.length) {
       const chosen = await multiselect({
