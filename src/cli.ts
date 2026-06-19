@@ -24,7 +24,9 @@ program
   .command("init")
   .description("Interactive wizard: detect stack, write workspace.config.yaml, render artifacts.")
   .option("--from <paths...>", "existing company assets to ingest (recorded for `import`)")
-  .option("-y, --yes", "accept defaults where possible")
+  .option("-y, --yes", "accept defaults where possible (implies --simple)")
+  .option("--simple", "few questions + smart defaults (accept the detected stack)")
+  .option("--advanced", "fully parametrized wizard (control every layer)")
   .action(async (opts) => {
     try {
       await runInit(process.cwd(), opts);
