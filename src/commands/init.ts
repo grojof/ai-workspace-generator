@@ -168,7 +168,8 @@ export async function runInit(cwd: string, options: InitOptions = {}): Promise<v
     message: "Which AI tools should this workspace target?",
     options: [
       { value: "claude", label: "Claude Code", hint: "CLAUDE.md, skills, .mcp.json" },
-      { value: "copilot", label: "GitHub Copilot", hint: ".github/*, .vscode/mcp.json" },
+      { value: "copilot", label: "GitHub Copilot", hint: ".github/* (works in VS Code & Visual Studio)" },
+      { value: "codex", label: "OpenAI Codex", hint: "AGENTS.md + .codex/config.toml" },
     ],
     initialValues: ["claude", "copilot"],
     required: true,
@@ -218,6 +219,7 @@ export async function runInit(cwd: string, options: InitOptions = {}): Promise<v
   let livingDocs = true;
   let useContext7 = true;
   let safetyGuard: "warn" | "block" | "off" = "off";
+  let vscode = true;
 
   const customize = await confirm({
     message: "Customize advanced options? / ¿Ajustar opciones avanzadas? (purpose · SDD storage · living docs · context7)",
@@ -287,6 +289,13 @@ export async function runInit(cwd: string, options: InitOptions = {}): Promise<v
     bail(c7);
     useContext7 = c7 === true;
 
+    const vsc = await confirm({
+      message: "Generate .vscode/ recommendations (extensions/settings/mcp)? Turn off for Visual Studio / non-VS-Code.",
+      initialValue: true,
+    });
+    bail(vsc);
+    vscode = vsc === true;
+
     // Safety guard: a PreToolUse Bash hook that hardens the Safety gate (Claude only). Opt-in; default
     // `warn` for new projects (non-disruptive), off for existing (don't touch their flow).
     const guard = await select({
@@ -311,7 +320,8 @@ export async function runInit(cwd: string, options: InitOptions = {}): Promise<v
     userType: userType as "business" | "technical",
     experience: experience as "beginner" | "standard" | "advanced",
     company: company as "none" | "example",
-    targets: targets as ("claude" | "copilot")[],
+    targets: targets as ("claude" | "copilot" | "codex")[],
+    vscode,
     langIds: langIds as string[],
     fwIds: fwIds as string[],
     envIds: envIds as string[],
@@ -344,7 +354,8 @@ export async function runInit(cwd: string, options: InitOptions = {}): Promise<v
       message: "Which AI tools should this workspace target?",
       options: [
         { value: "claude", label: "Claude Code", hint: "CLAUDE.md, skills, .mcp.json" },
-        { value: "copilot", label: "GitHub Copilot", hint: ".github/*, .vscode/mcp.json" },
+        { value: "copilot", label: "GitHub Copilot", hint: ".github/* (works in VS Code & Visual Studio)" },
+        { value: "codex", label: "OpenAI Codex", hint: "AGENTS.md + .codex/config.toml" },
       ],
       initialValues: ["claude", "copilot"],
       required: true,
@@ -358,7 +369,7 @@ export async function runInit(cwd: string, options: InitOptions = {}): Promise<v
     inputs = simpleDefaults(detected, {
       name: String(sName),
       language: sLang as "es" | "en",
-      targets: sTargets as ("claude" | "copilot")[],
+      targets: sTargets as ("claude" | "copilot" | "codex")[],
       from: options.from,
     });
   }

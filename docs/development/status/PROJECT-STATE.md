@@ -18,6 +18,9 @@ mantenimiento mínimo. **Sin datos de negocio reales.**
 
 ## Capacidades actuales
 
+- **Targets** — `claude` · `copilot` · `codex` (cambio 0006). `AGENTS.md` es fuente única **y** adaptador
+  nativo de Codex (`codex` añade `.codex/config.toml` MCP en TOML); `copilot` funciona en VS Code **y**
+  Visual Studio. `.vscode/` es opcional vía flag `vscode` (default true).
 - **Perfiles** — `business`/`technical` × `beginner`/`standard`/`advanced` (`ProfileSchema`); bloque
   `profile` compacto en `AGENTS.md` (solo combinación activa).
 - **Catálogo de skills** — registro con metadatos (`src/modules/skills.ts`) + bloque `skill-routing`

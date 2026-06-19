@@ -18,7 +18,9 @@ export interface WizardInputs {
   userType: "business" | "technical";
   experience: "beginner" | "standard" | "advanced";
   company: "none" | "example";
-  targets: ("claude" | "copilot")[];
+  targets: ("claude" | "copilot" | "codex")[];
+  /** Generate `.vscode/` recommendations (off for Visual Studio / non-VS-Code users). */
+  vscode: boolean;
   langIds: string[];
   fwIds: string[];
   envIds: string[];
@@ -47,6 +49,7 @@ export function buildConfig(inputs: WizardInputs, detected: DetectedStack): Conf
     profile: { userType: inputs.userType, experience: inputs.experience },
     company: inputs.company,
     targets: inputs.targets,
+    vscode: inputs.vscode,
     language: inputs.language,
     stack: {
       languages: inputs.langIds.map((id) => ({ id, version: versionOf(id, detected.languages) })),
@@ -77,7 +80,7 @@ export interface SimpleBasics {
   name: string;
   description?: string;
   language: "es" | "en";
-  targets: ("claude" | "copilot")[];
+  targets: ("claude" | "copilot" | "codex")[];
   from?: string[];
 }
 
@@ -98,6 +101,7 @@ export function simpleDefaults(detected: DetectedStack, basics: SimpleBasics): W
     experience: "standard",
     company: "none",
     targets: basics.targets,
+    vscode: true,
     langIds: detected.languages.map((l) => l.id),
     fwIds: detected.frameworks.map((f) => f.id),
     envIds: detected.environments.map((e) => e.id),
