@@ -423,6 +423,21 @@ test("pack companion agents ship to .claude/agents; generic overlay merges into 
   }
 });
 
+test("configure-workspace skill + /configure command are generated and routed", () => {
+  const cwd = tmpRepo();
+  try {
+    generate(cwd, ConfigSchema.parse({ project: { name: "t" } }));
+    assert.ok(readFileSync(resolve(cwd, ".claude/skills/configure-workspace/SKILL.md"), "utf8"));
+    assert.ok(readFileSync(resolve(cwd, ".claude/commands/configure.md"), "utf8"));
+    const skill = readFileSync(resolve(cwd, ".claude/skills/configure-workspace/SKILL.md"), "utf8");
+    assert.match(skill, /ai-workspace detect --json/);
+    assert.match(skill, /never write or move files/i);
+    assert.match(readFileSync(resolve(cwd, "AGENTS.md"), "utf8"), /configure-workspace/);
+  } finally {
+    rmSync(cwd, { recursive: true, force: true });
+  }
+});
+
 test("commit-msg hook is generated and blocks co-author", () => {
   const cwd = tmpRepo();
   try {

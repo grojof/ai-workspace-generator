@@ -75,6 +75,60 @@ Help the user work with this workspace. Explain concepts for beginners and propo
 flow based on their goal. Use \`AGENTS.md\` and \`AI-WORKSPACE.md\` as reference.
 `;
 
+// ---------------------------------------------------------------------------
+// Guided configuration skill (analyze an existing repo, or set up a new one)
+// ---------------------------------------------------------------------------
+
+const CONFIGURE_SKILL_EN = `## Configure this AI workspace (guided)
+
+Help the user produce a correct, explained \`workspace.config.yaml\` and skill set — for an **existing** repo
+(analyze → propose) or a **new** one (describe → ask). **Propose-and-review: never write or move files
+without explicit approval.**
+
+### 1. Analyze
+- Run \`ai-workspace detect --json\` for a deterministic stack seed (languages/frameworks/environments).
+- Read the repo to enrich it: manifests, folder layout, existing docs/configs. Note anything the detector
+  missed. If nothing is detected and it's a new project, **ask** targeted questions instead of guessing.
+
+### 2. Propose
+- Draft a candidate \`workspace.config.yaml\` (project, profile, stack, sdd, language, targets…). Validate
+  every module id against the registry (\`ai-workspace list\`); for a gap, propose either adding a module or
+  discovering a pack with the \`find-skills\` skill — and say why.
+- Produce a **conflict report**: existing paths/docs that would collide with generated structure, plus an
+  optional folder-alignment plan. Multi-repo: if the workspace spans several repos, propose a top-level
+  \`repos:\` list (each with its \`path\` and optional \`stack\`); a single repo needs no \`repos\`.
+
+### 3. Review
+- Show the proposed config (as a preview/diff) with a one-line rationale per section, the skill set, and the
+  conflict report. Wait for approval or edits. Change nothing yet.
+
+### 4. Apply (only after approval)
+- Write \`workspace.config.yaml\`, then run \`ai-workspace sync\` to generate artifacts (idempotent — a second
+  run reports 0 changes; your text outside managed markers survives). Apply any folder moves **only** as
+  approved, one reviewable step at a time (Safety gate). Finish with \`/doc-sync\` if living docs are on.
+`;
+
+const CONFIGURE_CMD_EN = `---
+description: Guided workspace configuration — analyze an existing repo (or set up a new one) and propose a config.
+---
+
+# /configure
+
+Drive the \`configure-workspace\` skill: analyze the repo (\`ai-workspace detect --json\` + read the tree),
+propose a \`workspace.config.yaml\` + skill set + conflict report, and apply only after the user approves.
+Never move or overwrite files without explicit approval.
+`;
+
+const CONFIGURE_PROMPT_EN = `---
+mode: agent
+description: Guided workspace configuration — analyze an existing repo and propose a config.
+---
+
+Analyze this repository and propose a \`workspace.config.yaml\` + skill set, then apply only after approval.
+Seed detection with \`ai-workspace detect --json\`; use \`find-skills\` for gaps; never move files without
+explicit approval. Follow the \`configure-workspace\` skill.
+`;
+
 // AI skill/command/prompt → English only (token efficiency).
 export function generateGuides(cwd: string, config: Config): WriteResult[] {
   const results: WriteResult[] = [];
@@ -83,12 +137,17 @@ export function generateGuides(cwd: string, config: Config): WriteResult[] {
   // Guides reference the change folder in prose; point them at the resolved store path.
   const guideBody = GUIDE_EN.replaceAll("openspec/changes", docsPaths(config).changes);
 
+  const configureDesc = "Configure or re-configure this AI workspace: analyze an existing repo (or set up a new one) and propose a workspace.config.yaml + skill set. Trigger: when the user wants to set up, configure, or re-detect the workspace.";
+
   if (config.targets.includes("claude")) {
     results.push(writeFile(resolve(cwd, ".claude/skills/ai-workspace-guide/SKILL.md"), frontmatter("ai-workspace-guide", desc) + guideBody));
     results.push(writeFile(resolve(cwd, ".claude/commands/aiws-guide.md"), GUIDE_CMD_EN));
+    results.push(writeFile(resolve(cwd, ".claude/skills/configure-workspace/SKILL.md"), frontmatter("configure-workspace", configureDesc) + CONFIGURE_SKILL_EN));
+    results.push(writeFile(resolve(cwd, ".claude/commands/configure.md"), CONFIGURE_CMD_EN));
   }
   if (config.targets.includes("copilot")) {
     results.push(writeFile(resolve(cwd, ".github/prompts/aiws-guide.prompt.md"), GUIDE_PROMPT_EN));
+    results.push(writeFile(resolve(cwd, ".github/prompts/configure.prompt.md"), CONFIGURE_PROMPT_EN));
   }
   return results;
 }

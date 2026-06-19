@@ -19,6 +19,7 @@ import { detectStack } from "../detect/stack.js";
 import { generate } from "../generate/index.js";
 import { routedSkills } from "../generate/skillRouting.js";
 import { availablePacks } from "../generate/stackPacks.js";
+import { catalog, type ModuleEntry } from "../modules/registry.js";
 import { printArtifacts } from "../util/report.js";
 import type { Config } from "../config/schema.js";
 import { TEMPLATES_VERSION } from "../version.js";
@@ -48,34 +49,8 @@ function detectName(cwd: string): string {
   return basename(cwd);
 }
 
-const KNOWN_LANGUAGES = [
-  { value: "typescript", label: "TypeScript" },
-  { value: "javascript", label: "JavaScript" },
-  { value: "go", label: "Go" },
-  { value: "python", label: "Python" },
-  { value: "java", label: "Java" },
-  { value: "csharp", label: "C#" },
-];
-
-const KNOWN_FRAMEWORKS = [
-  { value: "react", label: "React" },
-  { value: "nextjs", label: "Next.js" },
-  { value: "vue", label: "Vue" },
-  { value: "angular", label: "Angular" },
-  { value: "express", label: "Express" },
-  { value: "nestjs", label: "NestJS" },
-];
-
-const KNOWN_ENVIRONMENTS = [
-  { value: "node-runtime", label: "Node + nvm" },
-  { value: "python-venv", label: "Python venv" },
-  { value: "wsl", label: "WSL" },
-  { value: "docker", label: "Docker" },
-  { value: "postgres", label: "PostgreSQL" },
-  { value: "mysql", label: "MySQL/MariaDB" },
-  { value: "mongodb", label: "MongoDB" },
-  { value: "odoo", label: "Odoo" },
-];
+/** Wizard options come from the module registry — the single source for stack modules (no hardcoded lists). */
+const toOption = (m: ModuleEntry) => ({ value: m.id, label: m.label });
 
 export async function runInit(cwd: string, options: InitOptions = {}): Promise<void> {
   intro(pc.bgCyan(pc.black(" ai-workspace init ")));
@@ -182,7 +157,7 @@ export async function runInit(cwd: string, options: InitOptions = {}): Promise<v
     : ["typescript"];
   const langIds = await multiselect({
     message: "Languages",
-    options: KNOWN_LANGUAGES,
+    options: catalog("language").map(toOption),
     initialValues: langDefaults,
     required: true,
   });
@@ -191,7 +166,7 @@ export async function runInit(cwd: string, options: InitOptions = {}): Promise<v
   const fwDefaults = detected.frameworks.map((f) => f.id);
   const fwIds = await multiselect({
     message: "Frameworks (optional)",
-    options: KNOWN_FRAMEWORKS,
+    options: catalog("framework").map(toOption),
     initialValues: fwDefaults,
     required: false,
   });
@@ -200,7 +175,7 @@ export async function runInit(cwd: string, options: InitOptions = {}): Promise<v
   const envDefaults = detected.environments.map((e) => e.id);
   const envIds = await multiselect({
     message: "Environments / tooling (optional)",
-    options: KNOWN_ENVIRONMENTS,
+    options: catalog("environment").map(toOption),
     initialValues: envDefaults,
     required: false,
   });

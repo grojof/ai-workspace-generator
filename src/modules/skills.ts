@@ -209,6 +209,19 @@ export const SKILLS: SkillEntry[] = [
     },
   },
   {
+    id: "configure-workspace",
+    domain: "onboarding",
+    level: "all",
+    userType: "both",
+    loadMode: "suggested",
+    risk: "low",
+    enabled: claude,
+    trigger: {
+      en: "configuring or re-configuring the workspace (analyze an existing repo, or set up a new one)",
+      es: "configurar o reconfigurar el workspace (analizar un repo existente, o preparar uno nuevo)",
+    },
+  },
+  {
     id: "vscode-setup",
     domain: "onboarding",
     level: "beginner",
