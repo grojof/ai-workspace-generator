@@ -1,8 +1,8 @@
 # Spec — Workspace configuration (current truth)
 
 Stable specification of how a workspace is configured. Folded from changes
-`0001-guided-config-ux` (Phase 1 + multi-repo schema), `0002-wizard-modes`, and
-`0003-per-repo-generation`. Update this file as the capability evolves.
+`0001-guided-config-ux` (Phase 1 + multi-repo schema), `0002-wizard-modes`,
+`0003-per-repo-generation`, and `0004-per-repo-distribution`. Update this file as the capability evolves.
 
 ## Sources of truth
 - **Module registry** (`src/modules/registry.ts`) is the **single source** of selectable stack modules
@@ -57,9 +57,14 @@ Stable specification of how a workspace is configured. Folded from changes
   `.claude/skills/` nested under the cwd → per-repo Claude adapter + skills; Copilot reads one workspace-root
   instructions file (no nested discovery) and MCP/settings are project-root scoped → those stay
   workspace-level. `doctor` validates each child's `CLAUDE.md` and the root once.
-- **Out of scope (future):** per-repo *distribution* (`ai-workspace package` per repo); per-repo divergent
-  profile/company/SDD/language (today `RepoSchema` overrides `stack` only); per-repo Copilot `applyTo`
-  path-scoping.
+- **Per-repo distribution** (change 0004) makes `ai-workspace package` multi-repo aware: it aggregates
+  skills, commands, and companion subagents from the workspace root **plus every resolved child repo** into
+  the single umbrella plugin, and builds the per-skill org zips + `INSTALL.md` from that aggregated set.
+  De-dup is **first-wins** by id (root before children, children in `resolveRepos` order). Topology is
+  unchanged (one umbrella plugin, one marketplace entry); only the sources broaden. Empty `repos[]` ⇒ root
+  only ⇒ unchanged.
+- **Out of scope (future):** one-plugin-per-repo topology; per-repo divergent profile/company/SDD/language
+  (today `RepoSchema` overrides `stack` only); per-repo Copilot `applyTo` path-scoping; id-collision warnings.
 
 ## Acceptance (enforced)
 - Wizard options derive from the registry (`config.test.js`, `registry.test.js`, build).
@@ -68,5 +73,7 @@ Stable specification of how a workspace is configured. Folded from changes
 - Per-repo generation: root canonical + per-child adapter importing `@../AGENTS.md`, stack packs placed under
   the matching child only, union routing in the root `AGENTS.md`; multi-repo generation is idempotent
   (`multi-repo.test.js`).
+- Per-repo distribution: `package` aggregates root + child skills/commands/agents into one umbrella plugin
+  (deduped) with matching org zips + `INSTALL.md`; idempotent (`generate.test.js`).
 - Generation is idempotent and preserves out-of-band user text; single-repo `AGENTS.md` is byte-identical to
   the captured baseline (`invariants.test.js`, `block-manifest.test.js`).
