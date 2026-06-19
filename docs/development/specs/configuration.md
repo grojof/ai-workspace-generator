@@ -2,8 +2,8 @@
 
 Stable specification of how a workspace is configured. Folded from changes
 `0001-guided-config-ux` (Phase 1 + multi-repo schema), `0002-wizard-modes`,
-`0003-per-repo-generation`, `0004-per-repo-distribution`, and `0005-multi-repo-polish`. Update this file as
-the capability evolves.
+`0003-per-repo-generation`, `0004-per-repo-distribution`, `0005-multi-repo-polish`, and `0006-codex-target`.
+Update this file as the capability evolves.
 
 ## Sources of truth
 - **Module registry** (`src/modules/registry.ts`) is the **single source** of selectable stack modules
@@ -38,6 +38,19 @@ the capability evolves.
   - Resolution: `init --advanced` | `init --simple` (or `--yes`) | interactive prompt (Simple preselected).
   - Config assembly is a pure, shared `buildConfig(inputs, detected)` (`src/commands/wizard.ts`);
     `simpleDefaults(detected, basics)` fills the Simple inputs.
+
+## Targets and editors (change 0006)
+- `targets` accepts `claude | copilot | codex` (one or more). `AGENTS.md` is always generated — it is the
+  single source of truth **and** the native instructions file for **Codex**. `claude` adds `CLAUDE.md` +
+  skills + `.mcp.json`; `copilot` adds `.github/*` (read by VS Code **and** Visual Studio); `codex` adds
+  `.codex/config.toml` (project-scoped MCP in TOML). `targets: ["codex"]` ⇒ only `AGENTS.md` +
+  `.codex/config.toml`.
+- `vscode: boolean` (default `true`) gates the whole `.vscode/` folder (extensions/settings/mcp). Set
+  `false` for Visual Studio or non-VS-Code users. The wizard asks it (Advanced); the `configure-workspace`
+  skill sets it in the AI-guided path.
+- **Copilot in Visual Studio** reads the generated `.github/copilot-instructions.md` /
+  `instructions/*.instructions.md` after enabling *Tools → Options → GitHub → Copilot → Copilot Chat →
+  custom instructions*. No extra generation needed.
 
 ## Multi-repo (schema + generation)
 - The config accepts an optional, additive `repos[]` (`RepoSchema`: `path`, optional `name`, optional
@@ -93,5 +106,7 @@ the capability evolves.
 - Per-repo Copilot `applyTo` instructions in multi-repo (none in single-repo) (`multi-repo.test.js`); VS Code
   recommendations/formatters come from the registry (`generate.test.js`); `doctor` warns on unknown stack ids
   (`generate.test.js`); `distribution.perRepo` emits per-repo plugins, default umbrella (`generate.test.js`).
+- Codex target emits `.codex/config.toml` (TOML MCP) with `AGENTS.md` as its adapter; `targets: ["codex"]`
+  yields no Claude/Copilot files; `vscode: false` omits `.vscode/*`, default unchanged (`generate.test.js`).
 - Generation is idempotent and preserves out-of-band user text; single-repo `AGENTS.md` is byte-identical to
   the captured baseline (`invariants.test.js`, `block-manifest.test.js`).

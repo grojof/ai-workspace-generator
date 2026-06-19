@@ -4,7 +4,7 @@ import { resolveRepos, unionStack, type Config, type ResolvedRepo } from "../con
 import { renderTemplate, setLocale } from "../render/engine.js";
 import { writeFile, writeIfMissing, writeManaged, type WriteResult } from "../render/writer.js";
 import { composeBlocks } from "./agents.js";
-import { buildClaudeMcp, buildVscodeMcp } from "./mcp.js";
+import { buildClaudeMcp, buildVscodeMcp, buildCodexMcp } from "./mcp.js";
 import { generateScope } from "./scope.js";
 import { generateSdd } from "./sdd.js";
 import { generateSkills } from "./skills.js";
@@ -154,7 +154,7 @@ function generateWorkspace(cwd: string, config: Config, add: (r: WriteResult, de
       ...blocks.filter((b) => b.id !== "header"),
     ];
     add(writeManaged(resolve(cwd, ".github/copilot-instructions.md"), "html", copilotBlocks), t.desc.copilot);
-    add(buildVscodeMcpFile(cwd, config), t.desc.vscodeMcp);
+    if (config.vscode) add(buildVscodeMcpFile(cwd, config), t.desc.vscodeMcp);
 
     // Path-scoped instruction for TypeScript, when present in any repo's stack.
     if (wsConfig.stack.languages.some((l) => l.id === "typescript")) {
@@ -187,6 +187,11 @@ function generateWorkspace(cwd: string, config: Config, add: (r: WriteResult, de
         t.desc.tsInstructions,
       );
     }
+  }
+
+  // 3b. Codex adapter — AGENTS.md is its instructions file (already written above); add project-scoped MCP.
+  if (config.targets.includes("codex")) {
+    add(writeFile(resolve(cwd, ".codex/config.toml"), buildCodexMcp(config.mcp)), t.desc.codexConfig);
   }
 
   // 4. Shared format/encoding files.
@@ -224,7 +229,7 @@ function generateWorkspace(cwd: string, config: Config, add: (r: WriteResult, de
 
   // 8. Learner guides + VS Code setup + learning mode (tutor).
   for (const r of generateGuides(cwd, config)) add(r, t.desc.skill);
-  for (const r of generateVscode(cwd, wsConfig)) add(r, t.desc.vscodeExtensions);
+  if (config.vscode) for (const r of generateVscode(cwd, wsConfig)) add(r, t.desc.vscodeExtensions);
   for (const r of generateLearning(cwd, config)) add(r, t.desc.skill);
 }
 

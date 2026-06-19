@@ -105,6 +105,9 @@ without explicit approval.**
 - Draft a candidate \`workspace.config.yaml\` (project, profile, stack, sdd, language, targets…). Validate
   every module id against the registry (\`ai-workspace list\`); for a gap, propose either adding a module or
   discovering a pack with the \`find-skills\` skill — and say why.
+- Pick \`targets\` for the user's tools: \`claude\` (CLAUDE.md + skills), \`copilot\` (.github/* — also works in
+  Visual Studio), \`codex\` (AGENTS.md is its instructions + .codex/config.toml). Set \`vscode: false\` if they
+  use Visual Studio or not VS Code (skips the \`.vscode/\` folder).
 - Produce a **conflict report**: existing paths/docs that would collide with generated structure, plus an
   optional folder-alignment plan. Multi-repo: if the workspace spans several repos, propose a top-level
   \`repos:\` list (each with its \`path\` and optional \`stack\`); a single repo needs no \`repos\`.

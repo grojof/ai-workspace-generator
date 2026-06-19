@@ -125,7 +125,8 @@ profile:
   userType: technical   # business | technical
   experience: advanced  # beginner | standard | advanced
 company: none           # none | example (o tu propia org como overlay)
-targets: [claude, copilot]
+targets: [claude, copilot]   # claude | copilot | codex (uno o varios)
+vscode: true            # genera .vscode/ (extensions/settings/mcp); false para Visual Studio / no VS Code
 language: es            # idioma del contenido humano (la IA siempre consume inglés)
 stack:
   languages:   [{ id: typescript, version: latest }]
@@ -152,6 +153,32 @@ repos: []               # multi-repo (ver abajo)
 
 > **Política de idioma:** todo lo que consume la IA (`AGENTS.md`, skills, routing) es **inglés siempre**;
 > `language` solo rige el contenido humano (`AI-WORKSPACE.md`, `docs/`).
+
+## Targets (qué herramientas de IA) y editores
+
+`targets` decide qué adaptadores se generan (uno o varios):
+
+| Target | Qué recibe | Notas |
+|--------|-----------|-------|
+| `claude` | `CLAUDE.md` (importa `@AGENTS.md`) + skills `.claude/` + `.mcp.json` | Claude Code |
+| `copilot` | `.github/copilot-instructions.md` + `instructions/*.instructions.md` (+ `.vscode/mcp.json` si `vscode`) | **Funciona en VS Code y en Visual Studio** |
+| `codex` | **`AGENTS.md` es su fichero de instrucciones** (nativo) + `.codex/config.toml` (MCP) | OpenAI Codex (CLI/IDE), multiplataforma |
+
+- `AGENTS.md` se genera siempre (es la fuente única **y** el adaptador de Codex). Con `targets: [codex]`
+  obtienes solo `AGENTS.md` + `.codex/config.toml`, sin `CLAUDE.md` ni ficheros de Copilot.
+- **`vscode: false`** omite toda la carpeta `.vscode/` — útil si trabajas en **Visual Studio** o fuera de VS Code.
+
+### GitHub Copilot en Visual Studio
+Visual Studio 2022 (17.10+) lee los mismos ficheros que se generan con el target `copilot`. Solo hay que
+activarlo una vez: **Tools → Options → GitHub → Copilot → Copilot Chat → "Enable custom instructions to be
+loaded from .github/copilot-instructions.md files and added to requests"**. A partir de ahí lee
+`.github/copilot-instructions.md`, `.github/instructions/*.instructions.md` (con `applyTo`) y
+`.github/prompts/*.prompt.md`.
+
+### OpenAI Codex
+Codex lee `AGENTS.md` de forma nativa (no necesita adaptador propio). Si activas el target `codex`, además se
+genera `.codex/config.toml` con los servidores MCP a nivel de proyecto (p. ej. context7). El Codex CLI es de
+terminal y multiplataforma, así que conviven con cualquier IDE (incluido Visual Studio).
 
 ## Multi-repo
 

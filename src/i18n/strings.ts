@@ -23,6 +23,7 @@ export interface Strings {
     claudeSettings: string;
     copilot: string;
     vscodeMcp: string;
+    codexConfig: string;
     tsInstructions: string;
     editorconfig: string;
     gitattributes: string;
@@ -46,6 +47,7 @@ const en: Strings = {
     claudeSettings: "Claude Code settings (permissions, hooks, env).",
     copilot: "Copilot repo-wide instructions (mirror of AGENTS.md).",
     vscodeMcp: "MCP servers for VS Code / Copilot.",
+    codexConfig: "MCP servers for Codex (.codex/config.toml; AGENTS.md is its instructions).",
     tsInstructions: "Path-scoped Copilot rules for TypeScript files.",
     editorconfig: "Editor formatting & encoding (UTF-8/LF).",
     gitattributes: "Git line-ending normalization.",
@@ -80,6 +82,7 @@ const es: Strings = {
     claudeSettings: "Ajustes de Claude Code (permisos, hooks, env).",
     copilot: "Instrucciones de Copilot para el repo (espejo de AGENTS.md).",
     vscodeMcp: "Servidores MCP para VS Code / Copilot.",
+    codexConfig: "Servidores MCP para Codex (.codex/config.toml; AGENTS.md son sus instrucciones).",
     tsInstructions: "Reglas de Copilot con ámbito para ficheros TypeScript.",
     editorconfig: "Formato y codificación del editor (UTF-8/LF).",
     gitattributes: "Normalización de fin de línea en Git.",
