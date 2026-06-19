@@ -1,7 +1,8 @@
 # Spec — Workspace configuration (current truth)
 
-Stable specification of how a workspace is configured. Folded from change
-`0001-guided-config-ux` (Phase 1 + multi-repo schema). Update this file as the capability evolves.
+Stable specification of how a workspace is configured. Folded from changes
+`0001-guided-config-ux` (Phase 1 + multi-repo schema), `0002-wizard-modes`, and
+`0003-per-repo-generation`. Update this file as the capability evolves.
 
 ## Sources of truth
 - **Module registry** (`src/modules/registry.ts`) is the **single source** of selectable stack modules
@@ -37,15 +38,35 @@ Stable specification of how a workspace is configured. Folded from change
   - Config assembly is a pure, shared `buildConfig(inputs, detected)` (`src/commands/wizard.ts`);
     `simpleDefaults(detected, basics)` fills the Simple inputs.
 
-## Multi-repo (schema foundation)
+## Multi-repo (schema + generation)
 - The config accepts an optional, additive `repos[]` (`RepoSchema`: `path`, optional `name`, optional
   `stack`). Empty `repos[]` ⇒ single-repo (this directory). Existing single-repo configs are unaffected.
 - `resolveRepos(config)` normalizes both cases to one shape: empty → `[{ path: ".", name, stack: root }]`;
-  otherwise each repo's effective stack is its own `stack` or the root default. Downstream per-repo logic
-  iterates `resolveRepos()`. (Per-repo generation/distribution is a future phase.)
+  otherwise each repo's effective stack is its own `stack` or the root default.
+- **Per-repo generation** (change 0003) wires `resolveRepos()` into `generate()`. Generation splits into:
+  - **Workspace-level** (root, once, composed over `unionStack(config)` so it covers every repo's stack):
+    `AGENTS.md`, the root `CLAUDE.md` bridge (`@AGENTS.md`), Copilot instructions + the TS path-scoped
+    instruction, `.mcp.json`/`.vscode/mcp.json`, `.claude/settings.json` + safety hook, SDD module, vendored
+    workflow skills, **non-stack** skill packs (sdd-*/corp-*), living docs, docs index, governance,
+    guides/learning/VS Code, scope/format files, `AI-WORKSPACE.md` (rendered last).
+  - **Repo-level** (per `resolveRepos()` entry, over the repo's effective stack): a child `CLAUDE.md` that
+    imports the root via `agentsImportPath(path)` (`a/` → `@../AGENTS.md`), and the **stack-bound** skill
+    packs for that repo. Empty `repos[]` ⇒ the single `.` entry adds stack packs at the root, byte-identical
+    to single-repo output.
+- This matches each tool's discovery model: Claude reads `CLAUDE.md` (not `AGENTS.md`) hierarchically and
+  `.claude/skills/` nested under the cwd → per-repo Claude adapter + skills; Copilot reads one workspace-root
+  instructions file (no nested discovery) and MCP/settings are project-root scoped → those stay
+  workspace-level. `doctor` validates each child's `CLAUDE.md` and the root once.
+- **Out of scope (future):** per-repo *distribution* (`ai-workspace package` per repo); per-repo divergent
+  profile/company/SDD/language (today `RepoSchema` overrides `stack` only); per-repo Copilot `applyTo`
+  path-scoping.
 
 ## Acceptance (enforced)
 - Wizard options derive from the registry (`config.test.js`, `registry.test.js`, build).
 - `configure-workspace` skill + `/configure` are generated and routed (`generate.test.js`).
 - Single-repo configs validate unchanged; `repos[]` validates; `resolveRepos` normalizes (`config.test.js`).
-- Generation is idempotent and preserves out-of-band user text (`invariants.test.js`).
+- Per-repo generation: root canonical + per-child adapter importing `@../AGENTS.md`, stack packs placed under
+  the matching child only, union routing in the root `AGENTS.md`; multi-repo generation is idempotent
+  (`multi-repo.test.js`).
+- Generation is idempotent and preserves out-of-band user text; single-repo `AGENTS.md` is byte-identical to
+  the captured baseline (`invariants.test.js`, `block-manifest.test.js`).

@@ -2,6 +2,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import pc from "picocolors";
 import { loadConfig } from "../config/loader.js";
+import { resolveRepos, unionStack } from "../config/schema.js";
 import { estimateTokens } from "../util/tokens.js";
 import { composeBlocks } from "../generate/agents.js";
 import { setLocale } from "../render/engine.js";
@@ -34,7 +35,7 @@ export function runDoctor(cwd: string): void {
       message: `AGENTS.md ≈ ${tokens} tokens (budget ${budget}).`,
     });
 
-    const expected = new Set(composeBlocks(config).map((b) => b.id));
+    const expected = new Set(composeBlocks(unionStack(config)).map((b) => b.id));
     const present = [...agents.matchAll(/ai-workspace:begin:([\w-]+)/g)].map((m) => m[1]);
     const orphaned = present.filter((id) => !expected.has(id) && !EXTRA_KNOWN_BLOCKS.has(id));
     if (orphaned.length) {
@@ -48,9 +49,19 @@ export function runDoctor(cwd: string): void {
   }
 
   // --- Target adapter files present ---
-  if (config.targets.includes("claude") && !existsSync(resolve(cwd, "CLAUDE.md"))) {
-    findings.push({ level: "warn", message: "CLAUDE.md missing for target 'claude'." });
+  // Claude: the root CLAUDE.md bridge, plus a per-repo CLAUDE.md for each linked child repo.
+  if (config.targets.includes("claude")) {
+    if (!existsSync(resolve(cwd, "CLAUDE.md"))) {
+      findings.push({ level: "warn", message: "CLAUDE.md missing for target 'claude'." });
+    }
+    for (const repo of resolveRepos(config)) {
+      if (repo.path === ".") continue;
+      if (!existsSync(resolve(cwd, repo.path, "CLAUDE.md"))) {
+        findings.push({ level: "warn", message: `CLAUDE.md missing for repo '${repo.name}' (${repo.path}).` });
+      }
+    }
   }
+  // Copilot reads a single workspace-root instructions file (no nested discovery) → check the root only.
   if (config.targets.includes("copilot") && !existsSync(resolve(cwd, ".github/copilot-instructions.md"))) {
     findings.push({ level: "warn", message: "copilot-instructions.md missing for target 'copilot'." });
   }

@@ -24,6 +24,10 @@ mantenimiento mínimo. **Sin datos de negocio reales.**
   filtrado por el perfil activo.
 - **Capas + composición declarativa** — orden y gating de bloques en `BLOCK_MANIFEST` (datos): añadir un
   bloque/principio = una fila. Contratos de extensión *enforced* en `test/invariants.test.js` (ADR 0002).
+- **Multi-repo (generación por repo)** — `repos[]` (additive) + `resolveRepos`/`unionStack`; `generate()`
+  separa **workspace-level** (root: `AGENTS.md` + CLAUDE.md puente + Copilot + MCP/settings + skills de
+  workflow + packs no-stack, sobre la unión de stacks) de **repo-level** (cada hijo: `CLAUDE.md` que importa
+  `@../AGENTS.md` + packs de su stack). `repos[]` vacío ⇒ idéntico a single-repo (cambio 0003).
 - **SDD** — una metodología con modos `lean`/`reasons`; skills `sdd-*` (schema, onboarding, audits,
   builder, migrate, spec-sync) on-demand. Eje `sdd.methodology: sdd | spdd` (`spdd ⇒ reasons`).
 - **Skill-packs de stack** — base vendorizada (MIT/Apache, `vendor/`) + `pack.yaml` con routing/gating;

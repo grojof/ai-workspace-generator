@@ -1,6 +1,6 @@
 import { existsSync, readFileSync } from "node:fs";
 import { relative, resolve } from "node:path";
-import type { Config } from "../config/schema.js";
+import { resolveRepos, unionStack, type Config } from "../config/schema.js";
 import { renderTemplate, setLocale } from "../render/engine.js";
 import { writeFile, writeIfMissing, writeManaged, type WriteResult } from "../render/writer.js";
 import { composeBlocks } from "./agents.js";
@@ -43,21 +43,71 @@ export interface GenerateResult {
   artifacts: Artifact[];
 }
 
+/**
+ * The `@`-import path a repo's `CLAUDE.md` uses to reach the root `AGENTS.md`. The root (`"."`) imports it
+ * directly; a child at `a/` imports `../AGENTS.md`, `x/y/` → `../../AGENTS.md`. POSIX separators (Claude Code
+ * resolves imports relative to the importing file).
+ */
+export function agentsImportPath(repoPath: string): string {
+  const norm = repoPath.replace(/\\/g, "/").replace(/^\.?\/+/, "").replace(/\/+$/, "");
+  if (!norm || norm === ".") return "AGENTS.md";
+  const depth = norm.split("/").length;
+  return `${"../".repeat(depth)}AGENTS.md`;
+}
+
 /** Render every artifact from config. Idempotent: safe to re-run (managed regions preserved). */
 export function generate(cwd: string, config: Config): GenerateResult {
   setLocale(config.language);
   const t = strings(config.language);
-  const es = config.language === "es";
   const artifacts: Artifact[] = [];
   const add = (r: WriteResult, desc: string) =>
     artifacts.push({ path: rel(cwd, r.path), desc, status: r.status });
 
-  const blocks = composeBlocks(config);
+  // Workspace-level: the canonical set written once at the root, composed over the union of every repo's
+  // stack (so AGENTS.md / Copilot / routing document the whole workspace).
+  generateWorkspace(cwd, config, add);
 
-  // 1. AGENTS.md — single source of truth, composed managed blocks.
+  // Repo-level: per resolved repo, the per-repo Claude adapter (child repos only — the root already has its
+  // CLAUDE.md bridge from the workspace phase) plus the stack-bound skill packs for that repo's stack.
+  // Empty repos[] yields a single "." repo → packs land at the root, matching single-repo output.
+  for (const repo of resolveRepos(config)) {
+    const repoConfig: Config = { ...config, stack: repo.stack };
+    const repoDir = resolve(cwd, repo.path);
+    if (repo.path !== "." && config.targets.includes("claude")) {
+      add(
+        writeManaged(resolve(repoDir, "CLAUDE.md"), "html", [
+          { id: "claude", content: renderTemplate("targets/claude/CLAUDE.md.eta", { ...repoConfig, agentsImport: agentsImportPath(repo.path) }) },
+        ]),
+        t.desc.claudeAdapter,
+      );
+    }
+    for (const r of generateStackPacks(repoDir, repoConfig, "repo")) add(r, t.desc.skill);
+  }
+
+  // Onboarding — rendered last so it can list every artifact across all repos.
+  const onboarding = renderTemplate("shared/ai-workspace.md.eta", { ...config, paths: docsPaths(config), artifacts });
+  add(writeFile(resolve(cwd, "AI-WORKSPACE.md"), onboarding), t.desc.onboarding);
+
+  return { artifacts };
+}
+
+/**
+ * Workspace-level artifacts: the canonical, shared set written once at the workspace root. Composed over the
+ * union of all repos' stacks so the root `AGENTS.md` (and its Copilot mirror + skill routing) covers every
+ * stack present anywhere in the workspace. For a single repo the union equals the root stack, so output is
+ * byte-identical to before this split.
+ */
+function generateWorkspace(cwd: string, config: Config, add: (r: WriteResult, desc: string) => void): void {
+  const t = strings(config.language);
+  const es = config.language === "es";
+  const wsConfig = unionStack(config);
+  const blocks = composeBlocks(wsConfig);
+
+  // 1. AGENTS.md — single source of truth, composed managed blocks (union stack).
   add(writeManaged(resolve(cwd, "AGENTS.md"), "html", blocks), t.desc.agents);
 
-  // 2. Claude adapter.
+  // 2. Claude adapter (root). Claude Code reads CLAUDE.md, not AGENTS.md, so the root gets a CLAUDE.md that
+  //    imports @AGENTS.md (a bridge — no stack skills here; child repos get their own in the repo phase).
   if (config.targets.includes("claude")) {
     add(
       writeManaged(resolve(cwd, "CLAUDE.md"), "html", [
@@ -70,7 +120,8 @@ export function generate(cwd: string, config: Config): GenerateResult {
     for (const r of generateSafetyHook(cwd, config)) add(r, t.desc.claudeSettings);
   }
 
-  // 3. Copilot adapter — mirror of AGENTS.md body.
+  // 3. Copilot adapter — mirror of AGENTS.md body (union stack). Copilot reads a single workspace-root file
+  //    (no nested discovery), so it stays workspace-level and covers every repo's stack.
   if (config.targets.includes("copilot")) {
     const copilotBlocks = [
       { id: "copilot-header", content: copilotHeader(es) },
@@ -79,8 +130,8 @@ export function generate(cwd: string, config: Config): GenerateResult {
     add(writeManaged(resolve(cwd, ".github/copilot-instructions.md"), "html", copilotBlocks), t.desc.copilot);
     add(buildVscodeMcpFile(cwd, config), t.desc.vscodeMcp);
 
-    // Path-scoped instruction for TypeScript, when present.
-    if (config.stack.languages.some((l) => l.id === "typescript")) {
+    // Path-scoped instruction for TypeScript, when present in any repo's stack.
+    if (wsConfig.stack.languages.some((l) => l.id === "typescript")) {
       const tsInstr = es
         ? [
             "---",
@@ -121,10 +172,10 @@ export function generate(cwd: string, config: Config): GenerateResult {
   // 5. Scope / ignore.
   for (const r of generateScope(cwd, config)) add(r, t.desc.ignore);
 
-  // 6. SDD module + vendored skills.
+  // 6. SDD module + vendored workflow skills + workspace (non-stack) packs (sdd-*/corp-*).
   for (const r of generateSdd(cwd, config)) add(r, t.desc.sdd);
   for (const r of generateSkills(cwd, config)) add(r, t.desc.skill);
-  for (const r of generateStackPacks(cwd, config)) add(r, t.desc.skill);
+  for (const r of generateStackPacks(cwd, config, "workspace")) add(r, t.desc.skill);
 
   // 7. Living docs + docs/ structure index.
   for (const r of generateLivingDocs(cwd, config)) add(r, t.desc.livingDocs);
@@ -139,12 +190,6 @@ export function generate(cwd: string, config: Config): GenerateResult {
   for (const r of generateGuides(cwd, config)) add(r, t.desc.skill);
   for (const r of generateVscode(cwd, config)) add(r, t.desc.vscodeExtensions);
   for (const r of generateLearning(cwd, config)) add(r, t.desc.skill);
-
-  // 9. Onboarding — rendered last so it can list everything.
-  const onboarding = renderTemplate("shared/ai-workspace.md.eta", { ...config, paths: docsPaths(config), artifacts });
-  add(writeFile(resolve(cwd, "AI-WORKSPACE.md"), onboarding), t.desc.onboarding);
-
-  return { artifacts };
 }
 
 function buildVscodeMcpFile(cwd: string, config: Config): WriteResult {

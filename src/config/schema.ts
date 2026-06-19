@@ -250,6 +250,32 @@ export function resolveRepos(config: Config): ResolvedRepo[] {
   return config.repos.map((r) => ({ path: r.path, name: r.name ?? r.path, stack: r.stack ?? config.stack }));
 }
 
+/**
+ * A config whose `stack` is the **union** of every resolved repo's effective stack (de-duped by `id`,
+ * keeping the first occurrence). Workspace-level artifacts (root `AGENTS.md`, Copilot mirror, skill routing)
+ * are composed over this so they document every stack present anywhere in the workspace. For a single repo
+ * the union equals the root stack, so output is unchanged.
+ */
+export function unionStack(config: Config): Config {
+  const languages: Config["stack"]["languages"] = [];
+  const frameworks: Config["stack"]["frameworks"] = [];
+  const environments: Config["stack"]["environments"] = [];
+  const seen = { languages: new Set<string>(), frameworks: new Set<string>(), environments: new Set<string>() };
+  const push = <T extends { id: string }>(into: T[], set: Set<string>, items: readonly T[]) => {
+    for (const item of items) {
+      if (set.has(item.id)) continue;
+      set.add(item.id);
+      into.push(item);
+    }
+  };
+  for (const repo of resolveRepos(config)) {
+    push(languages, seen.languages, repo.stack.languages);
+    push(frameworks, seen.frameworks, repo.stack.frameworks);
+    push(environments, seen.environments, repo.stack.environments);
+  }
+  return { ...config, stack: { ...config.stack, languages, frameworks, environments } };
+}
+
 export type Profile = z.infer<typeof ProfileSchema>;
 export type Docs = z.infer<typeof DocsSchema>;
 export type Distribution = z.infer<typeof DistributionSchema>;
