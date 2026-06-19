@@ -71,6 +71,7 @@ export function runPackage(cwd: string): void {
   const pluginDir = resolve(cwd, "plugins", plugin);
   const skillsSrc = resolve(cwd, ".claude/skills");
   const commandsSrc = resolve(cwd, ".claude/commands");
+  const agentsSrc = resolve(cwd, ".claude/agents");
   const out: Artifact[] = [];
 
   // 1. Umbrella plugin manifest.
@@ -87,6 +88,12 @@ export function runPackage(cwd: string): void {
   }
   for (const f of listFiles(commandsSrc)) {
     out.push(writeText(cwd, resolve(pluginDir, "commands", relative(commandsSrc, f)), readFileSync(f, "utf8"), "plugin command"));
+  }
+  // Companion subagents (e.g. from stack packs) into the plugin (agents/), if any were generated.
+  if (existsSync(agentsSrc)) {
+    for (const f of listFiles(agentsSrc)) {
+      out.push(writeText(cwd, resolve(pluginDir, "agents", relative(agentsSrc, f)), readFileSync(f, "utf8"), "plugin agent"));
+    }
   }
 
   // 3. Root marketplace catalog — this repo is the marketplace.
