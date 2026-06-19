@@ -438,6 +438,36 @@ test("configure-workspace skill + /configure command are generated and routed", 
   }
 });
 
+test("package (0004): multi-repo aggregates root + child skills/agents into one umbrella plugin; idempotent", () => {
+  const cwd = tmpRepo();
+  try {
+    writeFileSync(
+      join(cwd, "workspace.config.yaml"),
+      "project:\n  name: Multi Workspace\nprofile:\n  userType: technical\n  experience: advanced\nrepos:\n  - path: app-a\n    stack:\n      environments:\n        - id: odoo\n          version: latest\n  - path: app-b\n    stack:\n      frameworks:\n        - id: react\n          version: latest\n",
+    );
+    runPackage(cwd);
+    const plug = resolve(cwd, "plugins/multi-workspace");
+    // Root workflow skill + each child's stack skills all land in the single umbrella plugin.
+    assert.ok(existsSync(resolve(plug, "skills/living-docs/SKILL.md")), "root workflow skill missing");
+    assert.ok(existsSync(resolve(plug, "skills/odoo-18.0/SKILL.md")), "app-a odoo skill missing");
+    assert.ok(existsSync(resolve(plug, "skills/frontend-ui-dark-ts/SKILL.md")), "app-b react skill missing");
+    // Companion subagents from a child's stack pack are aggregated too.
+    assert.ok(existsSync(resolve(plug, "agents/odoo-code-review.md")), "app-a companion agent missing");
+    // Org zips + install guide reflect the aggregated set.
+    assert.ok(existsSync(resolve(cwd, "dist/org-skills/odoo-18.0.zip")));
+    assert.ok(existsSync(resolve(cwd, "dist/org-skills/frontend-ui-dark-ts.zip")));
+    const install = readFileSync(resolve(cwd, "dist/INSTALL.md"), "utf8");
+    assert.match(install, /odoo-18\.0/);
+    assert.match(install, /frontend-ui-dark-ts/);
+    // Idempotent: a second package re-writes identical bytes.
+    const zipBefore = readFileSync(resolve(cwd, "dist/org-skills/odoo-18.0.zip"));
+    runPackage(cwd);
+    assert.ok(readFileSync(resolve(cwd, "dist/org-skills/odoo-18.0.zip")).equals(zipBefore));
+  } finally {
+    rmSync(cwd, { recursive: true, force: true });
+  }
+});
+
 test("commit-msg hook is generated and blocks co-author", () => {
   const cwd = tmpRepo();
   try {

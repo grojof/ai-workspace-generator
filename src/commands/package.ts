@@ -1,8 +1,9 @@
-import { existsSync, readdirSync, readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, writeFileSync, mkdirSync, lstatSync } from "node:fs";
 import { execSync } from "node:child_process";
 import { resolve, join, relative, dirname } from "node:path";
 import pc from "picocolors";
 import { loadConfig } from "../config/loader.js";
+import { resolveRepos, type Config } from "../config/schema.js";
 import { generate, type Artifact } from "../generate/index.js";
 import { printArtifacts } from "../util/report.js";
 import { names, pluginManifest, marketplaceManifest, installDoc } from "../generate/packaging.js";
@@ -21,6 +22,53 @@ function listFiles(dir: string): string[] {
     else out.push(p);
   }
   return out;
+}
+
+/**
+ * Distribution source roots: the workspace root, then each linked child repo (`path !== "."`). Empty
+ * `repos[]` ⇒ just the root, so single-repo packaging is unchanged. Multi-repo (0004) aggregates the
+ * per-repo `.claude/` outputs that 0003 places under each child.
+ */
+function sourceRoots(cwd: string, config: Config): string[] {
+  return [cwd, ...resolveRepos(config).filter((r) => r.path !== ".").map((r) => resolve(cwd, r.path))];
+}
+
+/**
+ * Top-level entries (skill dirs, command/agent files) under `<root>/<subdir>` across all source roots,
+ * de-duplicated by name with **first-root-wins** (root before children, children in `resolveRepos` order).
+ */
+function collectEntries(roots: string[], subdir: string): Array<{ name: string; path: string }> {
+  const seen = new Set<string>();
+  const out: Array<{ name: string; path: string }> = [];
+  for (const root of roots) {
+    const base = resolve(root, subdir);
+    if (!existsSync(base)) continue;
+    for (const e of readdirSync(base, { withFileTypes: true })) {
+      if (seen.has(e.name)) continue;
+      seen.add(e.name);
+      out.push({ name: e.name, path: join(base, e.name) });
+    }
+  }
+  return out;
+}
+
+/**
+ * Project a de-duplicated top-level tree (`<root>/<subdir>` across source roots) into `destBase`, preserving
+ * each entry's relative layout. Binary assets are copied byte-for-byte; everything else as text.
+ */
+function projectTree(cwd: string, roots: string[], subdir: string, destBase: string, desc: string, out: Artifact[]): void {
+  for (const { name, path } of collectEntries(roots, subdir)) {
+    const files = lstatSync(path).isDirectory() ? listFiles(path) : [path];
+    for (const f of files) {
+      const rel = f === path ? name : join(name, relative(path, f));
+      const dest = resolve(destBase, rel);
+      out.push(
+        BINARY_ASSET.test(f)
+          ? writeBytes(cwd, dest, readFileSync(f), `${desc} asset`)
+          : writeText(cwd, dest, readFileSync(f, "utf8"), desc),
+      );
+    }
+  }
 }
 
 /** Write bytes, reporting created/updated/unchanged (deterministic → re-run is a no-op). */
@@ -69,52 +117,35 @@ export function runPackage(cwd: string): void {
 
   const { plugin } = names(config);
   const pluginDir = resolve(cwd, "plugins", plugin);
-  const skillsSrc = resolve(cwd, ".claude/skills");
-  const commandsSrc = resolve(cwd, ".claude/commands");
-  const agentsSrc = resolve(cwd, ".claude/agents");
+  // Aggregate distributable sources from the workspace root + every linked child repo (0004). 0003 places
+  // per-repo stack skills (and their companion agents) under each child's `.claude/`.
+  const roots = sourceRoots(cwd, config);
   const out: Artifact[] = [];
 
   // 1. Umbrella plugin manifest.
   out.push(writeText(cwd, resolve(pluginDir, ".claude-plugin/plugin.json"), JSON.stringify(pluginManifest(config), null, 2), "plugin manifest"));
 
-  // 2. Project skills + commands into the plugin (skills/, commands/). Binary assets are copied byte-for-byte.
-  for (const f of listFiles(skillsSrc)) {
-    const dest = resolve(pluginDir, "skills", relative(skillsSrc, f));
-    if (BINARY_ASSET.test(f)) {
-      out.push(writeBytes(cwd, dest, readFileSync(f), "plugin skill asset"));
-      continue;
-    }
-    out.push(writeText(cwd, dest, readFileSync(f, "utf8"), "plugin skill"));
-  }
-  for (const f of listFiles(commandsSrc)) {
-    out.push(writeText(cwd, resolve(pluginDir, "commands", relative(commandsSrc, f)), readFileSync(f, "utf8"), "plugin command"));
-  }
-  // Companion subagents (e.g. from stack packs) into the plugin (agents/), if any were generated.
-  if (existsSync(agentsSrc)) {
-    for (const f of listFiles(agentsSrc)) {
-      out.push(writeText(cwd, resolve(pluginDir, "agents", relative(agentsSrc, f)), readFileSync(f, "utf8"), "plugin agent"));
-    }
-  }
+  // 2. Project skills + commands + companion agents into the plugin, aggregated + deduped across all roots.
+  projectTree(cwd, roots, ".claude/skills", resolve(pluginDir, "skills"), "plugin skill", out);
+  projectTree(cwd, roots, ".claude/commands", resolve(pluginDir, "commands"), "plugin command", out);
+  projectTree(cwd, roots, ".claude/agents", resolve(pluginDir, "agents"), "plugin agent", out);
 
   // 3. Root marketplace catalog — this repo is the marketplace.
   out.push(writeText(cwd, resolve(cwd, ".claude-plugin/marketplace.json"), JSON.stringify(marketplaceManifest(config), null, 2), "marketplace catalog"));
 
-  // 4. Per-skill org zips (claude.ai Organization → Skills upload). SKILL.md at zip root.
+  // 4. Per-skill org zips (claude.ai Organization → Skills upload), from the aggregated skill set. SKILL.md
+  //    at zip root. De-duped by id (first-wins) so the same id from two repos yields a single zip.
   const skillIds: string[] = [];
-  if (existsSync(skillsSrc)) {
-    for (const e of readdirSync(skillsSrc, { withFileTypes: true })) {
-      if (!e.isDirectory() || e.name.startsWith("_")) continue;
-      const dir = join(skillsSrc, e.name);
-      if (!existsSync(join(dir, "SKILL.md"))) continue;
-      skillIds.push(e.name);
-      const entries: ZipEntry[] = listFiles(dir).map((f) => ({
-        name: relative(dir, f).split(/[\\/]/).join("/"),
-        data: readFileSync(f),
-      }));
-      // claude.ai requires SKILL.md at the zip root and reads it first; keep the rest deterministic for idempotency.
-      entries.sort((a, b) => (a.name === "SKILL.md" ? -1 : b.name === "SKILL.md" ? 1 : a.name.localeCompare(b.name)));
-      out.push(writeBytes(cwd, resolve(cwd, "dist/org-skills", `${e.name}.zip`), zipSync(entries), "org skill zip"));
-    }
+  for (const { name, path: dir } of collectEntries(roots, ".claude/skills")) {
+    if (name.startsWith("_") || !lstatSync(dir).isDirectory() || !existsSync(join(dir, "SKILL.md"))) continue;
+    skillIds.push(name);
+    const entries: ZipEntry[] = listFiles(dir).map((f) => ({
+      name: relative(dir, f).split(/[\\/]/).join("/"),
+      data: readFileSync(f),
+    }));
+    // claude.ai requires SKILL.md at the zip root and reads it first; keep the rest deterministic for idempotency.
+    entries.sort((a, b) => (a.name === "SKILL.md" ? -1 : b.name === "SKILL.md" ? 1 : a.name.localeCompare(b.name)));
+    out.push(writeBytes(cwd, resolve(cwd, "dist/org-skills", `${name}.zip`), zipSync(entries), "org skill zip"));
   }
 
   // 5. Install guide (three surfaces).

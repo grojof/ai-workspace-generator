@@ -32,7 +32,9 @@ mantenimiento mínimo. **Sin datos de negocio reales.**
   builder, migrate, spec-sync) on-demand. Eje `sdd.methodology: sdd | spdd` (`spdd ⇒ reasons`).
 - **Skill-packs de stack** — base vendorizada (MIT/Apache, `vendor/`) + `pack.yaml` con routing/gating;
   `ai-workspace skills sync` actualiza la base preservando overlays.
-- **Empaquetado** — `ai-workspace package` → plugin paraguas + marketplace privado + zips de skill.
+- **Empaquetado** — `ai-workspace package` → plugin paraguas + marketplace privado + zips de skill. En
+  multi-repo **agrega** skills/commands/agents del root + cada hijo (dedup primero-gana) en el mismo plugin
+  paraguas (cambio 0004).
 - **Hooks de gobernanza** — safety guard opt-in (`workflow.hooks.safetyGuard`).
 - **Company overlay (opcional)** — placeholder `templates/company/example/`; ningún dato de empresa real.
 
