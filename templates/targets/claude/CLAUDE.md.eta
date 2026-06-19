@@ -3,7 +3,7 @@
 The canonical guidance for this repo lives in **AGENTS.md**. It is imported below; do not duplicate
 rules here — edit `AGENTS.md` and run `ai-workspace sync`.
 
-@AGENTS.md
+@<%= it.agentsImport || "AGENTS.md" %>
 
 ## Claude-specific notes
 

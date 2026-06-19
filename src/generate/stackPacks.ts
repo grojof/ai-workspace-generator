@@ -129,6 +129,12 @@ export function packMatchesStack(manifest: PackManifest, config: Config): boolea
   );
 }
 
+/** Whether a pack declares any stack binding (language/framework/environment). Drives the workspace/repo split. */
+export function hasStackBinding(manifest: PackManifest): boolean {
+  const b = manifest.stackBinding;
+  return b.environments.length > 0 || b.languages.length > 0 || b.frameworks.length > 0;
+}
+
 /** Evaluate the declarative `gating` (ANDed). Missing gating = always true. */
 function gatingHolds(manifest: PackManifest, config: Config): boolean {
   const g = manifest.gating;
@@ -153,9 +159,7 @@ function gatingHolds(manifest: PackManifest, config: Config): boolean {
  */
 function packApplies(manifest: PackManifest, config: Config): boolean {
   if (!manifest.profile.userType.includes(config.profile.userType)) return false;
-  const b = manifest.stackBinding;
-  const hasBinding = b.environments.length > 0 || b.languages.length > 0 || b.frameworks.length > 0;
-  if (hasBinding && !packMatchesStack(manifest, config)) return false;
+  if (hasStackBinding(manifest) && !packMatchesStack(manifest, config)) return false;
   return gatingHolds(manifest, config);
 }
 
@@ -263,16 +267,27 @@ function listFiles(dir: string): string[] {
 }
 
 /**
+ * Which packs a generation phase emits. "workspace" = packs with no stack binding (sdd/corp) at the
+ * workspace root; "repo" = stack-bound packs per repo, gated by its effective stack; "all" = both
+ * (single-dir generation; the default keeps any external caller working).
+ */
+export type PackScope = "all" | "workspace" | "repo";
+
+/**
  * Copy every stack pack whose binding matches the config (and whose profile is allowed) into
  * `.claude/skills/<id>/`. Claude target only. Idempotent (managed writes report unchanged on re-run).
+ * `scope` partitions packs for multi-repo generation: non-stack packs are workspace-level, stack-bound
+ * packs are per-repo (see {@link PackScope}).
  */
-export function generateStackPacks(cwd: string, config: Config): WriteResult[] {
+export function generateStackPacks(cwd: string, config: Config, scope: PackScope = "all"): WriteResult[] {
   const results: WriteResult[] = [];
   if (!config.targets.includes("claude")) return results;
 
   const tokens = packTokens(config);
   for (const { manifest, dir } of loadPacks()) {
     if (!packApplies(manifest, config) || !packSelected(manifest, config)) continue;
+    if (scope === "workspace" && hasStackBinding(manifest)) continue;
+    if (scope === "repo" && !hasStackBinding(manifest)) continue;
     for (const file of listFiles(dir)) {
       const name = basename(file);
       if (name === "pack.yaml") continue; // routing/gating metadata — not shipped to the workspace
