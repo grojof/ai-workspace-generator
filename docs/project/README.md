@@ -4,6 +4,8 @@ Guías para **usar, mantener y extender** el generador `ai-workspace`.
 
 ## Para usuarios
 - Empieza por el **[README raíz](../../README.md)** — qué es, instalación, uso y comandos (resumen con enlaces).
+- **[Guía de uso](USAGE.md)** — referencia detallada de la CLI (cada comando con opciones), el fichero
+  `workspace.config.yaml` y el uso en **multi-repo**.
 - Tras ejecutar `init`, cada repo generado incluye además un `AI-WORKSPACE.md` que explica su propia configuración.
 
 ## Proyecto
