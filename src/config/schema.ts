@@ -113,6 +113,12 @@ export const DistributionSchema = z.object({
   marketplace: z.string().optional(),
   /** Plugin/marketplace owner shown in manifests. Default: org name or project.name. */
   owner: z.string().optional(),
+  /**
+   * Multi-repo distribution topology. `false` (default) = one **umbrella** plugin aggregating every repo.
+   * `true` = one plugin **per child repo** (root workflow skills + that repo's stack skills), listed in a
+   * multi-plugin marketplace. Only meaningful when `repos[]` is populated.
+   */
+  perRepo: z.boolean().default(false),
 });
 
 export const IngestSchema = z.object({

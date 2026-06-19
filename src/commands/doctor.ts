@@ -6,7 +6,7 @@ import { resolveRepos, unionStack } from "../config/schema.js";
 import { estimateTokens } from "../util/tokens.js";
 import { composeBlocks } from "../generate/agents.js";
 import { setLocale } from "../render/engine.js";
-import { MCPS } from "../modules/registry.js";
+import { MCPS, find } from "../modules/registry.js";
 
 interface Finding {
   level: "ok" | "warn" | "error";
@@ -74,6 +74,25 @@ export function runDoctor(cwd: string): void {
       level: "warn",
       message: `Unknown MCP server(s): ${unknownMcp.join(", ")} (not in registry; no config emitted).`,
     });
+  }
+
+  // --- Stack ids are known to the registry (parity with the MCP check; covers every repo via the union) ---
+  const stack = unionStack(config).stack;
+  const unknownStack: string[] = [];
+  for (const [type, items] of [
+    ["language", stack.languages],
+    ["framework", stack.frameworks],
+    ["environment", stack.environments],
+  ] as const) {
+    for (const it of items) if (!find(type, it.id)) unknownStack.push(`${type} "${it.id}"`);
+  }
+  if (unknownStack.length) {
+    findings.push({
+      level: "warn",
+      message: `Unknown stack module(s): ${unknownStack.join(", ")} (not in registry; a generic block is emitted).`,
+    });
+  } else {
+    findings.push({ level: "ok", message: "All stack modules are known to the registry." });
   }
 
   // --- SDD backend coherence ---

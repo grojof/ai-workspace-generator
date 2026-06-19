@@ -75,9 +75,9 @@ program
 
 program
   .command("add")
-  .description("Add a module (language|framework|mcp) to the config and re-render.")
-  .argument("<type>", "module type: language | framework | mcp")
-  .argument("<id>", "module id, e.g. go, nextjs, context7")
+  .description("Add a module (language|framework|environment|mcp) to the config and re-render.")
+  .argument("<type>", "module type: language | framework | environment | mcp")
+  .argument("<id>", "module id, e.g. go, nextjs, docker, context7")
   .option("--module-version <version>", "version to pin", "latest")
   .action((type, id, opts) => {
     try {
@@ -90,9 +90,9 @@ program
 
 program
   .command("remove")
-  .description("Remove a module (language|framework|mcp) from the config and re-render.")
-  .argument("<type>", "module type: language | framework | mcp")
-  .argument("<id>", "module id, e.g. go, nextjs, context7")
+  .description("Remove a module (language|framework|environment|mcp) from the config and re-render.")
+  .argument("<type>", "module type: language | framework | environment | mcp")
+  .argument("<id>", "module id, e.g. go, nextjs, docker, context7")
   .action((type, id) => {
     try {
       runRemove(process.cwd(), type, id);

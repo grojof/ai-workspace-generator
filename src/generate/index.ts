@@ -1,6 +1,6 @@
 import { existsSync, readFileSync } from "node:fs";
 import { relative, resolve } from "node:path";
-import { resolveRepos, unionStack, type Config } from "../config/schema.js";
+import { resolveRepos, unionStack, type Config, type ResolvedRepo } from "../config/schema.js";
 import { renderTemplate, setLocale } from "../render/engine.js";
 import { writeFile, writeIfMissing, writeManaged, type WriteResult } from "../render/writer.js";
 import { composeBlocks } from "./agents.js";
@@ -53,6 +53,32 @@ export function agentsImportPath(repoPath: string): string {
   if (!norm || norm === ".") return "AGENTS.md";
   const depth = norm.split("/").length;
   return `${"../".repeat(depth)}AGENTS.md`;
+}
+
+/** kebab-case slug for a repo path, used as the Copilot per-repo instruction filename. */
+function repoSlug(repoPath: string): string {
+  return repoPath.replace(/\\/g, "/").replace(/^\.?\/+/, "").replace(/\/+$/, "").replace(/[^\w.-]+/g, "-").toLowerCase() || "repo";
+}
+
+/** A Copilot path-scoped instruction (`applyTo` glob) for one child repo — Copilot's native per-path hook. */
+function repoInstruction(repo: ResolvedRepo, es: boolean): string {
+  const stack = [
+    ...repo.stack.languages.map((l) => l.id),
+    ...repo.stack.frameworks.map((f) => f.id),
+    ...repo.stack.environments.map((e) => e.id),
+  ].join(", ") || (es ? "(sin stack específico)" : "(no specific stack)");
+  const body = es
+    ? [
+        `Estás trabajando en el repo **${repo.name}** (\`${repo.path}/\`) de este workspace multi-repo.`,
+        `Stack: ${stack}. Aplica las capas correspondientes de \`AGENTS.md\` (Capa 1+). Las skills`,
+        `específicas de su stack viven en \`${repo.path}/.claude/skills\`.`,
+      ].join("\n")
+    : [
+        `You are working in the **${repo.name}** repo (\`${repo.path}/\`) of this multi-repo workspace.`,
+        `Stack: ${stack}. Apply the matching \`AGENTS.md\` layers (Layer 1+). Stack-specific skills live`,
+        `under \`${repo.path}/.claude/skills\`.`,
+      ].join("\n");
+  return ["---", `applyTo: "${repo.path}/**"`, "---", "", body, ""].join("\n");
 }
 
 /** Render every artifact from config. Idempotent: safe to re-run (managed regions preserved). */
@@ -151,6 +177,16 @@ function generateWorkspace(cwd: string, config: Config, add: (r: WriteResult, de
           ].join("\n");
       add(writeFile(resolve(cwd, ".github/instructions/typescript.instructions.md"), tsInstr), t.desc.tsInstructions);
     }
+
+    // Per-repo Copilot guidance: Copilot has no nested discovery, so each child repo gets a path-scoped
+    // `applyTo` instruction at the workspace root. Single-repo (empty repos[]) emits none.
+    for (const repo of resolveRepos(config)) {
+      if (repo.path === ".") continue;
+      add(
+        writeFile(resolve(cwd, ".github/instructions", `${repoSlug(repo.path)}.instructions.md`), repoInstruction(repo, es)),
+        t.desc.tsInstructions,
+      );
+    }
   }
 
   // 4. Shared format/encoding files.
@@ -188,7 +224,7 @@ function generateWorkspace(cwd: string, config: Config, add: (r: WriteResult, de
 
   // 8. Learner guides + VS Code setup + learning mode (tutor).
   for (const r of generateGuides(cwd, config)) add(r, t.desc.skill);
-  for (const r of generateVscode(cwd, config)) add(r, t.desc.vscodeExtensions);
+  for (const r of generateVscode(cwd, wsConfig)) add(r, t.desc.vscodeExtensions);
   for (const r of generateLearning(cwd, config)) add(r, t.desc.skill);
 }
 
