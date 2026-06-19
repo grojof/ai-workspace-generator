@@ -46,6 +46,7 @@ mantenimiento mínimo. **Sin datos de negocio reales.**
 
 - **Idioma:** artefactos que consume la IA en **inglés siempre**; `config.language` rige el contenido humano.
 - **Commits:** Conventional Commits, identidad del usuario, **sin** `Co-Authored-By`.
-- **CI:** workflows/Dependabot **desactivados temporalmente** (`.disabled`) durante la estabilización pública.
+- **CI:** workflows/Dependabot **activos** (`.github/workflows/ci.yml` + `.github/dependabot.yml`): CI corre
+  `typecheck` + `test` en Node 20/22 en cada push a `main` y en PRs; Dependabot semanal (actions + dev deps).
 - **Material de origen:** el **texto** de `vendor/` (mirror upstream) se versiona; los binarios están gitignorados.
 - **Extensión a empresa:** fuera de este repo público; se trae como overlays propios (ver [EXTENDING](../../project/EXTENDING.md)).
