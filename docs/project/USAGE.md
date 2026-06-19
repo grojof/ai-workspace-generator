@@ -1,18 +1,20 @@
-# Guía de uso
+<!-- 🇬🇧 English (you are here) · [🇪🇸 Español](USAGE.es.md) -->
 
-> Cómo usar la **CLI `ai-workspace`** en el día a día: configurar un repo, mantenerlo, trabajar en
-> **multi-repo** y distribuir el resultado. Para *cómo se instala* lo distribuido, ver
-> **[Distribución](DISTRIBUTION.md)**; para *cómo funciona por dentro*, ver **[Arquitectura](ARCHITECTURE.md)**.
+# Usage guide
 
-La CLI es la herramienta de **configuración y mantenimiento** del workspace. Una vez configurado el repo,
-**no necesitas memorizar comandos**: hablas con la IA en lenguaje natural y ella aplica el flujo correcto
-(SDD, commits, etc.). La CLI la usas para el arranque (`init`), para regenerar tras editar reglas (`sync`) y
-para tareas puntuales (añadir un módulo, actualizar plantillas, empaquetar).
+> How to use the **`ai-workspace` CLI** day to day: configure a repo, maintain it, work in **multi-repo**, and
+> distribute the result. For *how the output is installed*, see **[Distribution](DISTRIBUTION.md)**; for *how
+> it works inside*, see **[Architecture](ARCHITECTURE.md)**.
 
-## Requisitos e instalación
+The CLI is the workspace's **configuration and maintenance** tool. Once a repo is set up, **you don't need to
+memorize commands**: you talk to the AI in plain language and it applies the right flow (SDD, commits, etc.).
+You use the CLI to bootstrap (`init`), to regenerate after editing rules (`sync`), and for one-off tasks (add
+a module, upgrade templates, package).
 
-**Node.js ≥ 20** y VS Code con Copilot y/o Claude Code. El paquete es `ai-workspace-generator`; el comando
-instalado es **`ai-workspace`**.
+## Requirements & install
+
+**Node.js ≥ 20** and VS Code with Copilot and/or Claude Code and/or Codex. The package is
+`ai-workspace-generator`; the installed command is **`ai-workspace`**.
 
 ```bash
 git clone https://github.com/grojof/ai-workspace-generator.git
@@ -20,114 +22,115 @@ cd ai-workspace-generator
 npm install && npm run build && npm link
 ```
 
-## Flujo de trabajo típico
+## Typical workflow
 
 ```bash
-cd /ruta/a/tu-repo
-ai-workspace init        # 1) asistente: autodetecta el stack, escribe workspace.config.yaml, genera todo
-                         # 2) abre el repo en VS Code (Copilot) o Claude Code
-# … editas reglas en AGENTS.md (fuera de los marcadores) o cambias workspace.config.yaml …
-ai-workspace sync        # 3) regenera los artefactos (idempotente: 0 ruido, respeta tu texto)
-ai-workspace doctor      # 4) lint: presupuesto de tokens, artefactos presentes, bloques huérfanos
+cd /path/to/your-repo
+ai-workspace init        # 1) wizard: auto-detect the stack, write workspace.config.yaml, generate everything
+                         # 2) open the repo in VS Code (Copilot), Claude Code or Codex
+# … edit rules in AGENTS.md (outside the markers) or change workspace.config.yaml …
+ai-workspace sync        # 3) regenerate the artifacts (idempotent: no noise, your text is preserved)
+ai-workspace doctor      # 4) lint: token budget, artifacts present, orphaned blocks
 ```
 
-Tras `init`, lee **`AI-WORKSPACE.md`**: el índice de todo lo generado.
+After `init`, read **`AI-WORKSPACE.md`**: the index of everything generated.
 
-> **Idempotencia.** Re-ejecutar `sync` no debe crear ni actualizar nada si la config no cambió. El texto que
-> escribas **fuera** de los marcadores `ai-workspace:begin/end` siempre sobrevive a la regeneración.
+> **Idempotency.** Re-running `sync` must not create or update anything if the config didn't change. Text you
+> write **outside** the `ai-workspace:begin/end` markers always survives regeneration.
 
-## Referencia de comandos
+## Command reference
 
-### `init` — asistente de configuración
-Detecta el stack, escribe `workspace.config.yaml` y renderiza los artefactos.
+### `init` — setup wizard
+Detects the stack, writes `workspace.config.yaml` and renders the artifacts.
 
-| Opción | Efecto |
+| Option | Effect |
 |--------|--------|
-| `--simple` | Pocas preguntas + defaults sensatos; **acepta el stack detectado**. |
-| `--advanced` | Asistente completo (controla cada capa). |
-| `-y, --yes` | Acepta defaults donde puede (implica `--simple`, no interactivo). |
-| `--from <paths...>` | Material de empresa existente a ingestar (se registra para `import`). |
+| `--simple` | Few questions + sensible defaults; **accepts the detected stack**. |
+| `--advanced` | Full wizard (control every layer). |
+| `-y, --yes` | Accept defaults where possible (implies `--simple`, non-interactive). |
+| `--from <paths...>` | Existing company material to ingest (recorded for `import`). |
 
-Resolución del modo: `--advanced` → avanzado; `--simple`/`--yes` → simple; si no, pregunta (Simple
-preseleccionado). La opción más rica es la skill guiada `/configure` (AI-first) dentro del editor.
+Mode resolution: `--advanced` → advanced; `--simple`/`--yes` → simple; otherwise it asks (Simple
+preselected). The richest path is the AI-guided `/configure` skill inside the editor.
 
-### `detect` — detectar el stack (solo lectura)
-Lee manifiestos (`package.json`, `pyproject.toml`, …) y **no escribe nada**.
+### `detect` — detect the stack (read-only)
+Reads manifests (`package.json`, `pyproject.toml`, …) and **writes nothing**.
 
 ```bash
-ai-workspace detect          # resumen legible
-ai-workspace detect --json   # JSON determinista (semilla para la skill configure-workspace / tooling)
+ai-workspace detect          # human-readable summary
+ai-workspace detect --json   # deterministic JSON (seed for the configure-workspace skill / tooling)
 ```
 
-### `sync` — regenerar
-Re-renderiza todos los artefactos desde `workspace.config.yaml`. Idempotente.
+### `sync` — regenerate
+Re-renders all artifacts from `workspace.config.yaml`. Idempotent.
 
-### `doctor` — lint del workspace
-Comprueba el presupuesto de tokens de `AGENTS.md`, la presencia de adaptadores (incl. el `CLAUDE.md` de cada
-repo hijo en multi-repo), MCP conocidos y bloques gestionados huérfanos.
+### `doctor` — lint the workspace
+Checks the `AGENTS.md` token budget, adapter presence (incl. each child repo's `CLAUDE.md` in multi-repo),
+known MCPs and orphaned managed blocks.
 
-### `add` / `remove` — módulos
-Añade o quita un módulo y regenera. `type` ∈ `language | framework | mcp`; `id` del catálogo (ver `list`).
+### `add` / `remove` — modules
+Add or remove a module and regenerate. `type` ∈ `language | framework | environment | mcp`; `id` from the
+catalog (see `list`).
 
 ```bash
 ai-workspace add language go
 ai-workspace add framework nextjs --module-version 15
-ai-workspace add mcp context7
+ai-workspace add environment docker
 ai-workspace remove framework nextjs
 ```
 
-### `list` — config + catálogo
-Muestra la config actual y el catálogo de módulos (activos vs disponibles), leído del **registro**
-(`src/modules/registry.ts`, fuente única).
+### `list` — config + catalog
+Shows the current config and the module catalog (enabled vs available), read from the **registry**
+(`src/modules/registry.ts`, the single source).
 
-### `import` — ingestar material existente
-Ingesta carpetas con material propio y prepara una checklist de reconciliación con context7.
+### `import` — ingest existing material
+Ingests folders with your own material and prepares a context7 reconciliation checklist.
 
 ```bash
-ai-workspace import ./docs-internas ./convenciones
+ai-workspace import ./internal-docs ./conventions
 ```
 
-### `upgrade` — actualizar plantillas
-Re-renderiza con las plantillas más recientes mostrando un diff primero.
+### `upgrade` — update templates
+Re-renders with the latest templates, showing a diff first.
 
 ```bash
-ai-workspace upgrade --check   # previsualiza sin escribir
-ai-workspace upgrade           # aplica
+ai-workspace upgrade --check   # preview without writing
+ai-workspace upgrade           # apply
 ```
 
-> Actualizar plantillas o dependencias es un cambio **deliberado** (Safety gate). Revisa el diff.
+> Upgrading templates or dependencies is a **deliberate** change (Safety gate). Review the diff.
 
-### `package` — empaquetar para distribuir
-Proyecta el workspace a un **plugin de Claude Code** + **marketplace privado** (este repo) + **zips de
-skill** para subir a una organización de claude.ai. En multi-repo **agrega** las skills de todos los repos.
-Detalle e instalación en **[Distribución](DISTRIBUTION.md)**.
+### `package` — package for distribution
+Projects the workspace into a **Claude Code plugin** + **private marketplace** (this repo) + **per-skill
+zips** to upload to a claude.ai organization. In multi-repo it **aggregates** every repo's skills. Detail and
+install in **[Distribution](DISTRIBUTION.md)**.
 
-### `skills sync` — actualizar skill-packs vendorizados
-Trae el upstream de skills (p. ej. `agent-skills`) a un ref fijado y hace diff contra la base vendorizada.
-Dry-run salvo `--apply`.
+### `skills sync` — update vendored skill-packs
+Pulls the upstream skill source (e.g. `agent-skills`) at a pinned ref and diffs against the vendored base.
+Dry-run unless `--apply`.
 
 ```bash
-ai-workspace skills sync                         # dry-run, último tag upstream
+ai-workspace skills sync                         # dry-run, latest upstream tag
 ai-workspace skills sync --source agent-skills --ref v1.2.3 --apply
 ```
 
-## El fichero `workspace.config.yaml`
+## The `workspace.config.yaml` file
 
-Es la **única entrada**. `AGENTS.md` es la salida canónica; el resto son proyecciones idempotentes. Campos
-principales (esquema completo y defaults en `src/config/schema.ts`):
+It is the **single input**. `AGENTS.md` is the canonical output; everything else is an idempotent projection.
+Main fields (full schema and defaults in `src/config/schema.ts`):
 
 ```yaml
 project:
-  name: Mi Proyecto
-  mode: existing        # new = greenfield (versiones estables) | existing = conservador
-  purpose: build        # build = software | learn = workspace tutor
+  name: My Project
+  mode: existing        # new = greenfield (stable versions) | existing = conservative
+  purpose: build        # build = software | learn = tutor workspace
 profile:
   userType: technical   # business | technical
   experience: advanced  # beginner | standard | advanced
-company: none           # none | example (o tu propia org como overlay)
-targets: [claude, copilot]   # claude | copilot | codex (uno o varios)
-vscode: true            # genera .vscode/ (extensions/settings/mcp); false para Visual Studio / no VS Code
-language: es            # idioma del contenido humano (la IA siempre consume inglés)
+company: none           # none | example (or your own org as an overlay)
+targets: [claude, copilot]   # claude | copilot | codex (one or more)
+vscode: true            # generate .vscode/ (extensions/settings/mcp); false for Visual Studio / non-VS-Code
+language: es            # language of human-facing content (the AI always consumes English)
 stack:
   languages:   [{ id: typescript, version: latest }]
   frameworks:  [{ id: react, version: latest }]
@@ -137,57 +140,57 @@ sdd:
   backend: files        # files | hybrid | none
   schema: lean          # lean | reasons
   methodology: sdd      # sdd | spdd  (spdd ⇒ schema: reasons)
-distribution:           # identidad estable para `package` (opcional)
+distribution:           # stable identity for `package` (optional)
   plugin: acme-ai-workspace
   marketplace: acme-tools
   owner: Acme IT
 mcp: [context7]
-skills: []              # lista explícita = allow-list; vacío = todas las recomendadas
+skills: []              # explicit list = allow-list; empty = all recommended
 workflow:
   safetyGate: true
   commits: { conventional: true, coAuthor: false, automate: with-approval, gitHook: true }
-  hooks: { safetyGuard: off }   # off | warn | block (hook PreToolUse, opt-in)
+  hooks: { safetyGuard: off }   # off | warn | block (PreToolUse hook, opt-in)
 livingDocs: true
-repos: []               # multi-repo (ver abajo)
+repos: []               # multi-repo (see below)
 ```
 
-> **Política de idioma:** todo lo que consume la IA (`AGENTS.md`, skills, routing) es **inglés siempre**;
-> `language` solo rige el contenido humano (`AI-WORKSPACE.md`, `docs/`).
+> **Language policy:** everything the AI consumes (`AGENTS.md`, skills, routing) is **always English**;
+> `language` only governs human-facing content (`AI-WORKSPACE.md`, `docs/`).
 
-## Targets (qué herramientas de IA) y editores
+## Targets (which AI tools) and editors
 
-`targets` decide qué adaptadores se generan (uno o varios):
+`targets` decides which adapters are generated (one or more):
 
-| Target | Qué recibe | Notas |
-|--------|-----------|-------|
-| `claude` | `CLAUDE.md` (importa `@AGENTS.md`) + skills `.claude/` + `.mcp.json` | Claude Code |
-| `copilot` | `.github/copilot-instructions.md` + `instructions/*.instructions.md` (+ `.vscode/mcp.json` si `vscode`) | **Funciona en VS Code y en Visual Studio** |
-| `codex` | **`AGENTS.md` es su fichero de instrucciones** (nativo) + `.codex/config.toml` (MCP) | OpenAI Codex (CLI/IDE), multiplataforma |
+| Target | What it gets | Notes |
+|--------|-------------|-------|
+| `claude` | `CLAUDE.md` (imports `@AGENTS.md`) + `.claude/` skills + `.mcp.json` | Claude Code |
+| `copilot` | `.github/copilot-instructions.md` + `instructions/*.instructions.md` (+ `.vscode/mcp.json` if `vscode`) | **Works in VS Code and Visual Studio** |
+| `codex` | **`AGENTS.md` is its instructions file** (native) + `.codex/config.toml` (MCP) | OpenAI Codex (CLI/IDE), cross-platform |
 
-- `AGENTS.md` se genera siempre (es la fuente única **y** el adaptador de Codex). Con `targets: [codex]`
-  obtienes solo `AGENTS.md` + `.codex/config.toml`, sin `CLAUDE.md` ni ficheros de Copilot.
-- **`vscode: false`** omite toda la carpeta `.vscode/` — útil si trabajas en **Visual Studio** o fuera de VS Code.
+- `AGENTS.md` is always generated (the single source of truth **and** Codex's adapter). With
+  `targets: [codex]` you get only `AGENTS.md` + `.codex/config.toml`, no `CLAUDE.md` or Copilot files.
+- **`vscode: false`** skips the whole `.vscode/` folder — useful on **Visual Studio** or outside VS Code.
 
-### GitHub Copilot en Visual Studio
-Visual Studio 2022 (17.10+) lee los mismos ficheros que se generan con el target `copilot`. Solo hay que
-activarlo una vez: **Tools → Options → GitHub → Copilot → Copilot Chat → "Enable custom instructions to be
-loaded from .github/copilot-instructions.md files and added to requests"**. A partir de ahí lee
-`.github/copilot-instructions.md`, `.github/instructions/*.instructions.md` (con `applyTo`) y
+### GitHub Copilot in Visual Studio
+Visual Studio 2022 (17.10+) reads the same files generated by the `copilot` target. Enable it once:
+**Tools → Options → GitHub → Copilot → Copilot Chat → "Enable custom instructions to be loaded from
+.github/copilot-instructions.md files and added to requests"**. From then on it reads
+`.github/copilot-instructions.md`, `.github/instructions/*.instructions.md` (with `applyTo`) and
 `.github/prompts/*.prompt.md`.
 
 ### OpenAI Codex
-Codex lee `AGENTS.md` de forma nativa (no necesita adaptador propio). Si activas el target `codex`, además se
-genera `.codex/config.toml` con los servidores MCP a nivel de proyecto (p. ej. context7). El Codex CLI es de
-terminal y multiplataforma, así que conviven con cualquier IDE (incluido Visual Studio).
+Codex reads `AGENTS.md` natively (no adapter of its own needed). If you enable the `codex` target, a
+`.codex/config.toml` is also generated with project-level MCP servers (e.g. context7). The Codex CLI is
+terminal-based and cross-platform, so it coexists with any IDE (including Visual Studio).
 
 ## Multi-repo
 
-Un mismo workspace puede gobernar **más de un repo** con el array opcional `repos[]`. Vacío = single-repo
-(este directorio). Es **aditivo**: las configs single-repo no se ven afectadas.
+One workspace can govern **more than one repo** via the optional `repos[]` array. Empty = single-repo (this
+directory). It is **additive**: single-repo configs are unaffected.
 
 ```yaml
-# workspace.config.yaml en la raíz del workspace
-project: { name: Plataforma }
+# workspace.config.yaml at the workspace root
+project: { name: Platform }
 repos:
   - path: app-api
     stack: { languages: [{ id: python, version: "3.12" }] }
@@ -195,48 +198,48 @@ repos:
     stack: { frameworks: [{ id: react, version: latest }] }
 ```
 
-`resolveRepos()` normaliza ambos casos. Cada repo tiene su **stack efectivo** (su `stack` o el del root).
+`resolveRepos()` normalizes both cases. Each repo has its **effective stack** (its own `stack` or the root's).
 
-### Qué se genera y dónde
+### What is generated, and where
 
-- **El root es coordinador.** Genera la **fuente única** y todo lo de workspace, compuesto sobre la **unión**
-  de los stacks de todos los repos: `AGENTS.md`, un `CLAUDE.md` puente (`@AGENTS.md`), instrucciones de
-  Copilot, `.mcp.json`/settings, módulo SDD, skills de **workflow** (sdd/secure-commit…), packs **no-stack**,
-  docs vivas y gobernanza.
-- **Cada repo hijo** recibe su adaptador de Claude: un `CLAUDE.md` que **importa** el del root
-  (`@../AGENTS.md`) y los **skill-packs de su stack** (descubiertos de forma nativa por Claude Code al
-  trabajar en esa subcarpeta).
+- **The root is the coordinator.** It generates the **single source of truth** and all workspace-level output,
+  composed over the **union** of every repo's stack: `AGENTS.md`, a `CLAUDE.md` bridge (`@AGENTS.md`), Copilot
+  instructions, `.mcp.json`/settings, the SDD module, **workflow** skills (sdd/secure-commit…), **non-stack**
+  packs, living docs and governance.
+- **Each child repo** gets its Claude adapter: a `CLAUDE.md` that **imports** the root's (`@../AGENTS.md`) and
+  the **stack skill-packs** for its stack (discovered natively by Claude Code when working in that subfolder).
 
 ```mermaid
 flowchart TD
-  ROOT["workspace/ (coordinador)<br/>AGENTS.md + CLAUDE.md(@AGENTS.md) + Copilot + SDD + docs"]
-  ROOT --> A["app-api/<br/>CLAUDE.md(@../AGENTS.md) + skills python"]
-  ROOT --> B["app-web/<br/>CLAUDE.md(@../AGENTS.md) + skills react"]
+  ROOT["workspace/ (coordinator)<br/>AGENTS.md + CLAUDE.md(@AGENTS.md) + Copilot + SDD + docs"]
+  ROOT --> A["app-api/<br/>CLAUDE.md(@../AGENTS.md) + python skills"]
+  ROOT --> B["app-web/<br/>CLAUDE.md(@../AGENTS.md) + react skills"]
 ```
 
-> **Modelo de trabajo:** abre la **raíz del workspace** en el editor. Claude Code carga el `CLAUDE.md` del
-> root y descubre los `.claude/skills` de cada hijo bajo demanda; Copilot lee el fichero único de la raíz.
+> **Working model:** open the **workspace root** in your editor. Claude Code loads the root `CLAUDE.md` and
+> discovers each child's `.claude/skills` on demand; Copilot reads the single root file.
 
-### Distribución en multi-repo
-`ai-workspace package` **agrega** los skills, comandos y subagentes del root **y de cada hijo** en un único
-**plugin paraguas** (deduplicado por id, primero-gana), con sus zips de organización. Una sola instalación
-cubre todo el workspace. Ver **[Distribución](DISTRIBUTION.md)**.
+### Distribution in multi-repo
+`ai-workspace package` **aggregates** the root's **and** each child's skills, commands and subagents into a
+single **umbrella plugin** (de-duped by id, first-wins), with its org zips. One install covers the whole
+workspace. See **[Distribution](DISTRIBUTION.md)**.
 
-> **Notas de capacidad** (verificadas en la doc de Claude Code): Claude Code lee `CLAUDE.md` (no `AGENTS.md`)
-> de forma jerárquica y descubre `.claude/skills/` anidados; por eso el adaptador de Claude es por-repo. En
-> cambio **GitHub Copilot** lee un único `.github/copilot-instructions.md` en la raíz del workspace (sin
-> descubrimiento anidado), así que su guía es de nivel workspace (cubre la unión de stacks).
+> **Capability notes** (verified in the Claude Code docs): Claude Code reads `CLAUDE.md` (not `AGENTS.md`)
+> hierarchically and discovers nested `.claude/skills/`, so its adapter is per-repo. **GitHub Copilot**, in
+> contrast, reads a single workspace-root `.github/copilot-instructions.md` (no nested discovery), so its
+> guidance is workspace-level (covering the union of stacks).
 
-## Seguridad y commits
+## Safety & commits
 
-- **Safety gate:** ante un cambio de versión, una migración o un conflicto con varias salidas plausibles, la
-  IA **para y pregunta**. No se debilita validación/seguridad para "que funcione".
-- **Commits:** Conventional Commits con tu identidad git, **sin** `Co-Authored-By`; la IA commitea solo tras
-  tu aprobación. El hook `commit-msg` (`.githooks/`) lo refuerza: actívalo una vez con
+- **Safety gate:** on a version change, a migration, or a conflict with multiple plausible outcomes, the AI
+  **stops and asks**. Validation/security is never weakened to "make it work".
+- **Commits:** Conventional Commits with your git identity, **no** `Co-Authored-By`; the AI commits only after
+  your approval. The `commit-msg` hook (`.githooks/`) enforces it: activate once with
   `git config core.hooksPath .githooks`.
 
-## Fuentes (documentación oficial Claude, verificada)
+## Sources (official Claude docs, verified)
 
 - [Memory / CLAUDE.md imports](https://code.claude.com/docs/en/memory) · [Skills](https://code.claude.com/docs/en/skills)
 - [Create plugins](https://code.claude.com/docs/en/plugins) · [Plugin marketplaces](https://code.claude.com/docs/en/plugin-marketplaces)
 - [Provision and manage skills for your organization](https://support.claude.com/en/articles/13119606-provision-and-manage-skills-for-your-organization)
+- [Codex AGENTS.md](https://developers.openai.com/codex/guides/agents-md) · [Codex MCP](https://developers.openai.com/codex/mcp) · [Copilot in Visual Studio](https://learn.microsoft.com/en-us/visualstudio/ide/copilot-chat-context)

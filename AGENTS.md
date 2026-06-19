@@ -322,7 +322,7 @@ Guard-rails that always apply when working on this generator:
 ### Build & release (repo-specific)
 - Run `npm run build` and `npm test` before finishing. Invariants: idempotency holds; `doctor` stays green; skill migrations are byte-equivalent.
 - Bump `TEMPLATES_VERSION` in `src/version.ts` when generated output changes (pre-release; skip only while unused).
-- Update the matching doc under `docs/project/` (Spanish) in the same change. Read [EXTENDING](docs/project/EXTENDING.md) + [MAINTAINING](docs/project/MAINTAINING.md) first for non-trivial work.
+- Update the matching doc under `docs/project/` (English canonical; `USAGE.md` also has a Spanish mirror `USAGE.es.md`) in the same change. Read [EXTENDING](docs/project/EXTENDING.md) + [MAINTAINING](docs/project/MAINTAINING.md) first for non-trivial work.
 
 ### Diagrams (repo docs)
 - Repo docs use **Mermaid** (GitHub-native) — quote labels with special chars (`·`, `<br/>`); enforced by `test/docs-mermaid.test.js`. Corporate palette: dark `#143a80`, accent `#e4b632`.

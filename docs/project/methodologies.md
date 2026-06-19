@@ -1,89 +1,89 @@
-# Metodologías: SDD vs SPDD
+# Methodologies: SDD vs SPDD
 
-El bloque `sdd` de los workspaces generados admite dos **metodologías** (`sdd.methodology`). Las dos son
-"intención antes que código" y guardan los artefactos en git; la diferencia real es **dónde editas cuando
-llega un cambio** y, por tanto, **dónde vive la verdad**.
+The `sdd` block of generated workspaces supports two **methodologies** (`sdd.methodology`). Both are "intent
+before code" and store their artifacts in git; the real difference is **where you edit when a change arrives**
+and, therefore, **where the truth lives**.
 
-> Resumen en una frase: **SDD** → el spec es un andamio y luego **mantienes el código**; **SPDD** → el
-> **prompt (REASONS Canvas / doc) es la fuente** y el código es su salida que **re-derivas**.
+> One-sentence summary: **SDD** → the spec is scaffolding and then you **maintain the code**; **SPDD** → the
+> **prompt (REASONS Canvas / doc) is the source** and the code is its output that you **re-derive**.
 
-## La analogía
+## The analogy
 
-Como en *Infraestructura como Código*: no entras al servidor a tocar a mano, editas el fichero
-declarativo y **re-aplicas**. SPDD es eso para la lógica — el prompt es el "código-fuente" y el código es
-un artefacto derivado que regeneras.
+Like *Infrastructure as Code*: you don't SSH into the server to tweak things by hand, you edit the
+declarative file and **re-apply**. SPDD is that for logic — the prompt is the "source code" and the code is a
+derived artifact you regenerate.
 
 ```mermaid
 flowchart LR
-  subgraph SDD["SDD — mantienes el CODIGO"]
-    s1["spec (andamio, se archiva)"] --> c1["codigo  <-- editas aqui a mano"]
+  subgraph SDD["SDD — you maintain the CODE"]
+    s1["spec (scaffold, archived)"] --> c1["code  <-- you edit here by hand"]
   end
-  subgraph SPDD["SPDD — mantienes el PROMPT"]
-    p1["REASONS Canvas / doc  <-- editas aqui"] --> c2["codigo (derivado, re-generable)"]
+  subgraph SPDD["SPDD — you maintain the PROMPT"]
+    p1["REASONS Canvas / doc  <-- you edit here"] --> c2["code (derived, re-generable)"]
   end
 ```
 
-## Ejemplo end-to-end: "login con bloqueo tras 5 intentos fallidos"
+## End-to-end example: "login with lockout after 5 failed attempts"
 
-**Construcción inicial** — ambos se parecen: capturas la intención y generas código + tests.
+**Initial build** — both look alike: you capture the intent and generate code + tests.
 
-**Llega un cambio:** *"el bloqueo debe durar 15 min y hay que avisar al equipo de seguridad."*
+**A change arrives:** *"the lockout should last 15 min and the security team must be notified."*
 
-| Paso | **SDD** | **SPDD** |
+| Step | **SDD** | **SPDD** |
 |---|---|---|
-| ¿Qué tocas? | **el código** (`auth.ts`): añades la ventana de 15 min y la notificación; actualizas tests | **la doc/Canvas**: añades a *Operations* "ventana 15 min" y a *Safeguards* "notificar a seguridad" |
-| ¿Y el spec/prompt? | el spec original queda **histórico**; ya no es la verdad | el Canvas **es** la verdad: *fix the prompt first*, luego re-derivas el código desde la doc |
-| Invocación típica | "implementa este cambio en el login" (editas código) | "revisa el README/Canvas, detecta los cambios y aplícalos al código" |
-| 6 meses después | **lees el código** para saber qué hace | **lees la doc**: refleja la intención actual completa (incl. normas/salvaguardas), **auditable** |
-| Revisión | el **diff de código** | el **cambio de intención** (doc) y luego el código |
+| What do you touch? | **the code** (`auth.ts`): add the 15-min window and the notification; update tests | **the doc/Canvas**: add "15-min window" to *Operations* and "notify security" to *Safeguards* |
+| And the spec/prompt? | the original spec becomes **historical**; no longer the truth | the Canvas **is** the truth: *fix the prompt first*, then re-derive the code from the doc |
+| Typical invocation | "implement this change in the login" (you edit code) | "review the README/Canvas, detect the changes and apply them to the code" |
+| 6 months later | **you read the code** to know what it does | **you read the doc**: it reflects the full current intent (incl. rules/safeguards), **auditable** |
+| Review | the **code diff** | the **intent change** (doc) and then the code |
 
-> ✅ **Estado en este generador** (con `methodology: spdd`):
-> el lazo está **cableado** y es **propose-and-review**: **lógica/comportamiento** → editas el Canvas y
-> propagas con la skill **sdd-code-maintenance**; **refactor/drift** → **`/sdd-sync`** (skill
-> **sdd-spec-sync**) pliega el código de vuelta al Canvas y reporta deriva. Propone diffs; **tú apruebas** —
-> nunca reescribe en silencio (Safety gate + *human review load-bearing*).
+> ✅ **State in this generator** (with `methodology: spdd`): the loop is **wired** and is
+> **propose-and-review**: **logic/behavior** → edit the Canvas and propagate with the **sdd-code-maintenance**
+> skill; **refactor/drift** → **`/sdd-sync`** (the **sdd-spec-sync** skill) folds the code back into the
+> Canvas and reports drift. It proposes diffs; **you approve** — it never rewrites silently (Safety gate +
+> *human review load-bearing*).
 
-## Otro caso (regulado)
+## Another case (regulated)
 
-Un **módulo de cálculo de descuentos / impuestos / cumplimiento**: cuando cambia la norma, editas
-*Safeguards/Operations* del Canvas y **regeneras**. Queda **auditable** quién cambió qué intención y
-cuándo — la doc es la fuente de verdad legal, no el código.
+A **discount / tax / compliance calculation module**: when the rule changes, you edit *Safeguards/Operations*
+of the Canvas and **regenerate**. It stays **auditable** who changed which intent and when — the doc is the
+legal source of truth, not the code.
 
-## Cuándo cada uno
+## When to use each
 
 ```mermaid
 flowchart TD
-  Q{"Tras generar,<br/>quien es la verdad?"}
-  Q -->|"el codigo (lo edito a mano)"| SDD["SDD"]
-  Q -->|"el prompt/doc (re-genero desde el)"| SPDD["SPDD"]
-  SDD --> N1["desarrollo habitual<br/>brownfield, deltas, refactors,<br/>integraciones complejas a mano"]
-  SPDD --> N2["modulo nuevo generado por IA<br/>algo estandarizado / templated<br/>logica regulada y auditable<br/>owner de negocio gobierna por doc"]
+  Q{"After generating,<br/>who is the truth?"}
+  Q -->|"the code (I edit it by hand)"| SDD["SDD"]
+  Q -->|"the prompt/doc (I regenerate from it)"| SPDD["SPDD"]
+  SDD --> N1["everyday development<br/>brownfield, deltas, refactors,<br/>complex integrations by hand"]
+  SPDD --> N2["new AI-generated module<br/>something standardized / templated<br/>regulated, auditable logic<br/>business owner governs via doc"]
 ```
 
-- **SDD (por defecto):** la mayoría del trabajo. Código afinado a mano, cambios como *deltas*, el código
-  manda tras implementar. Es lo que usa este propio generador.
-- **SPDD (selectivo):** módulos que **nacen** de un prompt y quieres poder **regenerar**; lógica
-  **estandarizada** (familias de endpoints/CRUD desde un Canvas plantilla, apoyados en skills con
-  templates/snippets); dominios **regulados** donde la intención debe quedar auditable y sin deriva; o
-  cuando un **perfil de negocio** mantiene el "qué" desde una doc legible en vez de tocar código.
+- **SDD (default):** most of the work. Hand-tuned code, changes as *deltas*, the code rules after
+  implementing. It's what this generator itself uses.
+- **SPDD (selective):** modules that **are born** from a prompt and you want to be able to **regenerate**;
+  **standardized** logic (families of endpoints/CRUD from a template Canvas, backed by skills with
+  templates/snippets); **regulated** domains where intent must stay auditable and drift-free; or when a
+  **business profile** maintains the "what" from a readable doc instead of touching code.
 
-## Aviso sobre adopción
+## A note on adoption
 
-SPDD luce **al nacer** un componente (greenfield, "el código nace del prompt"). Retrofitear **código
-maduro hecho a mano** a SPDD es la dirección **más cara**: habría que reconstruir un Canvas que regenere
-fielmente lo existente y, sobre todo, **comprometerse al lazo** (tocar siempre el prompt primero) sin
-volver a editar el código a mano. SPDD **no es autopiloto**: sigue requiriendo que un humano edite el
-prompt y revise.
+SPDD shines **at birth** of a component (greenfield, "the code is born from the prompt"). Retrofitting
+**mature, hand-written code** to SPDD is the **most expensive** direction: you'd have to rebuild a Canvas that
+faithfully regenerates what exists and, above all, **commit to the loop** (always touch the prompt first)
+without editing the code by hand again. SPDD **is not autopilot**: it still requires a human to edit the
+prompt and review.
 
-## En la config
+## In the config
 
 ```yaml
 sdd:
-  methodology: sdd   # o spdd
-  schema: lean       # spdd fuerza 'reasons' (el REASONS Canvas es su artefacto)
+  methodology: sdd   # or spdd
+  schema: lean       # spdd forces 'reasons' (the REASONS Canvas is its artifact)
 ```
 
-`methodology` (flujo) y `sdd.schema` (profundidad del spec) son **ortogonales**; `spdd ⇒ reasons` se
-normaliza en `ConfigSchema`. SPDD reutiliza la familia `/sdd-*` y las skills `reasons` — no es un fork.
-Ver [ARCHITECTURE](ARCHITECTURE.md) y el [ADR 0002](decisions/0002-extension-contracts.md). Fuente del
-método: [SPDD, Thoughtworks/Fowler](https://martinfowler.com/articles/structured-prompt-driven/).
+`methodology` (flow) and `sdd.schema` (spec depth) are **orthogonal**; `spdd ⇒ reasons` is normalized in
+`ConfigSchema`. SPDD reuses the `/sdd-*` family and the `reasons` skills — it is not a fork. See
+[ARCHITECTURE](ARCHITECTURE.md) and [ADR 0002](decisions/0002-extension-contracts.md). Method source:
+[SPDD, Thoughtworks/Fowler](https://martinfowler.com/articles/structured-prompt-driven/).

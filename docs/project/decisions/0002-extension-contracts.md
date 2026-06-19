@@ -41,7 +41,7 @@ CI goes red if any is broken; they are no longer just prose:
 
 **Rule:** a deliberate change to a contract (e.g. a justified block rename with a migration) updates the
 golden in the same commit, with the migration noted in
-[MAINTAINING](../MAINTAINING.md#renombrar-o-eliminar-un-id-de-bloque). An *accidental* change is a bug.
+[MAINTAINING](../MAINTAINING.md#renaming-or-removing-a-block-id). An *accidental* change is a bug.
 
 ### Part B — Extension taxonomy (today)
 
