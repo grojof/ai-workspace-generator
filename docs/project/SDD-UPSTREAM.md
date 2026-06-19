@@ -1,51 +1,47 @@
-# Procedencia del SDD upstream
+# SDD upstream provenance
 
-Esta es la **fuente única de verdad de mantenimiento** para nuestra metodología SDD mixta. Tomamos
-*conceptos* (no código) de dos proyectos upstream — ver [ADR 0001](../decisions/0001-mixed-sdd.md).
-Cuando alguno evoluciona su filosofía, este fichero es lo que reconciliamos. Mantenlo pequeño:
-conceptos, no un fork.
+This is the **single source of maintenance truth** for our mixed SDD methodology. We take *concepts* (not
+code) from two upstream projects — see [ADR 0001](decisions/0001-mixed-sdd.md). When either evolves its
+philosophy, this file is what we reconcile. Keep it small: concepts, not a fork.
 
-> 🤖 Para refrescar este fichero, ejecuta el comando **`/sdd-upstream-check`** (en `.claude/commands/`
-> de este repo). El agente consulta el changelog de cada upstream desde la fecha *revisado* de abajo,
-> marca solo los cambios relevantes para la filosofía, propone ediciones en los templates y sube
-> `TEMPLATES_VERSION`.
+> 🤖 To refresh this file, run the **`/sdd-upstream-check`** command (in this repo's `.claude/commands/`). The
+> agent checks each upstream's changelog since the *reviewed* date below, flags only the philosophy-relevant
+> changes, proposes edits to the templates, and bumps `TEMPLATES_VERSION`.
 
-## Upstreams seguidos
+## Upstreams tracked
 
-| Proyecto | Repo | Releases | Última revisión |
-|----------|------|----------|-----------------|
+| Project | Repo | Releases | Last reviewed |
+|---------|------|----------|---------------|
 | Spec-Kit | https://github.com/github/spec-kit | https://github.com/github/spec-kit/releases | 2026-06-15 (`main`) |
 | OpenSpec | https://github.com/Fission-AI/OpenSpec | https://github.com/Fission-AI/OpenSpec/releases | 2026-06-15 (`main`) |
 
-## Qué tomamos prestado (toda la superficie replicada)
+## What we borrow (the whole replicated surface)
 
-| Concepto | De | Anchor upstream | Nuestra implementación | Estado |
-|----------|-----|-----------------|------------------------|--------|
-| **Constitución** (principios del proyecto) | Spec-Kit (`/speckit.constitution`, `.specify/memory/`) | [README spec-kit](https://github.com/github/spec-kit#readme) | seed `openspec/constitution.md` en [`src/generate/sdd.ts`](../../src/generate/sdd.ts) (`constitutionSeed`), fase `sdd-constitution` en [`src/i18n/strings.ts`](../../src/i18n/strings.ts) | adaptado |
-| **Clarify** (resolver ambigüedad antes de la spec) | Spec-Kit (`/speckit.clarify`) | [README spec-kit](https://github.com/github/spec-kit#readme) | fase `sdd-clarify` en [`src/i18n/strings.ts`](../../src/i18n/strings.ts); enrutado en [`templates/core/routing.md.eta`](../../templates/core/routing.md.eta) | adaptado |
-| **Cambios delta sobre baseline viva + archivar** | OpenSpec (`specs/` + `changes/` + `archive/`) | [README OpenSpec](https://github.com/Fission-AI/OpenSpec#readme) | disposición `openspec/` en [`src/generate/sdd.ts`](../../src/generate/sdd.ts); ciclo de vida en [`templates/sdd/orchestrator.md.eta`](../../templates/sdd/orchestrator.md.eta) | adoptado (convención de carpetas) |
+| Concept | From | Upstream anchor | Our implementation | Status |
+|---------|------|-----------------|--------------------|--------|
+| **Constitution** (project principles) | Spec-Kit (`/speckit.constitution`, `.specify/memory/`) | [spec-kit README](https://github.com/github/spec-kit#readme) | seed `openspec/constitution.md` in [`src/generate/sdd.ts`](../../src/generate/sdd.ts) (`constitutionSeed`), `sdd-constitution` phase in [`src/i18n/strings.ts`](../../src/i18n/strings.ts) | adapted |
+| **Clarify** (resolve ambiguity before the spec) | Spec-Kit (`/speckit.clarify`) | [spec-kit README](https://github.com/github/spec-kit#readme) | `sdd-clarify` phase in [`src/i18n/strings.ts`](../../src/i18n/strings.ts); routed in [`templates/core/routing.md.eta`](../../templates/core/routing.md.eta) | adapted |
+| **Delta changes over a living baseline + archive** | OpenSpec (`specs/` + `changes/` + `archive/`) | [OpenSpec README](https://github.com/Fission-AI/OpenSpec#readme) | `openspec/` layout in [`src/generate/sdd.ts`](../../src/generate/sdd.ts); lifecycle in [`templates/sdd/orchestrator.md.eta`](../../templates/sdd/orchestrator.md.eta) | adopted (folder convention) |
 
-Esta es la lista completa. Si te ves añadiendo una cuarta fila que arrastra *maquinaria* en lugar de un
-*concepto*, para y relee el [ADR 0001](../decisions/0001-mixed-sdd.md).
+This is the complete list. If you find yourself adding a fourth row that drags in *machinery* instead of a
+*concept*, stop and re-read [ADR 0001](decisions/0001-mixed-sdd.md).
 
-## Qué NO replicamos deliberadamente
+## What we deliberately do NOT replicate
 
-- **Spec-Kit:** el CLI `specify`, el directorio `.specify/`, los nombres `/speckit.*`, `/speckit.analyze`,
-  `/speckit.checklist`, su maquinaria de templates/scripts/presets.
-- **OpenSpec:** el CLI `openspec`, los nombres `/opsx:*`, su motor de validación y su formato de spec.
+- **Spec-Kit:** the `specify` CLI, the `.specify/` directory, the `/speckit.*` names, `/speckit.analyze`,
+  `/speckit.checklist`, its template/script/preset machinery.
+- **OpenSpec:** the `openspec` CLI, the `/opsx:*` names, its validation engine and its spec format.
 
-Motivo: es *maquinaria*. Adoptarla crearía doble ceremonia y acoplamiento externo, justo lo que el
-[ADR 0001](../decisions/0001-mixed-sdd.md) existe para evitar.
+Reason: it's *machinery*. Adopting it would create double ceremony and external coupling — exactly what
+[ADR 0001](decisions/0001-mixed-sdd.md) exists to avoid.
 
-## Checklist de re-sincronización (lo que automatiza `/sdd-upstream-check`)
+## Re-sync checklist (what `/sdd-upstream-check` automates)
 
-1. Lee las fechas de **Última revisión** de arriba.
-2. Consulta releases/changelog de cada upstream desde esa fecha.
-3. Quédate solo con cambios de **filosofía/flujo** (una etapa nueva del ciclo, un concepto renombrado,
-   un principio cambiado). Ignora cambios de CLI/tooling/empaquetado — no nos llegan.
-4. Por cada cambio relevante, propón ediciones a nuestra implementación de conceptos (templates +
-   `strings.ts` + `sdd.ts`) y a la tabla de arriba.
-5. Sube `TEMPLATES_VERSION` ([`src/version.ts`](../../src/version.ts)) y actualiza las fechas de
-   **Última revisión**.
-6. Ejecuta `npm run build` + los smoke tests de [MAINTAINING](MAINTAINING.md); confirma que se mantiene
-   la idempotencia.
+1. Read the **Last reviewed** dates above.
+2. Check each upstream's releases/changelog since that date.
+3. Keep only **philosophy/flow** changes (a new lifecycle stage, a renamed concept, a changed principle).
+   Ignore CLI/tooling/packaging changes — they don't reach us.
+4. For each relevant change, propose edits to our concept implementation (templates + `strings.ts` +
+   `sdd.ts`) and to the table above.
+5. Bump `TEMPLATES_VERSION` ([`src/version.ts`](../../src/version.ts)) and update the **Last reviewed** dates.
+6. Run `npm run build` + the [MAINTAINING](MAINTAINING.md) smoke tests; confirm idempotency holds.

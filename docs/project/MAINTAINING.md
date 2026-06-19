@@ -1,144 +1,142 @@
-# Mantener
+# Maintaining
 
-Cómo evolucionar el generador con seguridad y publicar actualizaciones que lleguen limpias a los
-proyectos que lo usan.
+How to evolve the generator safely and publish updates that reach the projects using it cleanly.
 
-## Versionado: `TEMPLATES_VERSION`
+## Versioning: `TEMPLATES_VERSION`
 
-[`src/version.ts`](../../src/version.ts) tiene dos números:
+[`src/version.ts`](../../src/version.ts) has two numbers:
 
-- `CLI_VERSION` — la versión del paquete npm (también en `package.json`).
-- `TEMPLATES_VERSION` — la versión del **conjunto de plantillas**. Cada `workspace.config.yaml` generado
-  registra el `templatesVersion` con el que se renderizó.
+- `CLI_VERSION` — the npm package version (also in `package.json`).
+- `TEMPLATES_VERSION` — the version of the **template set**. Each generated `workspace.config.yaml` records
+  the `templatesVersion` it was rendered with.
 
-**Sube `TEMPLATES_VERSION` siempre que cambies algo que altere la salida generada**: una plantilla
-`.eta`, `composeBlocks`, un helper `generate*`, el contenido de skills/SDD, etc. `upgrade` compara el
-`templatesVersion` de la config con esta constante para avisar de que hay actualización.
+**Bump `TEMPLATES_VERSION` whenever you change something that alters generated output**: a `.eta` template,
+`composeBlocks`, a `generate*` helper, skill/SDD content, etc. `upgrade` compares the config's
+`templatesVersion` with this constant to flag that an update is available.
 
-Disciplina semver sugerida para plantillas:
-- **patch** — retoques de texto, nuevas plantillas opcionales (aditivo, seguro).
-- **minor** — nuevos bloques/secciones, nuevos comandos (aditivo; los usuarios ven contenido nuevo en `sync`).
-- **major** — ids de bloque renombrados/eliminados, formato de marcadores cambiado (ver nota de migración).
+Suggested semver discipline for templates:
+- **patch** — text tweaks, new optional templates (additive, safe).
+- **minor** — new blocks/sections, new commands (additive; users see new content on `sync`).
+- **major** — renamed/removed block ids, changed marker format (see the migration note).
 
-## El flujo de actualización para usuarios
+## The upgrade flow for users
 
 ```mermaid
 flowchart LR
-  PUB["publicar plantillas + subir TEMPLATES_VERSION"] --> USER["el usuario ejecuta ai-workspace upgrade --check"]
-  USER --> DIFF[se muestra el diff por líneas]
-  DIFF --> APPLY["el usuario ejecuta ai-workspace upgrade"]
-  APPLY --> BUMP["se actualiza config.templatesVersion"]
+  PUB["publish templates + bump TEMPLATES_VERSION"] --> USER["user runs ai-workspace upgrade --check"]
+  USER --> DIFF["line-by-line diff is shown"]
+  DIFF --> APPLY["user runs ai-workspace upgrade"]
+  APPLY --> BUMP["config.templatesVersion is updated"]
 ```
 
-`upgrade` ([`src/commands/upgrade.ts`](../../src/commands/upgrade.ts)) renderiza en **dry-run**
-(`setDryRun` en [`src/render/writer.ts`](../../src/render/writer.ts)), compara con el disco usando
-`lineDiff` ([`src/render/diff.ts`](../../src/render/diff.ts)), lo imprime, y solo escribe en una
-ejecución real. Como las escrituras son idempotentes y las regiones gestionadas preservan el texto del
-usuario, aplicar un upgrade no destruye el contenido fuera de los marcadores.
+`upgrade` ([`src/commands/upgrade.ts`](../../src/commands/upgrade.ts)) renders in **dry-run**
+(`setDryRun` in [`src/render/writer.ts`](../../src/render/writer.ts)), compares against disk using `lineDiff`
+([`src/render/diff.ts`](../../src/render/diff.ts)), prints it, and only writes on a real run. Because writes
+are idempotent and managed regions preserve the user's text, applying an upgrade never destroys content
+outside the markers.
 
-## Renombrar o eliminar un id de bloque
+## Renaming or removing a block id
 
-Es el gotcha más importante. `writeManaged` / `upsertBlocks`
-([`src/render/managed-region.ts`](../../src/render/managed-region.ts)) **solo hacen upsert de los ids que
-reciben** — nunca borran bloques desconocidos. Consecuencias:
+This is the most important gotcha. `writeManaged` / `upsertBlocks`
+([`src/render/managed-region.ts`](../../src/render/managed-region.ts)) **only upsert the ids they receive** —
+they never delete unknown blocks. Consequences:
 
-- **Renombrar `core` → `conventions`**: el usuario conserva un bloque `core` huérfano *y* gana un bloque
-  `conventions` nuevo. Contenido duplicado.
-- **Eliminar un bloque**: el bloque viejo persiste en todos los repos que ya lo tienen.
+- **Renaming `core` → `conventions`**: the user keeps an orphaned `core` block *and* gains a new `conventions`
+  block. Duplicated content.
+- **Removing a block**: the old block persists in every repo that already has it.
 
-Por tanto:
-- Trata los ids de bloque como API pública permanente. Prefiere cambiar *contenido* a cambiar *ids*.
-- Si debes renombrar/eliminar, publica una **migración** y márcalo como cambio mayor en el changelog.
+Therefore:
+- Treat block ids as permanent public API. Prefer changing *content* over changing *ids*.
+- If you must rename/remove, publish a **migration** and mark it as a major change in the changelog.
 
-Los ficheros escritos con `writeIfMissing` (`.editorconfig`, `.claude/settings.json`, el scaffold del
-almacén SDD bajo `docs.development` (por defecto `docs/development/`), seeds `docs/development/status/*`, `.vscode/extensions.json`,
-copias importadas) tienen el rasgo opuesto:
-editar su plantilla **no** llega a los usuarios que ya tienen el fichero. Son del usuario por diseño.
+Files written with `writeIfMissing` (`.editorconfig`, `.claude/settings.json`, the SDD store scaffold under
+`docs.development` (default `docs/development/`), `docs/development/status/*` seeds, `.vscode/extensions.json`,
+imported copies) have the opposite trait: editing their template **does not** reach users who already have the
+file. They are the user's by design.
 
-## Desarrollo y pruebas locales
+## Local development and testing
 
 ```bash
 npm install
 npm run build        # tsc → dist/
 npm run typecheck    # tsc --noEmit
-npm run dev -- sync  # ejecutar desde fuente vía tsx (sin build)
-npm link             # exponer `ai-workspace` globalmente
+npm run dev -- sync  # run from source via tsx (no build)
+npm test             # build + run the test suite (test/*.test.js)
+npm link             # expose `ai-workspace` globally
 ```
 
-No hay suite de tests automatizada todavía. Haz smoke-test contra un repo desechable:
+Run `npm test` (the automated suite) plus a smoke-test against a disposable repo:
 
 ```bash
 mkdir /tmp/aiws && cd /tmp/aiws
-node /ruta/a/dist/cli.js init      # o escribe un workspace.config.yaml y ejecuta `sync`
-node /ruta/a/dist/cli.js sync      # re-ejecuta: todo debe reportar "unchanged"
-# añade una nota manual fuera de los marcadores en AGENTS.md, sync de nuevo, confirma que sobrevive
-node /ruta/a/dist/cli.js add language go
-node /ruta/a/dist/cli.js upgrade --check
-node /ruta/a/dist/cli.js doctor
+node /path/to/dist/cli.js init      # or write a workspace.config.yaml and run `sync`
+node /path/to/dist/cli.js sync      # re-run: everything should report "unchanged"
+# add a manual note outside the markers in AGENTS.md, sync again, confirm it survives
+node /path/to/dist/cli.js add language go
+node /path/to/dist/cli.js upgrade --check
+node /path/to/dist/cli.js doctor
 ```
 
-Invariantes a verificar tras cualquier cambio (los críticos están *enforced* por
-[`test/invariants.test.js`](../../test/invariants.test.js) — ver [ADR 0002](decisions/0002-extension-contracts.md)):
-- El **orden e ids de bloque** de AGENTS.md no cambian (golden). Si los cambias a propósito, actualiza el golden en el mismo commit.
-- Un segundo `sync` reporta **0 created, 0 updated** (idempotente).
-- El texto manual fuera de los marcadores `ai-workspace:begin/end` se preserva.
-- Los binarios de skill (logos, plantillas `.pptx`/`.dotx`) llegan byte-a-byte.
-- `doctor` sigue en verde y AGENTS.md está bajo el presupuesto de tokens.
-- `npm run build` está limpio.
-- Probar ambos idiomas: generar con `language: es` y `language: en`.
+Invariants to verify after any change (the critical ones are *enforced* by
+[`test/invariants.test.js`](../../test/invariants.test.js) — see [ADR 0002](decisions/0002-extension-contracts.md)):
+- AGENTS.md **block order and ids** don't change (golden). If you change them on purpose, update the golden in the same commit.
+- A second `sync` reports **0 created, 0 updated** (idempotent).
+- Manual text outside the `ai-workspace:begin/end` markers is preserved.
+- Skill binaries (logos, `.pptx`/`.dotx` templates) arrive byte-for-byte.
+- `doctor` stays green and AGENTS.md is under the token budget.
+- `npm run build` is clean.
+- Test both languages: generate with `language: es` and `language: en`.
 
-## Checklist de release
+## Release checklist
 
-1. Sube `version` en `package.json`, y `CLI_VERSION` / `TEMPLATES_VERSION` en `src/version.ts`.
-2. `npm run build` y smoke-test de los comandos de arriba.
-3. Actualiza el `README.md` (roadmap, comandos nuevos) y anota cambios en un changelog.
-4. Si añadiste/renombraste ids de bloque, documenta la migración.
-4b. Una vez por ciclo de release, ejecuta `/sdd-upstream-check` para reconciliar la metodología SDD con upstream.
-5. Publica: `npm publish --access public` (el paquete envía `dist/` y `templates/` según `files` en `package.json`).
+1. Bump `version` in `package.json`, and `CLI_VERSION` / `TEMPLATES_VERSION` in `src/version.ts`.
+2. `npm run build` and `npm test`, plus the smoke-test commands above.
+3. Update `README.md` (roadmap, new commands) and record changes in a changelog.
+4. If you added/renamed block ids, document the migration.
+5. Once per release cycle, run `/sdd-upstream-check` to reconcile the SDD methodology with upstream.
+6. Publish: `npm publish --access public` (the package ships `dist/` and `templates/` per `files` in `package.json`).
 
-## Mantener la metodología SDD sincronizada con upstream
+## Keeping the SDD methodology in sync with upstream
 
-Nuestro flujo SDD toma *conceptos* (no código) de Spec-Kit y OpenSpec — ver
-[ADR 0001](../decisions/0001-mixed-sdd.md). Toda la superficie de mantenimiento es la tabla de
-procedencia en [SDD-UPSTREAM.md](SDD-UPSTREAM.md): tres conceptos, cada uno fijado a un anchor upstream y
-a una fecha de "última revisión". **No** vendorizamos ni seguimos sus CLIs.
+Our SDD flow takes *concepts* (not code) from Spec-Kit and OpenSpec — see
+[ADR 0001](decisions/0001-mixed-sdd.md). The entire maintenance surface is the provenance table in
+[SDD-UPSTREAM.md](SDD-UPSTREAM.md): three concepts, each pinned to an upstream anchor and a "last reviewed"
+date. We do **not** vendor or follow their CLIs.
 
-Para reconciliar tras una evolución de cualquiera de los dos, ejecuta el comando **`/sdd-upstream-check`**
-([`.claude/commands/sdd-upstream-check.md`](../../.claude/commands/sdd-upstream-check.md)): el agente
-consulta los cambios de cada upstream desde la fecha revisada, se queda solo con los de filosofía/flujo,
-propone ediciones a nuestra implementación de conceptos y sube `TEMPLATES_VERSION`. Los cambios de solo
-tooling se ignoran por diseño.
+To reconcile after either one evolves, run the **`/sdd-upstream-check`** command
+([`.claude/commands/sdd-upstream-check.md`](../../.claude/commands/sdd-upstream-check.md)): the agent checks
+each upstream's changes since the reviewed date, keeps only the philosophy/flow ones, proposes edits to our
+concept implementation and bumps `TEMPLATES_VERSION`. Tooling-only changes are ignored by design.
 
-## Mantener los skill-packs (vendor + `skills sync`)
+## Maintaining the skill-packs (vendor + `skills sync`)
 
-Las skills ricas viven como datos en [`skill-packs/<id>/`](../../skill-packs/) (modelo *skills-as-data*).
-La base de un pack puede venir de un upstream
-**permisivo** (MIT / Apache-2.0 / BSD / CC-BY — p. ej. `agent-skills` MIT, `anthropics/skills` Apache-2.0),
-**vendorizada** en [`vendor/`](../../vendor/) — solo la fuente de texto, mirror versionado para diffs limpios
-(binarios/build se excluyen vía `.gitignore`).
+Rich skills live as data in [`skill-packs/<id>/`](../../skill-packs/) (*skills-as-data* model). A pack's base
+may come from a **permissive** upstream (MIT / Apache-2.0 / BSD / CC-BY — e.g. `agent-skills` MIT,
+`anthropics/skills` Apache-2.0), **vendored** in [`vendor/`](../../vendor/) — text source only, a versioned
+mirror for clean diffs (binaries/build are excluded via `.gitignore`).
 
-> **Gate de licencia:** verifica la licencia **por-skill**, no solo la raíz del repo. Se **rechazan**
-> copyleft/share-alike (CC-BY-SA) y *source-available* (p. ej. los doc-skills `docx/pdf/pptx/xlsx` de Anthropic).
-> Apache-2.0/CC-BY exigen **retener** `LICENSE`/atribución + `NOTICE` — `skills sync` copia el `LICENSE` del upstream.
+> **License gate:** verify the license **per-skill**, not just the repo root. Copyleft/share-alike (CC-BY-SA)
+> and source-available (e.g. Anthropic's `docx/pdf/pptx/xlsx` doc-skills) are **rejected**. Apache-2.0/CC-BY
+> require **retaining** `LICENSE`/attribution + `NOTICE` — `skills sync` copies the upstream `LICENSE`.
 
-- **Actualizar desde upstream:** `ai-workspace skills sync` (dry-run) muestra el diff por contenido contra
-  la base vendorizada al `ref` pineado (último tag por defecto, o `--ref`). Con `--apply` actualiza `vendor/`,
-  re-sella `.source.json` y **propaga la base** a los packs (vía `pack.yaml.base`) **preservando** `pack.yaml`
-  y los `overlay.*.md`. Conserva la atribución de licencia (MIT). Tras aplicar: `npm run build && npm test`,
-  revisa `git diff`, sube `TEMPLATES_VERSION` si cambió la salida, y confirma.
-- **Material de empresa:** este repo público no incluye material de ninguna empresa. Si lo necesitas,
-  mantenlo en un repo aparte y tráelo como overlays (`templates/company/<org>/`, `skill-packs/corp-*`).
-- **Byte-equivalencia:** al migrar contenido de código a packs, verifica que la salida de `generate` no
-  cambia (genera antes/después y compara).
+- **Update from upstream:** `ai-workspace skills sync` (dry-run) shows the content diff against the vendored
+  base at the pinned `ref` (latest tag by default, or `--ref`). With `--apply` it updates `vendor/`, re-seals
+  `.source.json` and **propagates the base** to the packs (via `pack.yaml.base`) **preserving** `pack.yaml`
+  and the `overlay.*.md`. It keeps the license attribution (MIT). After applying: `npm run build && npm test`,
+  review `git diff`, bump `TEMPLATES_VERSION` if output changed, and commit.
+- **Company material:** this public repo includes no company material. If you need it, keep it in a separate
+  repo and bring it in as overlays (`templates/company/<org>/`, `skill-packs/corp-*`).
+- **Byte-equivalence:** when migrating content from code to packs, verify `generate`'s output doesn't change
+  (generate before/after and compare).
 
-## Empaquetado como plugin
+## Packaging as a plugin
 
-El repo es también un plugin de Claude Code: [`.claude-plugin/plugin.json`](../../.claude-plugin/plugin.json),
-[`.claude-plugin/marketplace.json`](../../.claude-plugin/marketplace.json) y el comando `/aiws` en
-[`commands/`](../../commands/). Al añadir un comando de cara al usuario, actualiza `commands/aiws.md`.
+The repo is also a Claude Code plugin: [`.claude-plugin/plugin.json`](../../.claude-plugin/plugin.json),
+[`.claude-plugin/marketplace.json`](../../.claude-plugin/marketplace.json) and the `/aiws` command in
+[`commands/`](../../commands/). When adding a user-facing command, update `commands/aiws.md`.
 
-## Rendimiento y presupuesto de tokens
+## Performance and token budget
 
-- Mantén AGENTS.md **ligero**: el detalle va en skills/instrucciones con ámbito cargadas bajo demanda.
-  `doctor` avisa cuando AGENTS.md supera `tokenBudget.agentsMd`.
-- Las nuevas secciones de núcleo cuestan tokens a *cada* usuario — justifícalas o hazlas opcionales.
+- Keep AGENTS.md **lean**: detail goes into scoped skills/instructions loaded on demand. `doctor` warns when
+  AGENTS.md exceeds `tokenBudget.agentsMd`.
+- New core sections cost tokens for *every* user — justify them or make them optional.

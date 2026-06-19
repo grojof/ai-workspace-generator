@@ -6,8 +6,8 @@ description: Reconcile our mixed SDD methodology with upstream Spec-Kit and Open
 
 Maintenance command for **this generator repo** (not for generated projects). It keeps our borrowed SDD
 *concepts* aligned with their upstreams without depending on their tooling. See
-[docs/decisions/0001-mixed-sdd.md](../../docs/project/decisions/0001-mixed-sdd.md) and
-[docs/SDD-UPSTREAM.md](../../docs/project/SDD-UPSTREAM.md).
+[docs/project/decisions/0001-mixed-sdd.md](../../docs/project/decisions/0001-mixed-sdd.md) and
+[docs/project/SDD-UPSTREAM.md](../../docs/project/SDD-UPSTREAM.md).
 
 ## Do this
 

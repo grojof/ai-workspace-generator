@@ -1,29 +1,24 @@
-# ai-workspace
+<!-- [🇬🇧 English](README.md) · 🇪🇸 Español (estás aquí) -->
 
-[English](README.md) · **Español**
+# ai-workspace-generator
 
-Prepara un **entorno de trabajo con IA** para cualquier proyecto — nuevo o existente — de forma que
-**Claude Code** y **GitHub Copilot** sigan las mismas reglas, convenciones y flujo de trabajo. Ejecutas
-un comando, respondes unas preguntas, y el proyecto queda con todo lo necesario: instrucciones, skills,
-un flujo de desarrollo seguro, documentación viva y más.
+Genera y adapta un **workspace de IA** para cualquier proyecto —nuevo o existente— de modo que
+**Claude Code**, **GitHub Copilot** (VS Code *y* Visual Studio) y **OpenAI Codex** sigan las mismas reglas,
+convenciones y flujo de trabajo. Ejecutas un comando, respondes unas preguntas, y el proyecto recibe lo que
+necesita: instrucciones, skills, un flujo seguro (SDD), documentación viva y más.
 
-**No necesitas aprender comandos.** Tras la configuración, simplemente le hablas a la IA en lenguaje
-natural ("añade esta feature", "actualiza esta librería", "guarda los cambios") y ella aplica el flujo
-correcto automáticamente.
+> **No memorizas comandos.** Tras la configuración hablas con la IA en lenguaje natural ("añade esta función",
+> "actualiza esta librería", "guarda los cambios") y ella aplica el flujo correcto.
+
+**Shared-first**, para developers individuales (aprender, preparar entrevistas, formarse, programar con
+utilidades). Aplicable también a una **empresa** como punto de extensión opcional (`company`). Sin datos de
+negocio reales.
 
 ---
 
-## ¿Para quién es?
-
-- **Para todo el equipo**, desde perfiles senior hasta gente que empieza con IA. El workspace generado
-  incluye una guía integrada (`/aiws-guide`) que te enseña sobre la marcha.
-- **Proyectos nuevos** (greenfield) y **proyectos existentes** (brownfield) — se adapta a ambos.
-
 ## Instalación
 
-**Requisitos:** Node.js ≥ 20, y VS Code con Copilot y/o Claude Code.
-
-> ⚠️ **Aún no está publicado en npm.** De momento instálalo desde el código (esto te da el comando `ai-workspace`):
+**Requisitos:** Node.js ≥ 20, y al menos uno de: VS Code + Copilot · Claude Code · Visual Studio + Copilot · Codex.
 
 ```bash
 git clone https://github.com/grojof/ai-workspace-generator.git
@@ -31,252 +26,113 @@ cd ai-workspace-generator
 npm install && npm run build && npm link
 ```
 
-📦 **Más adelante (npm):** cuando se publique podrás usar `npx ai-workspace-generator init` sin instalar
-nada. *(Todavía no disponible.)*
+> El paquete es **`ai-workspace-generator`**; el comando que instala es **`ai-workspace`**.
 
-> **Nombres:** el proyecto/paquete es **`ai-workspace-generator`**; el comando que instala es
-> **`ai-workspace`** (con `ai-workspace-generator` como alias).
-
-## Úsalo en cualquier proyecto — 3 pasos
+## Uso en 3 pasos
 
 ```bash
-# 1) Desde la raíz de tu repo (nuevo o existente):
-ai-workspace init
-
-# 2) Responde el asistente (idioma, stack, etc.). Autodetecta lo que puede.
-
-# 3) Abre el proyecto en VS Code (Copilot) o en Claude Code y empieza a trabajar.
-#    Lee AI-WORKSPACE.md: es el índice de todo lo que se ha creado.
+cd /ruta/a/tu-repo
+ai-workspace init     # 1) asistente: autodetecta el stack y escribe workspace.config.yaml
+                      # 2) abre el repo en tu editor/agente (VS Code, Visual Studio, Claude Code, Codex)
+ai-workspace sync     # 3) tras editar AGENTS.md o la config, regenera (idempotente)
 ```
 
-Y ya está. Si más tarde editas las reglas (en `AGENTS.md`) o cambias la config, ejecuta
-`ai-workspace sync` para regenerar.
+Tras `init`, lee **`AI-WORKSPACE.md`**: el índice de todo lo generado. ¿Proyecto existente? Deja que la IA lo
+configure: ejecuta la skill **`/configure`** y propone tu `workspace.config.yaml` analizando el repo.
 
-```mermaid
-flowchart LR
-  A[ai-workspace init] --> B[responder asistente]
-  B --> C["workspace.config.yaml + ficheros creados"]
-  C --> D[hablar a la IA en lenguaje natural]
-  D --> E["aplica el flujo correcto: construir / commitear / actualizar / docs"]
-```
+<details>
+<summary><b>⚙️ Targets y opciones</b> — qué herramientas, <code>.vscode</code>, multi-repo</summary>
 
----
+| `targets` | Genera | Notas |
+|-----------|--------|-------|
+| `claude` | `CLAUDE.md` + skills `.claude/` + `.mcp.json` | Claude Code |
+| `copilot` | `.github/copilot-instructions.md` + `instructions/*` | **VS Code y Visual Studio** (activa el toggle en *Tools → Options → GitHub → Copilot*) |
+| `codex` | **`AGENTS.md`** (instrucciones nativas) + `.codex/config.toml` | OpenAI Codex (CLI/IDE), multiplataforma |
 
-## Un ejemplo muy básico
+- `AGENTS.md` se genera **siempre** (fuente única de verdad **y** adaptador de Codex).
+- **`vscode: false`** omite la carpeta `.vscode/` (para Visual Studio o fuera de VS Code).
+- **Multi-repo:** un `repos:` opcional gobierna varios repos enlazados (cada uno con su `path`/`stack`); el
+  root es coordinador y cada hijo recibe su adaptador. `distribution.perRepo` reparte la distribución por repo.
 
-Eres una persona junior en un proyecto React + TypeScript. Ejecutas `init` y aceptas los valores por
-defecto. Ahora:
+Referencia completa: **[Guía de uso](docs/project/USAGE.es.md)**.
+</details>
 
-- Le dices a la IA: **"añade un botón de logout en la cabecera"**
-  → Es un cambio pequeño: la IA lo implementa siguiendo las reglas de React/TypeScript de `AGENTS.md`
-  y luego refresca la documentación.
-- Le dices: **"vamos a añadir autenticación con login"**
-  → Es un cambio grande: la IA arranca el **flujo SDD** — primero escribe un plan/spec corto, tú lo
-  revisas y *después* implementa. Sin sorpresas.
-- Le dices: **"actualiza React a la última versión"**
-  → La IA **no** lo hace sin más. Primero evalúa viabilidad y seguridad, te dice qué se rompería,
-  recomienda el camino más seguro y espera tu decisión.
-- Le dices: **"guarda los cambios"**
-  → Prepara un commit limpio (sin co-author de IA) y te pide confirmación antes de commitear.
-
-No tuviste que recordar ni un solo comando. Los slash commands (`/sdd-explore`, `/commit`, …) existen
-como atajos opcionales, pero no son obligatorios.
-
----
-
-## Cómo funciona (y por qué las plantillas son pequeñas a propósito)
-
-Todo se construye a partir de **un único fichero** (`workspace.config.yaml`) más una **librería de
-plantillas por capas**, que se vuelca en `AGENTS.md` — la fuente única de verdad que leen Claude y Copilot.
-
-```mermaid
-flowchart TD
-  CFG["workspace.config.yaml"] --> GEN[ai-workspace]
-  GEN --> AG["AGENTS.md  ·  fuente única de verdad"]
-  AG --> CL["CLAUDE.md  ·  importa @AGENTS.md"]
-  AG --> CO[".github/copilot-instructions.md  ·  espejo"]
-  GEN --> REST["MCP · SDD · docs vivas · ignore · onboarding"]
-```
-
-### Las capas
-
-| Capa | Qué contiene | Quién la rellena |
-|------|--------------|------------------|
-| 0 · Núcleo | codificación, commits, seguridad, flujo seguro, enrutado por intención | la herramienta |
-| 1 · Lenguaje | formatters, idioms, testing (según versión) | la herramienta |
-| 2 · Framework | estructura y patrones (fijados por versión) | la herramienta |
-| 3 · Entornos | WSL, Docker, Node (nvm), Python (venv), bases de datos… | la herramienta |
-| 4 · Empresa | tus prefijos, naming, librerías internas, patrones prohibidos | **tú** |
-| 5 · Negocio | tu glosario de dominio, reglas e invariantes | **tú** |
-
-### Por qué las reglas de lenguaje/framework son breves (es intencional)
-
-Las reglas integradas de React, Go, Python… son una **base común y estable**, a propósito:
-
-- **Eficiencia de tokens:** la IA lee `AGENTS.md` en cada sesión. Guías largas por tecnología inflarían
-  cada conversación. Por eso guardamos lo esencial y duradero, y el detalle se carga bajo demanda.
-- **Frescura vía context7:** el detalle específico de versión (APIs actuales exactas, deprecaciones)
-  **no** se congela en un fichero. Las reglas apuntan a la IA al **MCP context7** para traer
-  documentación al día y fijada por versión *en tu entorno* — así nunca se queda obsoleta.
-- **Tus estándares son lo valioso:** la base genérica es solo el suelo. Las normas y patrones reales de
-  tu equipo viven en las **capas 4 y 5**, y puedes traer tus ficheros de reglas existentes (siguiente apartado).
-
-```mermaid
-flowchart LR
-  BASE["Base integrada<br/>estable y ligera"] --> AG["AGENTS.md"]
-  C7["context7 MCP<br/>al día por versión"] -. en tiempo de ejecución .-> AI[la IA]
-  COMP["Reglas de tu empresa<br/>Capas 4 y 5"] --> AG
-  AG --> AI
-```
-
-### ¿Ya tenéis estándares de código de empresa (ficheros `.md`)?
-
-Tráelos — valen más que cualquier plantilla genérica:
-
-```bash
-ai-workspace import ../nuestros-estandares
-```
-
-Esto lee vuestros ficheros de reglas, los ordena en las capas correctas, los referencia en `AGENTS.md`
-y deja una checklist para que la IA los reconcilie con las buenas prácticas actuales (vía context7).
-
----
-
-## Qué se genera
-
-- **`AGENTS.md`** + adaptadores (`CLAUDE.md`, `.github/copilot-instructions.md`) sincronizados.
-- **SDD (desarrollo guiado por specs):** una **metodología** que combina las mejores ideas de **Spec-Kit**
-  (constitución + clarify para arrancar de cero) y **OpenSpec** (cambios delta sobre una baseline viva).
-  Son *conceptos*, no dependencias: los artefactos son Markdown en `openspec/` (versionado en git), sin
-  CLI externo. Para proyectos nuevos arranca con la constitución; en existentes, cada feature es un delta.
-- **Docs vivas:** `docs/ai/*` siempre al día para que la IA tenga contexto fresco del proyecto.
-- **Gobernanza:** política de versiones (nuevo vs existente), una **barrera de seguridad** (la IA para y
-  pregunta antes de cambios arriesgados) y una **política de commits** (sin co-author de IA, tú apruebas)
-  reforzada por un hook de git `commit-msg`.
-- **Entornos:** bloques para WSL, Docker, Node (nvm), Python (venv), PostgreSQL… con sus convenciones y gotchas.
-- **Modo aprendizaje (opcional):** elige el propósito `learn` y obtienes una **skill tutor** (`/learn`)
-  que enseña con explicaciones, ejercicios y casos — ideal para prepararse una entrevista o aprender bases.
-- **Configuración del editor:** `.vscode/extensions.json` + `settings.json` para un formato consistente en el equipo.
-- **`AI-WORKSPACE.md`:** un índice, generado en tu repo, que explica exactamente qué se ha configurado.
-
-Re-ejecutar cualquier comando es **idempotente** — tus ediciones manuales fuera de los marcadores
-`ai-workspace:begin/end` siempre se conservan.
-
----
-
-## Guía paso a paso (para empezar)
-
-¿Empiezas de cero? Este es el recorrido completo, con los detalles que el inicio rápido omite.
-
-**El asistente `init` te pregunta:**
-1. **Idioma** de la documentación generada (español o inglés).
-2. Nombre y descripción del proyecto.
-3. Herramientas objetivo (Claude, Copilot o ambas).
-4. Lenguajes y frameworks — se **autodetectan** desde `package.json`, `tsconfig`, etc.
-5. Si incluir **SDD** y con qué backend (recomendado: `openspec`).
-6. Si incluir **docs vivas** y **context7**.
-
-Al terminar, abre **`AI-WORKSPACE.md`**: el índice de todo lo que se ha creado y cómo usarlo.
-
-**Activa el hook de commit seguro (una vez).** Los commits usan tu identidad de git, **sin
-`Co-Authored-By`**, en formato Conventional, y solo tras tu aprobación. Un hook `commit-msg` generado lo
-refuerza:
-
-```bash
-git config core.hooksPath .githooks
-```
-
-A partir de ahí, git rechaza commits con co-author o sin formato convencional, aunque algo intente colarlo.
-
-**Configura VS Code.** Acepta las extensiones recomendadas (`.vscode/extensions.json`). Para no mezclar
-entornos, crea un **perfil** de VS Code para este proyecto (Settings → Profiles) — la skill `vscode-setup`
-te guía paso a paso.
-
----
-
-## Referencia de comandos (opcional — rara vez los necesitas)
+<details>
+<summary><b>📦 Comandos</b></summary>
 
 | Comando | Qué hace |
 |---------|----------|
-| `init` | Asistente: detecta el stack, crea la config y los ficheros. |
-| `sync` | Regenera tras editar `AGENTS.md` o la config. |
-| `list` | Muestra tu config y los módulos disponibles. |
-| `add <tipo> <id>` | Añade lenguaje/framework/environment/mcp (p. ej. `add environment wsl`). |
-| `remove <tipo> <id>` | Quita un módulo y limpia su bloque. |
-| `import <ruta…>` | Ingiere estándares de empresa existentes. |
-| `upgrade [--check]` | Previsualiza/aplica actualizaciones de plantillas (con diff). |
-| `doctor` | Chequeo de salud: presupuesto de tokens, bloques rotos/huérfanos, etc. |
+| `init` | Asistente → escribe la config → genera el workspace (`--simple` / `--advanced` / `--yes`) |
+| `sync` | Regenera desde la config (preserva tus ediciones fuera de los marcadores) |
+| `detect` | Detecta el stack (solo lectura); `--json` como semilla para la IA |
+| `add` / `remove` | Añade o quita un lenguaje, framework, environment o MCP |
+| `list` | Config actual + catálogo de módulos (activos vs disponibles) |
+| `import` | Ingesta material existente y prepara su reconciliación |
+| `upgrade` | Diff de plantillas y aplica la actualización (`--check` para previsualizar) |
+| `doctor` | Lint del workspace (presupuesto de tokens, artefactos, ids de stack) |
+| `package` | Empaqueta como plugin + marketplace privado + zips de skill |
+| `skills sync` | Actualiza los skill-packs vendorizados desde el upstream |
 
-En Claude Code también puedes instalar este repo como **plugin** (`.claude-plugin/`) y usar `/aiws`.
+Detalle: **[Guía de uso](docs/project/USAGE.es.md)**.
+</details>
 
-## Más ayuda para usar la herramienta
+<details>
+<summary><b>🚀 Distribuir e instalar como plugin</b> — para tu equipo / organización</summary>
 
-- 🇬🇧 **[English version](README.md)** — the same guide in English.
-- 🛠️ **[Documentación técnica](docs/es/)** — Arquitectura, Extender, Mantener.
-- En cada proyecto generado tienes además `AI-WORKSPACE.md` (índice) y la skill `/aiws-guide`.
+`ai-workspace package` proyecta el workspace a un **plugin de Claude Code** servido desde el propio repo como
+**marketplace privado**, y prepara **zips de skill** para subir a una organización de claude.ai. Tres
+superficies (VS Code/CLI, Desktop/Cowork, claude.ai Team/Enterprise):
 
-<br>
+```
+/plugin marketplace add <owner/repo o URL git>
+/plugin install <plugin>@<marketplace>
+```
 
----
----
+Guía completa: **[Distribución](docs/project/DISTRIBUTION.md)** (en inglés).
+</details>
 
-<br>
+<details>
+<summary><b>🧩 Qué incluye y por qué</b> — <i>Harness Engineering</i></summary>
 
-# 🛠️ Para desarrolladores de ai-workspace
-
-> ⚠️ **Esta sección NO es necesaria para usar la herramienta.** Es solo para quien **mantiene o
-> extiende** este generador (añadir lenguajes, frameworks, entornos, idiomas, etc.). Si solo quieres usar
-> ai-workspace en tu proyecto, con lo de arriba te sobra.
-
-## Cómo está construido
-
-Es un CLI en Node/TypeScript. Una config (`workspace.config.yaml`) + una librería de plantillas por capas
-se componen en `AGENTS.md` y sus adaptadores, escritos de forma idempotente mediante regiones gestionadas.
+`Agente = Modelo + Harness`. El *harness* (instrucciones, skills, contexto, memoria, permisos, verificación)
+es donde está la mayor parte de la diferencia entre un agente mediocre y uno fiable. **Este generador produce
+harnesses.**
 
 ```mermaid
 flowchart LR
-  CFG["workspace.config.yaml"] --> LOAD["loadConfig + zod"]
-  TPL["templates/*.eta<br/>(+ i18n/es)"] --> COMP[composeBlocks]
-  REG["registry.ts"] --> COMP
-  LOAD --> COMP
-  COMP --> WR["writer<br/>(regiones gestionadas)"]
-  WR --> OUT["AGENTS.md · adaptadores · skills · etc."]
+  CFG["workspace.config.yaml"] --> GEN["ai-workspace"]
+  TPL["templates por capas"] --> GEN
+  GEN --> AG["AGENTS.md (fuente única)"]
+  AG --> AD["CLAUDE.md · Copilot · Codex"]
+  GEN --> REST["skills + routing · SDD · docs vivas · onboarding"]
+  GEN --> PKG["plugin + marketplace + zips de skill"]
 ```
 
-Puntos de entrada del código: [`src/cli.ts`](src/cli.ts) · [`src/generate/index.ts`](src/generate/index.ts) ·
-[`src/generate/agents.ts`](src/generate/agents.ts) · [`src/modules/registry.ts`](src/modules/registry.ts) ·
-[`templates/`](templates/). El detalle completo está en la documentación técnica de abajo.
+| Concepto | Qué significa |
+|---|---|
+| **Fuente única + idempotencia** | `AGENTS.md` es la verdad; regenerar es seguro y tus notas sobreviven |
+| **Context engineering** | skills por *trigger*, docs just-in-time vía context7, estado en *living docs* |
+| **Gobernanza en capas** | universal → lenguaje → framework → entorno → empresa → negocio (sin choques) |
+| **Metodología (SDD/SPDD)** | intención antes que código; la verdad vive en el código (SDD) o en el prompt (SPDD) |
+| **Ratchet principle** | una regla entra **solo** si previene un fallo real |
 
-## Documentación técnica
+Desarrollo (en inglés): **[Harness Engineering](docs/project/harness-engineering.md)** · **[Metodologías SDD vs SPDD](docs/project/methodologies.md)**.
+</details>
 
-- 🇪🇸 **Castellano:** [Arquitectura](docs/es/ARCHITECTURE.md) · [Extender](docs/es/EXTENDING.md) ·
-  [Mantener](docs/es/MAINTAINING.md)
-- 🇬🇧 **English:** [Architecture](docs/ARCHITECTURE.md) · [Extending](docs/EXTENDING.md) ·
-  [Maintaining](docs/MAINTAINING.md) · [Contributing](CONTRIBUTING.md)
-- **SDD (metodología mixta):** [ADR 0001 — SDD mixto](docs/decisions/0001-mixed-sdd.md) ·
-  [Procedencia upstream](docs/es/SDD-UPSTREAM.md)
-- Convenciones del propio repo para agentes de IA: [`AGENTS.md`](AGENTS.md) (dogfooding).
+## Documentación
 
-## Entorno de desarrollo
+Toda la documentación vive en **[`docs/`](docs/README.md)**. Los **docs profundos están en inglés** (canónico,
+repo público); el README y la guía de uso están en ambos idiomas. Índice:
 
-```bash
-npm install
-npm run build         # tsc → dist/
-npm run dev -- init   # ejecutar el CLI desde fuente (tsx)
-npm test              # build + ejecutar la suite de tests
-npm link              # exponer `ai-workspace` globalmente para pruebas
-```
-
-## Estado del proyecto
-
-Pre-release, en desarrollo activo.
-- **Lenguajes:** TypeScript, Go, Python.
-- **Frameworks:** React, Next.js, Vue.
-- **Entornos:** Node (nvm), Python (venv), WSL, Docker, PostgreSQL.
-- **Targets:** Claude Code + GitHub Copilot. **Idiomas:** español, inglés.
-
-Más bajo petición (Angular, NestJS, Java, C#, MySQL, MongoDB, Odoo…).
+- **[Guía de uso (ES)](docs/project/USAGE.es.md)** · [EN](docs/project/USAGE.md) — CLI, `workspace.config.yaml`, targets y multi-repo.
+- **[Architecture](docs/project/ARCHITECTURE.md)** — config → componer → renderizar → escribir; capas, regiones gestionadas, i18n.
+- **[Distribution](docs/project/DISTRIBUTION.md)** — `ai-workspace package`: plugin + marketplace + skills de organización.
+- **[Extending](docs/project/EXTENDING.md)** · **[Maintaining](docs/project/MAINTAINING.md)** — recetas y mantenimiento del generador.
+- **[Harness Engineering](docs/project/harness-engineering.md)** · **[Methodologies SDD vs SPDD](docs/project/methodologies.md)** · **[SDD upstream](docs/project/SDD-UPSTREAM.md)**.
+- **Decisiones (ADR):** [0001 SDD mixto](docs/project/decisions/0001-mixed-sdd.md) · [0002 contratos de extensión](docs/project/decisions/0002-extension-contracts.md).
+- **Proceso (mantenido con IA):** [especificación vigente](docs/development/specs/configuration.md) · [estado del proyecto](docs/development/status/PROJECT-STATE.md) · [cambios SDD](docs/development/changes/).
+- **Repo:** [CHANGELOG](CHANGELOG.md) · [CONTRIBUTING](CONTRIBUTING.md) · [SECURITY](SECURITY.md).
 
 ## Licencia
 
-[Apache-2.0](LICENSE)
+Apache-2.0. Ver [LICENSE](LICENSE).

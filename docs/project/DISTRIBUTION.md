@@ -1,79 +1,88 @@
-# Distribución e instalación (F6)
+# Distribution & install (F6)
 
-> Cómo empaquetar un workspace generado para que se **instale** en las tres superficies de Claude:
-> VS Code/CLI, Claude Desktop/Cowork y la organización de empresa en claude.ai (Desktop + Workspace).
+> How to package a generated workspace so it can be **installed** across the three Claude surfaces:
+> VS Code/CLI, Claude Desktop/Cowork, and a company organization on claude.ai (Desktop + Workspace).
 
-El generador produce config *standalone* en `.claude/` (perfecto para un repo). Para **distribuirlo** a
-varios usuarios, el comando **`ai-workspace package`** proyecta esos artefactos a un **plugin de Claude
-Code** servido desde el propio repo como **marketplace privado**, y prepara **zips de skill** para subir a
-la organización. Es otra *proyección* de la misma fuente única — `AGENTS.md` no se duplica.
+The generator produces **standalone** config under `.claude/` (perfect for a single repo). To **distribute**
+it to several users, the **`ai-workspace package`** command projects those artifacts into a **Claude Code
+plugin** served from the repo itself as a **private marketplace**, and stages **skill zips** to upload to an
+organization. It is another *projection* of the same single source — `AGENTS.md` is never duplicated.
 
 ```bash
 ai-workspace package
 ```
 
-## Nombre de plugin estable para la organización
+## A stable plugin name for the organization
 
-Por defecto el plugin y el marketplace se derivan del nombre del repo. Para publicar un **plugin canónico
-de la org** (p. ej. `acme-ai-workspace`) que **conviva con otros plugins** de la organización en
-un solo marketplace privado, fija los nombres en la config:
+By default the plugin and marketplace are derived from the repo name. To publish a **canonical org plugin**
+(e.g. `acme-ai-workspace`) that **coexists with other org plugins** in a single private marketplace, pin the
+names in the config:
 
 ```yaml
 # workspace.config.yaml
 distribution:
-  plugin: acme-ai-workspace   # id del plugin (kebab-case)
-  marketplace: acme-tools     # id del marketplace (kebab-case)
-  owner: Acme IT              # autor mostrado en los manifiestos
+  plugin: acme-ai-workspace   # plugin id (kebab-case)
+  marketplace: acme-tools     # marketplace id (kebab-case)
+  owner: Acme IT              # author shown in the manifests
+  perRepo: false              # true = one plugin per child repo (multi-repo); default = umbrella
 ```
 
-Así el id es **independiente del repo** que lo consume: puedes mantener un repo de referencia que produce
-siempre el mismo `acme-ai-workspace`, y consolidar varios plugins de la org en un único marketplace.
+This makes the id **independent of the consuming repo**: you can keep a reference repo that always produces
+the same `acme-ai-workspace`, and consolidate several org plugins into a single marketplace.
 
-## Qué genera
+## What it generates
 
-| Artefacto | Para qué |
-|-----------|----------|
-| `.claude-plugin/marketplace.json` (raíz) | Convierte **este repo** en un marketplace privado (`metadata.pluginRoot: ./plugins`). |
-| `plugins/<slug>/.claude-plugin/plugin.json` + `skills/` + `commands/` | El **plugin paraguas** con todas las skills y comandos generados. |
-| `dist/org-skills/<id>.zip` (uno por skill, `SKILL.md` en la raíz) | Subida de **skills a la organización** claude.ai. |
-| `dist/INSTALL.md` | Guía de instalación por superficie (con la URL del remoto git). |
+| Artifact | Purpose |
+|----------|---------|
+| `.claude-plugin/marketplace.json` (root) | Turns **this repo** into a private marketplace (`metadata.pluginRoot: ./plugins`). |
+| `plugins/<slug>/.claude-plugin/plugin.json` + `skills/` + `commands/` + `agents/` | The **umbrella plugin** with all generated skills, commands and companion subagents. |
+| `dist/org-skills/<id>.zip` (one per skill, `SKILL.md` at the root) | **Upload skills to a claude.ai organization**. |
+| `dist/INSTALL.md` | Per-surface install guide (with the git remote URL). |
 
-> **Versionar:** commitea `.claude-plugin/marketplace.json` y `plugins/<slug>/` (el marketplace los sirve).
-> `dist/` es salida de build (zips + guía) — opcional en git. Re-ejecutar `package` es determinista (no-op).
+> **Versioning:** commit `.claude-plugin/marketplace.json` and `plugins/<slug>/` (the marketplace serves
+> them). `dist/` is build output (zips + guide) — optional in git. Re-running `package` is deterministic (no-op).
 
-## Las tres superficies
+## Multi-repo
 
-### 1. VS Code / CLI (Claude Code) — desarrolladores
-El repo es el marketplace. En Claude Code:
+In a multi-repo workspace, `package` **aggregates** the skills, commands and subagents from the root **and
+every child repo** (de-duped by id, first-wins) into the single umbrella plugin. With
+`distribution.perRepo: true`, it instead emits **one plugin per child repo** (`plugins/<plugin>-<repo>/`,
+root + that child) listed in a multi-plugin marketplace. Org zips + `INSTALL.md` always reflect the full
+aggregate.
+
+## The three surfaces
+
+### 1. VS Code / CLI (Claude Code) — developers
+The repo is the marketplace. In Claude Code:
 
 ```
-/plugin marketplace add <owner/repo o URL git de este repo>
+/plugin marketplace add <owner/repo or git URL of this repo>
 /plugin install <slug>@<marketplace>
 ```
 
-Repo **privado** (p. ej. GHE): Claude Code usa tus credenciales git existentes (`gh auth login`, agente
-SSH). Para auto-updates en segundo plano, exporta un token (`GITHUB_TOKEN`/`GH_TOKEN`, o `GITLAB_TOKEN`).
-Actualizar: `/plugin marketplace update <marketplace>`.
+**Private** repo (e.g. GHE): Claude Code uses your existing git credentials (`gh auth login`, SSH agent). For
+background auto-updates, export a token (`GITHUB_TOKEN`/`GH_TOKEN`, or `GITLAB_TOKEN`). Update with
+`/plugin marketplace update <marketplace>`.
 
 ### 2. Claude Desktop / Cowork (individual)
-Usa la carpeta del plugin con `claude --plugin-dir ./plugins/<slug>`, o sírvela como `.zip` y cárgala con
+Use the plugin folder with `claude --plugin-dir ./plugins/<slug>`, or serve it as a `.zip` and load it with
 `--plugin-url <url>`.
 
-### 3. claude.ai Team/Enterprise — Desktop + Workspace para todos
-Un **Owner** de la organización sube los zips de `dist/org-skills/` en **Organization settings → Skills →
-+ Add** (cada zip lleva `SKILL.md` en la raíz). Requiere activar *Code execution and file creation* y
-*Skills* en la organización. Las skills quedan provisionadas a todos (web, Desktop, Cowork), activas por
-defecto; cada miembro puede desactivarlas. **Solo los Owners** pueden añadir/quitar skills de organización.
+### 3. claude.ai Team/Enterprise — Desktop + Workspace for everyone
+An organization **Owner** uploads the zips from `dist/org-skills/` in **Organization settings → Skills →
++ Add** (each zip has `SKILL.md` at its root). Requires enabling *Code execution and file creation* and
+*Skills* for the org. Skills are then provisioned to everyone (web, Desktop, Cowork), on by default; each
+member can disable them. **Only Owners** can add/remove organization skills.
 
-## Notas de diseño
+## Design notes
 
-- **Plugin paraguas** (no dividido) por ahora: una sola instalación. Se puede dividir por dominio más
-  adelante sin romper la fuente única.
-- El escritor ZIP es propio (`src/util/zip.ts`, método *store*, sin dependencias, compatible con Node ≥20)
-  y **determinista** (timestamp fijo) → los zips son byte-idénticos entre ejecuciones.
-- El plugin de Claude Code **namespacea** las skills: se invocan como `/<slug>:<skill>`.
+- **Umbrella plugin** (not split) by default: a single install. It can be split by domain later without
+  breaking the single source (`distribution.perRepo` is the per-repo variant).
+- The ZIP writer is our own (`src/util/zip.ts`, *store* method, no dependencies, Node ≥ 20) and
+  **deterministic** (fixed timestamp) → the zips are byte-identical across runs.
+- The Claude Code plugin **namespaces** skills: they're invoked as `/<slug>:<skill>`.
 
-## Fuentes (documentación oficial Claude, verificada)
+## Sources (official Claude docs, verified)
 
 - [Create plugins](https://code.claude.com/docs/en/plugins) · [Plugin marketplaces](https://code.claude.com/docs/en/plugin-marketplaces)
 - [Provision and manage skills for your organization](https://support.claude.com/en/articles/13119606-provision-and-manage-skills-for-your-organization)

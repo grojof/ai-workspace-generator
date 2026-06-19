@@ -1,87 +1,86 @@
 # Harness Engineering
 
-La filosofía que sostiene este generador. Resumen en el [README](../../README.md#filosofía-esto-es-harness-engineering);
-aquí el desarrollo extendido.
+The philosophy behind this generator. Summary in the [README](../../README.md); the full development is here.
 
-## Qué es
+## What it is
 
-La idea central (Viv Trivedy, popularizada por Addy Osmani [[H1]]): **`Agente = Modelo + Harness`**. El
-*harness* (arnés) es **todo lo que rodea al modelo** para que trabaje de forma fiable —instrucciones,
-herramientas, permisos, memoria, el contexto que recibe en cada paso, hooks, verificación. El modelo es el
-"motor"; el harness es el chasis, la dirección y los frenos.
+The core idea (Viv Trivedy, popularized by Addy Osmani [[H1]]): **`Agent = Model + Harness`**. The *harness*
+is **everything around the model** that makes it work reliably — instructions, tools, permissions, memory, the
+context it receives at each step, hooks, verification. The model is the "engine"; the harness is the chassis,
+the steering and the brakes.
 
-**Harness Engineering** = tratar ese arnés como **artefacto de ingeniería** que diseñas, mides y afinas —
-no como prompts sueltos. La tesis: *"un modelo decente con un gran harness le gana a un gran modelo con un
-mal harness"* [[H1]]. Y el corolario (HumanLayer): cuando el agente falla, *"no es un problema del modelo,
-es un problema de configuración"*.
+**Harness Engineering** = treating that harness as an **engineering artifact** you design, measure and tune —
+not as loose prompts. The thesis: *"a decent model with a great harness beats a great model with a bad
+harness"* [[H1]]. And the corollary (HumanLayer): when the agent fails, *"it's not a model problem, it's a
+configuration problem"*.
 
 ```mermaid
 flowchart LR
-  M["MODELO (razona, escribe, decide)"] --> AG["AGENTE util y fiable"]
-  H["HARNESS: instrucciones + tools + memoria + contexto + permisos + verificacion"] --> AG
+  M["MODEL (reasons, writes, decides)"] --> AG["useful, reliable AGENT"]
+  H["HARNESS: instructions + tools + memory + context + permissions + verification"] --> AG
 ```
 
-## Las dimensiones de un harness
+## The dimensions of a harness
 
-Las piezas ([H1] + la lista *awesome-harness-engineering* [[H4]]): **Prompts/Instrucciones** (system
-prompt, `AGENTS.md`, skills) · **Tools/Integración** (tools, skills, MCP, bash) · **Infraestructura**
-(filesystem, git, sandbox) · **Memoria/Aprendizaje** · **Gestión de contexto** (compaction, disclosure
-progresivo) · **Orquestación** (subagentes, handoffs, routing) · **Control de ejecución** (hooks, lógica
-determinista) · **Verificación** (tests, self-eval, observabilidad).
+The pieces ([H1] + the *awesome-harness-engineering* list [[H4]]): **Prompts/Instructions** (system prompt,
+`AGENTS.md`, skills) · **Tools/Integration** (tools, skills, MCP, bash) · **Infrastructure** (filesystem, git,
+sandbox) · **Memory/Learning** · **Context management** (compaction, progressive disclosure) ·
+**Orchestration** (subagents, handoffs, routing) · **Execution control** (hooks, deterministic logic) ·
+**Verification** (tests, self-eval, observability).
 
-## Su corazón: Context Engineering
+## Its heart: Context Engineering
 
-La sub-disciplina más importante ([Anthropic][H2]): *"el conjunto de estrategias para curar el conjunto
-óptimo de tokens durante la inferencia"*. El contexto es un **recurso finito** con rendimientos
-decrecientes (la atención se degrada al crecer los tokens — *"context rot"*). El mandato: **"el menor
-conjunto de tokens de alta señal que logren el resultado deseado"**. Técnicas:
+The most important sub-discipline ([Anthropic][H2]): *"the set of strategies for curating the optimal set of
+tokens during inference"*. Context is a **finite resource** with diminishing returns (attention degrades as
+tokens grow — *"context rot"*). The mandate: **"the smallest set of high-signal tokens that achieve the
+desired outcome"**. Techniques:
 
-- **Altura justa ("right altitude")** del system prompt: ni lógica hard-codeada ni vaguedad.
-- **Disclosure progresivo:** carga skills/`references/` por *trigger*, no todo de golpe.
-- **Just-in-time:** recupera datos al vuelo (context7), no pre-cargues.
-- **Compaction** y **structured note-taking:** resume y guarda estado fuera de la ventana.
-- **Subagentes:** devuelven un resumen destilado, no su contexto entero.
+- **Right altitude** for the system prompt: neither hard-coded logic nor vagueness.
+- **Progressive disclosure:** load skills/`references/` by *trigger*, not all at once.
+- **Just-in-time:** fetch data on the fly (context7), don't pre-load.
+- **Compaction** and **structured note-taking:** summarize and keep state outside the window.
+- **Subagents:** return a distilled summary, not their whole context.
 
-## Cómo debe crecer un harness: el ratchet principle
+## How a harness should grow: the ratchet principle
 
-*"Cada línea de un buen `AGENTS.md` debería poder rastrearse a algo concreto que salió mal"* [[H1]].
-Añades una regla **solo tras un fallo observado**; y cuando el agente patina, **aprietas el harness** (una
-skill, un hook, una descripción) en vez de amontonar prosa. Otra máxima: *"el éxito es silencioso, los
-fallos son verbosos"*. Esto evita el *instruction bloat* que rompe la "altura justa". Es un principio
-Layer-0 always-on en los workspaces generados (`templates/core/harness-engineering.md.eta`).
+*"Every line of a good `AGENTS.md` should trace back to something concrete that went wrong"* [[H1]]. You add a
+rule **only after an observed failure**; and when the agent slips, you **tighten the harness** (a skill, a
+hook, a description) rather than piling on prose. Another maxim: *"success is silent, failures are verbose"*.
+This avoids the *instruction bloat* that breaks the "right altitude". It is an always-on Layer-0 principle in
+generated workspaces (`templates/core/harness-engineering.md.eta`).
 
-## El "aha": este repo **es** un generador de harnesses
+## The "aha": this repo **is** a harness generator
 
-`ai-workspace-generator` no genera "configuración" — genera **harnesses**. Cada cosa mapea a una dimensión:
+`ai-workspace-generator` doesn't generate "configuration" — it generates **harnesses**. Each piece maps to a
+dimension:
 
-| Dimensión del harness | Lo que el repo ya hace |
+| Harness dimension | What the repo already does |
 |---|---|
-| Prompts / altura justa | `AGENTS.md` lean + `tokenBudget` + `doctor` que vigila el presupuesto |
-| Disclosure progresivo | skills `SKILL.md` + `references/` on-demand; `loadMode` |
-| Just-in-time | context7 (MCP) para docs vivas; regla "el CLI nunca llama a MCP" |
-| Memoria / note-taking | living docs (`PROJECT-STATE.md`) + `/doc-sync` |
-| Tools con propósito claro | catálogo y routing de skills por *trigger* |
-| Control de ejecución | hook `commit-msg` (git), **safety-guard** (PreToolUse Bash, opt-in: avisa/bloquea force-push, `rm -rf`, migraciones), Stop hook de `/doc-sync` |
-| Verificación | `doctor`, los tests-invariante (contratos Fase 1, [ADR 0002](decisions/0002-extension-contracts.md)) |
-| Permisos / guardarraíles | el Safety gate (Layer 0) |
+| Prompts / right altitude | lean `AGENTS.md` + `tokenBudget` + `doctor` watching the budget |
+| Progressive disclosure | `SKILL.md` skills + on-demand `references/`; `loadMode` |
+| Just-in-time | context7 (MCP) for living docs; the "the CLI never calls MCP" rule |
+| Memory / note-taking | living docs (`PROJECT-STATE.md`) + `/doc-sync` |
+| Tools with a clear purpose | skill catalog and routing by *trigger* |
+| Execution control | `commit-msg` hook (git), **safety-guard** (PreToolUse Bash, opt-in: warns/blocks force-push, `rm -rf`, migrations), `/doc-sync` Stop hook |
+| Verification | `doctor`, the invariant tests (Phase 1 contracts, [ADR 0002](decisions/0002-extension-contracts.md)) |
+| Permissions / guardrails | the Safety gate (Layer 0) |
 
-Por eso adoptar Harness Engineering
-**no fue maquinaria nueva**: fue **hacer explícita** una postura que el repo ya practicaba, y darle una
-**regla de gobierno** (el ratchet).
+That's why adopting Harness Engineering **was not new machinery**: it **made explicit** a posture the repo
+already practiced, and gave it a **governance rule** (the ratchet).
 
-## En una frase
+## In one sentence
 
-**Prompt engineering** afina *una pregunta*. **Context engineering** afina *qué ve el modelo en cada paso*.
-**Harness Engineering** es la disciplina mayor: diseñar y afinar **todo el entorno** tratándolo como
-ingeniería — porque ahí, no en el modelo, está la mayor parte de la diferencia entre un agente mediocre y
-uno fiable.
+**Prompt engineering** tunes *a question*. **Context engineering** tunes *what the model sees at each step*.
+**Harness Engineering** is the larger discipline: designing and tuning **the whole environment** as
+engineering — because there, not in the model, lives most of the difference between a mediocre agent and a
+reliable one.
 
-> Relación con SDD/SPDD: la **metodología** ([Metodologías](methodologies.md)) es *cómo* llevas un cambio
-> de la idea al código; el **harness** es *el entorno* donde el agente ejecuta esa metodología. El ratchet
-> principle gobierna ambos.
+> Relationship to SDD/SPDD: the **methodology** ([Methodologies](methodologies.md)) is *how* you take a change
+> from idea to code; the **harness** is *the environment* where the agent executes that methodology. The
+> ratchet principle governs both.
 
-## Fuentes
-- [H1] Addy Osmani — *Agent Harness Engineering*, 19-abr-2026. https://addyosmani.com/blog/agent-harness-engineering/ (ecuación de Viv Trivedy; HumanLayer).
-- [H2] Anthropic — *Effective context engineering for AI agents*, 29-sep-2025. https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents
-- [H3] Anthropic — *Effective harnesses for long-running agents*, 26-nov-2025. https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents
-- [H4] *awesome-harness-engineering* (GitHub) — taxonomía de dimensiones.
+## Sources
+- [H1] Addy Osmani — *Agent Harness Engineering*, 2026-04-19. https://addyosmani.com/blog/agent-harness-engineering/ (Viv Trivedy's equation; HumanLayer).
+- [H2] Anthropic — *Effective context engineering for AI agents*, 2025-09-29. https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents
+- [H3] Anthropic — *Effective harnesses for long-running agents*, 2025-11-26. https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents
+- [H4] *awesome-harness-engineering* (GitHub) — taxonomy of dimensions.

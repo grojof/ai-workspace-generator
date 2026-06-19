@@ -1,44 +1,44 @@
-# Documentación (español)
+# Documentation (project)
 
-Guías para **usar, mantener y extender** el generador `ai-workspace`.
+Guides to **use, maintain and extend** the `ai-workspace` generator. Deep guides are in **English**
+(canonical); the usage guide is also available in Spanish.
 
-## Para usuarios
-- Empieza por el **[README raíz](../../README.md)** — qué es, instalación, uso y comandos (resumen con enlaces).
-- **[Guía de uso](USAGE.md)** — referencia detallada de la CLI (cada comando con opciones), el fichero
-  `workspace.config.yaml` y el uso en **multi-repo**.
-- Tras ejecutar `init`, cada repo generado incluye además un `AI-WORKSPACE.md` que explica su propia configuración.
+## For users
+- Start at the **[root README](../../README.md)** — what it is, install, usage and commands (overview with links).
+- **[Usage guide](USAGE.md)** ([🇪🇸 Español](USAGE.es.md)) — detailed CLI reference (every command with its
+  options), the `workspace.config.yaml` file, and **multi-repo** usage.
+- After running `init`, each generated repo also includes an `AI-WORKSPACE.md` explaining its own configuration.
 
-## Proyecto
-- **[Registro de cambios](../../CHANGELOG.md)** — seguimiento de la evolución.
+## Project
+- **[Changelog](../../CHANGELOG.md)** — tracks the evolution.
 
-## Para mantenedores y colaboradores
-- **[Arquitectura](ARCHITECTURE.md)** — cómo funciona de punta a punta: config → componer → renderizar →
-  escribir, el modelo de capas, regiones gestionadas, i18n y por qué la reconciliación context7 vive en la IA.
-- **[Extender](EXTENDING.md)** — recetas paso a paso (añadir lenguaje, framework, MCP, skill, idioma,
-  target, comando) con las **implicaciones** para los usuarios existentes.
-- **[Mantener](MAINTAINING.md)** — `TEMPLATES_VERSION`, el flujo de upgrade, el gotcha de renombrar ids
-  de bloque, invariantes de prueba, checklist de release y presupuesto de tokens.
-- **[Harness Engineering](harness-engineering.md)** — la filosofía del proyecto: *Agente = Modelo + Harness*,
-  context engineering, el ratchet principle, y cómo el repo **es** un generador de harnesses.
-- **[Metodologías: SDD vs SPDD](methodologies.md)** — cuándo usar cada flujo, con ejemplo end-to-end y la
-  diferencia "la verdad vive en el código vs en el prompt".
-- **[SDD upstream](SDD-UPSTREAM.md)** — cómo reconciliar nuestra metodología con Spec-Kit y OpenSpec.
-- **[Distribución](DISTRIBUTION.md)** — `ai-workspace package`: plugin + marketplace privado + zips de skill
-  para organización (VS Code/CLI, Desktop/Cowork, claude.ai Team/Enterprise).
-- **Decisiones (ADR)** — registro de decisiones de arquitectura:
-  [0001 SDD mixto](decisions/0001-mixed-sdd.md) ·
-  [0002 contratos de extensión](decisions/0002-extension-contracts.md) (invariantes *enforced* + norte de la Fase 2).
+## For maintainers and contributors
+- **[Architecture](ARCHITECTURE.md)** — how it works end to end: config → compose → render → write, the layer
+  model, managed regions, i18n, and why context7 reconciliation lives in the AI.
+- **[Extending](EXTENDING.md)** — step-by-step recipes (add a language, framework, MCP, skill, language,
+  target, command) with the **implications** for existing users.
+- **[Maintaining](MAINTAINING.md)** — `TEMPLATES_VERSION`, the upgrade flow, the block-id rename gotcha, test
+  invariants, the release checklist and the token budget.
+- **[Harness Engineering](harness-engineering.md)** — the project's philosophy: *Agent = Model + Harness*,
+  context engineering, the ratchet principle, and how the repo **is** a harness generator.
+- **[Methodologies: SDD vs SPDD](methodologies.md)** — when to use each flow, with an end-to-end example and
+  the "truth lives in the code vs in the prompt" distinction.
+- **[SDD upstream](SDD-UPSTREAM.md)** — how to reconcile our methodology with Spec-Kit and OpenSpec.
+- **[Distribution](DISTRIBUTION.md)** — `ai-workspace package`: plugin + private marketplace + org skill zips
+  (VS Code/CLI, Desktop/Cowork, claude.ai Team/Enterprise).
+- **Decisions (ADR):** [0001 mixed SDD](decisions/0001-mixed-sdd.md) ·
+  [0002 extension contracts](decisions/0002-extension-contracts.md) (enforced invariants + Phase 2 north star).
 
-## El modelo en 60 segundos
+## The model in 60 seconds
 
 ```mermaid
 flowchart LR
-  CFG["workspace.config.yaml"] --> GEN[ai-workspace generate]
+  CFG["workspace.config.yaml"] --> GEN["ai-workspace generate"]
   TPL["templates/*.eta"] --> GEN
-  GEN --> AG["AGENTS.md fuente única de verdad"]
-  AG --> ADAPT["CLAUDE.md + ficheros de Copilot"]
-  GEN --> REST[MCP, SDD, docs vivas, ignore, onboarding]
+  GEN --> AG["AGENTS.md single source of truth"]
+  AG --> ADAPT["CLAUDE.md + Copilot + Codex"]
+  GEN --> REST["MCP, SDD, living docs, ignore, onboarding"]
 ```
 
-Una config + una librería de plantillas por capas → un `AGENTS.md` canónico → adaptadores de cada
-herramienta y ficheros de apoyo, escritos de forma idempotente para no pisar nunca las ediciones humanas.
+One config + a layered template library → a canonical `AGENTS.md` → each tool's adapters and supporting
+files, written idempotently so human edits are never overwritten.

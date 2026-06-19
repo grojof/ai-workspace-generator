@@ -12,4 +12,4 @@
 - [ ] Bundled modules (lang/framework/environment) have **base + Spanish** templates.
 - [ ] Bumped `TEMPLATES_VERSION` in `src/version.ts` **if** generated output changed.
 - [ ] Documented any renamed/removed managed-block id (migration), per MAINTAINING.
-- [ ] Updated the matching docs (`docs/` and `docs/es/`).
+- [ ] Updated the matching docs under `docs/project/` (English canonical; `USAGE.md` also has `USAGE.es.md`).
