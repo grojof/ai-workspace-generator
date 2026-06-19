@@ -1,75 +1,22 @@
 # ai-workspace-generator
 
-Genera y adapta un **workspace de IA** para cualquier proyecto —nuevo o existente— de forma que
-**Claude Code** y **GitHub Copilot** sigan las mismas reglas, convenciones y flujo de trabajo. Ejecutas
-un comando, respondes unas preguntas y el proyecto recibe lo que necesita: instrucciones, skills, un
-flujo de desarrollo seguro (SDD), documentación viva y más.
+Genera y adapta un **workspace de IA** para cualquier proyecto —nuevo o existente— de modo que
+**Claude Code**, **GitHub Copilot** (VS Code *y* Visual Studio) y **OpenAI Codex** sigan las mismas reglas,
+convenciones y flujo de trabajo. Ejecutas un comando, respondes unas preguntas, y el proyecto recibe lo que
+necesita: instrucciones, skills, un flujo seguro (SDD), documentación viva y más.
 
-> **No necesitas memorizar comandos.** Tras la configuración hablas con la IA en lenguaje natural
-> ("añade esta función", "actualiza esta librería", "guarda los cambios") y ella aplica el flujo correcto.
+> **No memorizas comandos.** Tras la configuración hablas con la IA en lenguaje natural ("añade esta función",
+> "actualiza esta librería", "guarda los cambios") y ella aplica el flujo correcto.
 
-**Enfoque shared-first.** Pensado para developers individuales (aprender, preparar entrevistas, formarse y
-programar con utilidades). Puede aplicarse también a una **empresa** como punto de extensión opcional
-(`company`), pero el protagonista son las **herramientas compartidas**. Sin datos de negocio reales.
+**Shared-first**, para developers individuales (aprender, preparar entrevistas, formarse, programar con
+utilidades). Aplicable también a una **empresa** como punto de extensión opcional (`company`). Sin datos de
+negocio reales.
 
-## Cómo funciona
-
-Una sola entrada (`workspace.config.yaml`) + una librería de plantillas por capas → un `AGENTS.md`
-canónico (la **fuente única de verdad**) → adaptadores idempotentes para cada herramienta. Y, al
-distribuir, una proyección más: un **plugin instalable** + marketplace privado.
-
-```mermaid
-flowchart LR
-  CFG["workspace.config.yaml"] --> GEN[ai-workspace]
-  TPL["templates por capas"] --> GEN
-  GEN --> AG["AGENTS.md (fuente única)"]
-  AG --> AD["CLAUDE.md + Copilot"]
-  GEN --> REST["skills + routing, SDD, docs vivas, onboarding"]
-  GEN --> PKG["plugin + marketplace + zips de skill"]
-```
-
-## Filosofía: esto es *Harness Engineering*
-
-Un agente útil no es solo un buen modelo: **`Agente = Modelo + Harness`**. El *harness* (arnés) es todo lo
-que rodea al modelo —instrucciones, skills, contexto, memoria, permisos, verificación— y ahí está la mayor
-parte de la diferencia entre un agente mediocre y uno fiable. **Este generador produce harnesses:** convierte
-una config en el entorno completo que hace que Claude Code y Copilot trabajen bien, y de la misma forma.
-
-Los conceptos que aplica (detalle en [`docs/`](docs/)):
-
-| Concepto | Qué significa | Ejemplo en un workspace generado |
-|---|---|---|
-| **Fuente única + idempotencia** | `AGENTS.md` es la verdad; regenerar es seguro y tus notas sobreviven | editas una regla **fuera** de los marcadores → `sync` la respeta; cambias la config → solo se regeneran los bloques afectados (0 ruido) |
-| **Context engineering** | el contexto es finito: dale al modelo el menor conjunto de tokens de alta señal | las skills se cargan **por trigger**, no todas a la vez; las docs de librerías llegan **just-in-time** vía context7; el estado vive en *living docs*, no en el chat |
-| **Gobernanza en capas** | reglas base (universal → lenguaje → empresa → negocio) que no chocan entre sí | un cambio de versión dispara el **Safety gate**: para y pregunta antes de actuar |
-| **Metodología (SDD/SPDD)** | intención antes que código; la verdad vive en el **código** (SDD) o en el **prompt** (SPDD) | feature normal → flujo **SDD**; módulo regulado que regeneras desde una doc → **SPDD**. Ver [Metodologías: SDD vs SPDD](docs/project/methodologies.md) |
-| **Ratchet principle** | una regla entra **solo** si previene un fallo real | mantiene `AGENTS.md` a la "altura justa" en vez de engordar con prosa con cada incidencia |
-
-> En una frase: afinamos el **entorno** del agente como ingeniería — porque *un modelo decente con un gran
-> harness le gana a un gran modelo con un mal harness*. Desarrollo extendido:
-> **[Harness Engineering](docs/project/harness-engineering.md)** · contratos y decisiones: [ADR 0002](docs/project/decisions/0002-extension-contracts.md).
-
-## Qué incluye
-
-- **Gobernanza por perfil** — dos ejes ortogonales: tipo de usuario (`business`/`technical`) × experiencia
-  (`beginner`/`standard`/`advanced`); `AGENTS.md` renderiza **solo** la combinación activa (eficiencia de tokens).
-- **Catálogo de skills + routing** — tabla compacta que indica qué skill usar y cuándo, filtrada por perfil
-  (carga progresiva: `always`/`suggested`/`on-demand`/`advanced-only`).
-- **Capa de empresa (opcional)** — overlay de cultura (`company: example`, o tu propia org) como punto de
-  extensión; puedes añadir tus propias **skills de negocio** (`corp-*`) gated por `company`. Ninguna se
-  incluye aquí: este repo es público y sin datos de empresa. Ver [Extender](docs/project/EXTENDING.md).
-- **SDD en dos modos** — `lean` (ligero, por defecto) o `reasons` (REASONS Canvas: esquema cerrado, perfiles
-  A/B, controles, auditorías, ciclo `status` con sign-off, builder/reviewer). Una metodología, sin CLI externo.
-- **Skills como datos (skill-packs)** — las skills ricas (stacks tipo `odoo-18.0` con guías de referencia,
-  contenido de fusión) viven como **markdown** en `skill-packs/`, no en código; se copian al workspace por
-  *stack binding* y perfil, con overlay de empresa. Se traen/actualizan de upstreams MIT con `ai-workspace skills sync`.
-- **Distribución** — `ai-workspace package` empaqueta todo como plugin de Claude Code instalable en VS Code/CLI,
-  Desktop/Cowork y la organización de claude.ai (Desktop + Workspace). Ver **[Distribución](docs/project/DISTRIBUTION.md)**.
-- **Política de idioma** — todo lo que consume la IA en **inglés** (tokens); documentación humana en **español**.
+---
 
 ## Instalación
 
-**Requisitos:** Node.js ≥ 20, y VS Code con Copilot y/o Claude Code.
+**Requisitos:** Node.js ≥ 20, y al menos uno de: VS Code + Copilot · Claude Code · Visual Studio + Copilot · Codex.
 
 ```bash
 git clone https://github.com/grojof/ai-workspace-generator.git
@@ -82,37 +29,106 @@ npm install && npm run build && npm link
 ## Uso en 3 pasos
 
 ```bash
-ai-workspace init     # 1) en la raíz de tu repo: responde el asistente (autodetecta lo que puede)
-                      # 2) abre el proyecto en VS Code (Copilot) o Claude Code
+cd /ruta/a/tu-repo
+ai-workspace init     # 1) asistente: autodetecta el stack y escribe workspace.config.yaml
+                      # 2) abre el repo en tu editor/agente (VS Code, Visual Studio, Claude Code, Codex)
 ai-workspace sync     # 3) tras editar AGENTS.md o la config, regenera (idempotente)
 ```
 
-Tras `init`, lee `AI-WORKSPACE.md`: el índice de todo lo creado.
+Tras `init`, lee **`AI-WORKSPACE.md`**: el índice de todo lo generado. ¿Proyecto existente? Deja que la IA lo
+configure: ejecuta la skill **`/configure`** y propone tu `workspace.config.yaml` analizando el repo.
 
-## Comandos
+<details>
+<summary><b>⚙️ Targets y opciones</b> — qué herramientas, <code>.vscode</code>, multi-repo</summary>
+
+| `targets` | Genera | Notas |
+|-----------|--------|-------|
+| `claude` | `CLAUDE.md` + skills `.claude/` + `.mcp.json` | Claude Code |
+| `copilot` | `.github/copilot-instructions.md` + `instructions/*` | **VS Code y Visual Studio** (activa el toggle en *Tools → Options → GitHub → Copilot*) |
+| `codex` | **`AGENTS.md`** (instrucciones nativas) + `.codex/config.toml` | OpenAI Codex (CLI/IDE), multiplataforma |
+
+- `AGENTS.md` se genera **siempre** (fuente única de verdad **y** adaptador de Codex).
+- **`vscode: false`** omite la carpeta `.vscode/` (para Visual Studio o fuera de VS Code).
+- **Multi-repo:** un `repos:` opcional gobierna varios repos enlazados (cada uno con su `path`/`stack`); el
+  root es coordinador y cada hijo recibe su adaptador. `distribution.perRepo` reparte la distribución por repo.
+
+Referencia completa: **[Guía de uso](docs/project/USAGE.md)**.
+</details>
+
+<details>
+<summary><b>📦 Comandos</b></summary>
 
 | Comando | Qué hace |
 |---------|----------|
-| `init` | Asistente → escribe la config → genera el workspace |
+| `init` | Asistente → escribe la config → genera el workspace (`--simple` / `--advanced` / `--yes`) |
 | `sync` | Regenera desde la config (preserva tus ediciones fuera de los marcadores) |
-| `add` / `remove` | Añade o quita un lenguaje, framework, entorno o MCP |
-| `list` | Muestra la config actual y el catálogo de módulos (activos vs disponibles) |
+| `detect` | Detecta el stack (solo lectura); `--json` como semilla para la IA |
+| `add` / `remove` | Añade o quita un lenguaje, framework, environment o MCP |
+| `list` | Config actual + catálogo de módulos (activos vs disponibles) |
 | `import` | Ingesta material existente y prepara su reconciliación |
-| `upgrade` | Diff de plantillas y aplica la actualización |
-| `doctor` | Lint del workspace (presupuesto de tokens, artefactos clave) |
-| `package` | Empaqueta como plugin + marketplace privado + zips de skill para distribuir |
-| `skills sync` | Actualiza los skill-packs vendorizados desde el upstream (diff + apply) |
+| `upgrade` | Diff de plantillas y aplica la actualización (`--check` para previsualizar) |
+| `doctor` | Lint del workspace (presupuesto de tokens, artefactos, ids de stack) |
+| `package` | Empaqueta como plugin + marketplace privado + zips de skill |
+| `skills sync` | Actualiza los skill-packs vendorizados desde el upstream |
 
-## Documentación (en `docs/`)
+Detalle: **[Guía de uso](docs/project/USAGE.md)**.
+</details>
 
-- **[Guía de uso](docs/project/USAGE.md)** — referencia de la CLI (cada comando), `workspace.config.yaml` y **multi-repo**.
+<details>
+<summary><b>🚀 Distribuir e instalar como plugin</b> — para tu equipo / organización</summary>
+
+`ai-workspace package` proyecta el workspace a un **plugin de Claude Code** servido desde el propio repo como
+**marketplace privado**, y prepara **zips de skill** para subir a una organización de claude.ai. Tres
+superficies de instalación (VS Code/CLI, Desktop/Cowork, claude.ai Team/Enterprise):
+
+```
+/plugin marketplace add <owner/repo o URL git>
+/plugin install <plugin>@<marketplace>
+```
+
+Guía completa: **[Distribución](docs/project/DISTRIBUTION.md)**.
+</details>
+
+<details>
+<summary><b>🧩 Qué incluye y por qué</b> — <i>Harness Engineering</i></summary>
+
+`Agente = Modelo + Harness`. El *harness* (instrucciones, skills, contexto, memoria, permisos, verificación)
+es donde está la mayor parte de la diferencia entre un agente mediocre y uno fiable. **Este generador produce
+harnesses.**
+
+```mermaid
+flowchart LR
+  CFG["workspace.config.yaml"] --> GEN["ai-workspace"]
+  TPL["templates por capas"] --> GEN
+  GEN --> AG["AGENTS.md (fuente única)"]
+  AG --> AD["CLAUDE.md · Copilot · Codex"]
+  GEN --> REST["skills + routing · SDD · docs vivas · onboarding"]
+  GEN --> PKG["plugin + marketplace + zips de skill"]
+```
+
+| Concepto | Qué significa |
+|---|---|
+| **Fuente única + idempotencia** | `AGENTS.md` es la verdad; regenerar es seguro y tus notas sobreviven |
+| **Context engineering** | skills por *trigger*, docs just-in-time vía context7, estado en *living docs* |
+| **Gobernanza en capas** | universal → lenguaje → framework → entorno → empresa → negocio (sin choques) |
+| **Metodología (SDD/SPDD)** | intención antes que código; la verdad vive en el código (SDD) o en el prompt (SPDD) |
+| **Ratchet principle** | una regla entra **solo** si previene un fallo real |
+
+Desarrollo: **[Harness Engineering](docs/project/harness-engineering.md)** · **[Metodologías SDD vs SPDD](docs/project/methodologies.md)**.
+</details>
+
+## Documentación
+
+Toda la documentación vive en **[`docs/`](docs/README.md)**. Índice:
+
+- **[Guía de uso](docs/project/USAGE.md)** — CLI (cada comando), `workspace.config.yaml`, targets y multi-repo.
 - **[Arquitectura](docs/project/ARCHITECTURE.md)** — config → componer → renderizar → escribir; capas, regiones gestionadas, i18n.
-- **[Harness Engineering](docs/project/harness-engineering.md)** — la filosofía: *Agente = Modelo + Harness*, context engineering y el ratchet principle.
-- **[Metodologías: SDD vs SPDD](docs/project/methodologies.md)** — cuándo usar cada flujo, con ejemplo end-to-end.
-- **[Distribución](docs/project/DISTRIBUTION.md)** — `ai-workspace package`: plugin + marketplace privado + skills de organización.
-- **[Extender](docs/project/EXTENDING.md)** · **[Mantener](docs/project/MAINTAINING.md)** — recetas y mantenimiento.
-- **[Registro de cambios](CHANGELOG.md)** — evolución del proyecto.
-- Documentación técnica en inglés: [`docs/`](docs/).
+- **[Distribución](docs/project/DISTRIBUTION.md)** — `ai-workspace package`: plugin + marketplace + skills de organización.
+- **[Extender](docs/project/EXTENDING.md)** · **[Mantener](docs/project/MAINTAINING.md)** — recetas y mantenimiento del generador.
+- **[Harness Engineering](docs/project/harness-engineering.md)** · **[Metodologías SDD vs SPDD](docs/project/methodologies.md)** · **[SDD upstream](docs/project/SDD-UPSTREAM.md)**.
+- **Decisiones (ADR):** [0001 SDD mixto](docs/project/decisions/0001-mixed-sdd.md) · [0002 contratos de extensión](docs/project/decisions/0002-extension-contracts.md).
+- **Proceso (mantenido con IA):** [especificación vigente](docs/development/specs/configuration.md) · [estado del proyecto](docs/development/status/PROJECT-STATE.md) · [cambios SDD](docs/development/changes/).
+- **Repo:** [CHANGELOG](CHANGELOG.md) · [CONTRIBUTING](CONTRIBUTING.md) · [SECURITY](SECURITY.md).
 
 ## Licencia
 
