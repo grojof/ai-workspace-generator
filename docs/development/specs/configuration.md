@@ -28,7 +28,14 @@ Stable specification of how a workspace is configured. Folded from change
 
 ## Modes
 - AI-guided is the recommended default. A **manual wizard** (`ai-workspace init`) remains a complete
-  fallback that works without an agent. (A dedicated simple/advanced split is a future enhancement.)
+  fallback that works without an agent, with two paths (change 0002-wizard-modes):
+  - **Simple** (default): asks only project name, docs language, and targets; **accepts the detected stack**;
+    applies documented defaults (purpose=build, sdd on + files + sdd, living docs on, context7 on,
+    company=none, safetyGuard new→warn/existing→off, all recommended skills).
+  - **Advanced:** the fully-parametrized sequence (every layer; library-skill selection).
+  - Resolution: `init --advanced` | `init --simple` (or `--yes`) | interactive prompt (Simple preselected).
+  - Config assembly is a pure, shared `buildConfig(inputs, detected)` (`src/commands/wizard.ts`);
+    `simpleDefaults(detected, basics)` fills the Simple inputs.
 
 ## Multi-repo (schema foundation)
 - The config accepts an optional, additive `repos[]` (`RepoSchema`: `path`, optional `name`, optional
