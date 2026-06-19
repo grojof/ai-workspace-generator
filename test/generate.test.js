@@ -4,8 +4,10 @@ import { mkdtempSync, readFileSync, writeFileSync, rmSync, existsSync, readdirSy
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { ConfigSchema } from "../dist/config/schema.js";
+import { loadConfig } from "../dist/config/loader.js";
 import { generate } from "../dist/generate/index.js";
 import { runPackage } from "../dist/commands/package.js";
+import { runDoctor } from "../dist/commands/doctor.js";
 import { diffTrees, hashTree } from "../dist/commands/skillsSync.js";
 
 function tmpRepo() {
@@ -464,6 +466,68 @@ test("package (0004): multi-repo aggregates root + child skills/agents into one 
     runPackage(cwd);
     assert.ok(readFileSync(resolve(cwd, "dist/org-skills/odoo-18.0.zip")).equals(zipBefore));
   } finally {
+    rmSync(cwd, { recursive: true, force: true });
+  }
+});
+
+test("vscode tooling (0005): extensions + formatters come from the registry", () => {
+  const cwd = tmpRepo();
+  try {
+    generate(cwd, ConfigSchema.parse({ project: { name: "t" }, stack: { languages: [{ id: "go", version: "latest" }, { id: "python", version: "latest" }] } }));
+    const ext = JSON.parse(readFileSync(resolve(cwd, ".vscode/extensions.json"), "utf8"));
+    assert.ok(ext.recommendations.includes("golang.go"));
+    assert.ok(ext.recommendations.includes("ms-python.python"));
+    assert.equal(ext.recommendations[0], "github.copilot");
+    assert.equal(ext.recommendations.at(-1), "bierner.markdown-mermaid");
+    const settings = JSON.parse(readFileSync(resolve(cwd, ".vscode/settings.json"), "utf8"));
+    assert.equal(settings["[go]"]["editor.defaultFormatter"], "golang.go");
+    assert.equal(settings["[python]"]["editor.defaultFormatter"], "charliermarsh.ruff");
+  } finally {
+    rmSync(cwd, { recursive: true, force: true });
+  }
+});
+
+test("package (0005): distribution.perRepo emits one plugin per child; default stays umbrella", () => {
+  const perRepo = tmpRepo();
+  const umbrella = tmpRepo();
+  try {
+    const repos = "repos:\n  - path: app-a\n    stack:\n      environments:\n        - id: odoo\n          version: latest\n  - path: app-b\n    stack:\n      frameworks:\n        - id: react\n          version: latest\n";
+    const base = "project:\n  name: Multi Workspace\nprofile:\n  userType: technical\n  experience: advanced\n";
+    writeFileSync(join(perRepo, "workspace.config.yaml"), base + "distribution:\n  perRepo: true\n" + repos);
+    writeFileSync(join(umbrella, "workspace.config.yaml"), base + repos);
+    runPackage(perRepo);
+    runPackage(umbrella);
+    // perRepo → one plugin per child, each with that child's stack skill; a multi-plugin marketplace.
+    assert.ok(existsSync(resolve(perRepo, "plugins/multi-workspace-app-a/skills/odoo-18.0/SKILL.md")));
+    assert.ok(existsSync(resolve(perRepo, "plugins/multi-workspace-app-b/skills/frontend-ui-dark-ts/SKILL.md")));
+    const mkt = JSON.parse(readFileSync(resolve(perRepo, ".claude-plugin/marketplace.json"), "utf8"));
+    assert.deepEqual(mkt.plugins.map((p) => p.name).sort(), ["multi-workspace-app-a", "multi-workspace-app-b"]);
+    // default (no perRepo) → single umbrella plugin aggregating both.
+    assert.ok(existsSync(resolve(umbrella, "plugins/multi-workspace/skills/odoo-18.0/SKILL.md")));
+    assert.ok(existsSync(resolve(umbrella, "plugins/multi-workspace/skills/frontend-ui-dark-ts/SKILL.md")));
+    const mktU = JSON.parse(readFileSync(resolve(umbrella, ".claude-plugin/marketplace.json"), "utf8"));
+    assert.equal(mktU.plugins.length, 1);
+  } finally {
+    rmSync(perRepo, { recursive: true, force: true });
+    rmSync(umbrella, { recursive: true, force: true });
+  }
+});
+
+test("doctor (0005): warns on a stack id not in the registry", () => {
+  const cwd = tmpRepo();
+  const logs = [];
+  const orig = console.log;
+  try {
+    writeFileSync(join(cwd, "workspace.config.yaml"), "project:\n  name: t\nstack:\n  languages:\n    - id: cobol\n      version: latest\n");
+    generate(cwd, loadConfig(cwd)); // so AGENTS.md exists → doctor reports no error (only a warning)
+    console.log = (...a) => logs.push(a.join(" "));
+    runDoctor(cwd);
+    console.log = orig;
+    const out = logs.join("\n");
+    assert.match(out, /Unknown stack module/);
+    assert.match(out, /cobol/);
+  } finally {
+    console.log = orig;
     rmSync(cwd, { recursive: true, force: true });
   }
 });

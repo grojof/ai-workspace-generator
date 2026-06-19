@@ -6,7 +6,7 @@ import { loadConfig } from "../config/loader.js";
 import { resolveRepos, type Config } from "../config/schema.js";
 import { generate, type Artifact } from "../generate/index.js";
 import { printArtifacts } from "../util/report.js";
-import { names, pluginManifest, marketplaceManifest, installDoc } from "../generate/packaging.js";
+import { names, pluginManifest, marketplaceManifest, marketplaceManifestMulti, repoPluginName, repoPluginManifest, installDoc } from "../generate/packaging.js";
 import { zipSync, type ZipEntry } from "../util/zip.js";
 
 /** Binary skill assets (templates, logos) — copied byte-for-byte into the plugin, never utf8-normalized. */
@@ -116,22 +116,36 @@ export function runPackage(cwd: string): void {
   }
 
   const { plugin } = names(config);
-  const pluginDir = resolve(cwd, "plugins", plugin);
   // Aggregate distributable sources from the workspace root + every linked child repo (0004). 0003 places
   // per-repo stack skills (and their companion agents) under each child's `.claude/`.
   const roots = sourceRoots(cwd, config);
   const out: Artifact[] = [];
 
-  // 1. Umbrella plugin manifest.
-  out.push(writeText(cwd, resolve(pluginDir, ".claude-plugin/plugin.json"), JSON.stringify(pluginManifest(config), null, 2), "plugin manifest"));
-
-  // 2. Project skills + commands + companion agents into the plugin, aggregated + deduped across all roots.
-  projectTree(cwd, roots, ".claude/skills", resolve(pluginDir, "skills"), "plugin skill", out);
-  projectTree(cwd, roots, ".claude/commands", resolve(pluginDir, "commands"), "plugin command", out);
-  projectTree(cwd, roots, ".claude/agents", resolve(pluginDir, "agents"), "plugin agent", out);
-
-  // 3. Root marketplace catalog — this repo is the marketplace.
-  out.push(writeText(cwd, resolve(cwd, ".claude-plugin/marketplace.json"), JSON.stringify(marketplaceManifest(config), null, 2), "marketplace catalog"));
+  // 1–3. Plugin(s) + marketplace catalog. `distribution.perRepo` (0005) chooses the topology.
+  if (config.distribution.perRepo && config.repos.length) {
+    // One plugin per child repo: sources = root (workflow/non-stack) + that child's stack skills/agents.
+    const listed: Array<{ name: string; source: string; description: string }> = [];
+    for (const repo of resolveRepos(config)) {
+      if (repo.path === ".") continue;
+      const id = repoPluginName(config, repo.name);
+      const dir = resolve(cwd, "plugins", id);
+      const repoRoots = [cwd, resolve(cwd, repo.path)];
+      out.push(writeText(cwd, resolve(dir, ".claude-plugin/plugin.json"), JSON.stringify(repoPluginManifest(config, repo.name), null, 2), "plugin manifest"));
+      projectTree(cwd, repoRoots, ".claude/skills", resolve(dir, "skills"), "plugin skill", out);
+      projectTree(cwd, repoRoots, ".claude/commands", resolve(dir, "commands"), "plugin command", out);
+      projectTree(cwd, repoRoots, ".claude/agents", resolve(dir, "agents"), "plugin agent", out);
+      listed.push({ name: id, source: id, description: `AI workspace for ${config.project.name} · repo ${repo.name}.` });
+    }
+    out.push(writeText(cwd, resolve(cwd, ".claude-plugin/marketplace.json"), JSON.stringify(marketplaceManifestMulti(config, listed), null, 2), "marketplace catalog"));
+  } else {
+    // Umbrella plugin (default): one plugin aggregating root + every child.
+    const pluginDir = resolve(cwd, "plugins", plugin);
+    out.push(writeText(cwd, resolve(pluginDir, ".claude-plugin/plugin.json"), JSON.stringify(pluginManifest(config), null, 2), "plugin manifest"));
+    projectTree(cwd, roots, ".claude/skills", resolve(pluginDir, "skills"), "plugin skill", out);
+    projectTree(cwd, roots, ".claude/commands", resolve(pluginDir, "commands"), "plugin command", out);
+    projectTree(cwd, roots, ".claude/agents", resolve(pluginDir, "agents"), "plugin agent", out);
+    out.push(writeText(cwd, resolve(cwd, ".claude-plugin/marketplace.json"), JSON.stringify(marketplaceManifest(config), null, 2), "marketplace catalog"));
+  }
 
   // 4. Per-skill org zips (claude.ai Organization → Skills upload), from the aggregated skill set. SKILL.md
   //    at zip root. De-duped by id (first-wins) so the same id from two repos yields a single zip.

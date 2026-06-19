@@ -27,14 +27,15 @@ mantenimiento mínimo. **Sin datos de negocio reales.**
 - **Multi-repo (generación por repo)** — `repos[]` (additive) + `resolveRepos`/`unionStack`; `generate()`
   separa **workspace-level** (root: `AGENTS.md` + CLAUDE.md puente + Copilot + MCP/settings + skills de
   workflow + packs no-stack, sobre la unión de stacks) de **repo-level** (cada hijo: `CLAUDE.md` que importa
-  `@../AGENTS.md` + packs de su stack). `repos[]` vacío ⇒ idéntico a single-repo (cambio 0003).
+  `@../AGENTS.md` + packs de su stack). `repos[]` vacío ⇒ idéntico a single-repo (cambio 0003). Cada hijo
+  recibe además una instrucción Copilot path-scoped (`applyTo`) en el root (cambio 0005).
 - **SDD** — una metodología con modos `lean`/`reasons`; skills `sdd-*` (schema, onboarding, audits,
   builder, migrate, spec-sync) on-demand. Eje `sdd.methodology: sdd | spdd` (`spdd ⇒ reasons`).
 - **Skill-packs de stack** — base vendorizada (MIT/Apache, `vendor/`) + `pack.yaml` con routing/gating;
   `ai-workspace skills sync` actualiza la base preservando overlays.
 - **Empaquetado** — `ai-workspace package` → plugin paraguas + marketplace privado + zips de skill. En
   multi-repo **agrega** skills/commands/agents del root + cada hijo (dedup primero-gana) en el mismo plugin
-  paraguas (cambio 0004).
+  paraguas (cambio 0004); `distribution.perRepo: true` emite un plugin por repo (cambio 0005).
 - **Hooks de gobernanza** — safety guard opt-in (`workflow.hooks.safetyGuard`).
 - **Company overlay (opcional)** — placeholder `templates/company/example/`; ningún dato de empresa real.
 

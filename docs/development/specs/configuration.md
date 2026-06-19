@@ -2,7 +2,8 @@
 
 Stable specification of how a workspace is configured. Folded from changes
 `0001-guided-config-ux` (Phase 1 + multi-repo schema), `0002-wizard-modes`,
-`0003-per-repo-generation`, and `0004-per-repo-distribution`. Update this file as the capability evolves.
+`0003-per-repo-generation`, `0004-per-repo-distribution`, and `0005-multi-repo-polish`. Update this file as
+the capability evolves.
 
 ## Sources of truth
 - **Module registry** (`src/modules/registry.ts`) is the **single source** of selectable stack modules
@@ -63,8 +64,22 @@ Stable specification of how a workspace is configured. Folded from changes
   De-dup is **first-wins** by id (root before children, children in `resolveRepos` order). Topology is
   unchanged (one umbrella plugin, one marketplace entry); only the sources broaden. Empty `repos[]` ⇒ root
   only ⇒ unchanged.
-- **Out of scope (future):** one-plugin-per-repo topology; per-repo divergent profile/company/SDD/language
-  (today `RepoSchema` overrides `stack` only); per-repo Copilot `applyTo` path-scoping; id-collision warnings.
+- **Per-repo Copilot guidance** (change 0005): since Copilot has no nested discovery, each child repo gets a
+  path-scoped instruction at the workspace root — `.github/instructions/<slug>.instructions.md` with
+  `applyTo: "<path>/**"` summarizing that repo's stack. Single-repo emits none.
+- **One-plugin-per-repo** (change 0005, opt-in): `distribution.perRepo: true` makes `package` emit one plugin
+  per child repo (`plugins/<plugin>-<repoSlug>/`, sources = root + that child) in a multi-plugin marketplace,
+  instead of the default umbrella. Org zips + `INSTALL.md` stay the full aggregate.
+- **Out of scope (future):** per-repo divergent profile/company/SDD/language (today `RepoSchema` overrides
+  `stack` only); id-collision warnings.
+
+## Module registry as single source
+- `src/modules/registry.ts` is the **single source** for selectable modules and their metadata, including
+  per-module **VS Code recommendations** (`vscodeExtensions`) and per-language **formatters**
+  (`vscodeFormatter`). `init`, `add`, `remove`, the `.vscode/*` generation and `doctor` all read from it —
+  no hardcoded language maps (change 0005).
+- `doctor` validates configured stack ids against the registry (parity with the MCP check) and warns on
+  unknown ids; the `add`/`remove` help lists all four module types (`language|framework|environment|mcp`).
 
 ## Acceptance (enforced)
 - Wizard options derive from the registry (`config.test.js`, `registry.test.js`, build).
@@ -75,5 +90,8 @@ Stable specification of how a workspace is configured. Folded from changes
   (`multi-repo.test.js`).
 - Per-repo distribution: `package` aggregates root + child skills/commands/agents into one umbrella plugin
   (deduped) with matching org zips + `INSTALL.md`; idempotent (`generate.test.js`).
+- Per-repo Copilot `applyTo` instructions in multi-repo (none in single-repo) (`multi-repo.test.js`); VS Code
+  recommendations/formatters come from the registry (`generate.test.js`); `doctor` warns on unknown stack ids
+  (`generate.test.js`); `distribution.perRepo` emits per-repo plugins, default umbrella (`generate.test.js`).
 - Generation is idempotent and preserves out-of-band user text; single-repo `AGENTS.md` is byte-identical to
   the captured baseline (`invariants.test.js`, `block-manifest.test.js`).

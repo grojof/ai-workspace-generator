@@ -2,6 +2,17 @@ import { resolve } from "node:path";
 import type { Config } from "../config/schema.js";
 import { writeFile, writeIfMissing, type WriteResult } from "../render/writer.js";
 import { docsPaths } from "./paths.js";
+import { LANGUAGES, FRAMEWORKS, ENVIRONMENTS, type ModuleEntry } from "../modules/registry.js";
+
+/** Registry entries present in the config's stack, in catalog order (languages → frameworks → environments). */
+function stackModules(config: Config): ModuleEntry[] {
+  const ids = new Set([
+    ...config.stack.languages.map((l) => l.id),
+    ...config.stack.frameworks.map((f) => f.id),
+    ...config.stack.environments.map((e) => e.id),
+  ]);
+  return [...LANGUAGES, ...FRAMEWORKS, ...ENVIRONMENTS].filter((m) => ids.has(m.id));
+}
 
 /**
  * Beginner-facing material vendored into each project: a learner skill, a slash
@@ -157,12 +168,11 @@ export function generateGuides(cwd: string, config: Config): WriteResult[] {
 // ---------------------------------------------------------------------------
 
 function extensionsJson(config: Config): string {
+  // Base + per-module recommendations from the registry (single source) + Mermaid preview last.
   const recommendations = ["github.copilot", "github.copilot-chat", "editorconfig.editorconfig"];
-  if (config.stack.languages.some((l) => l.id === "typescript" || l.id === "javascript")) {
-    recommendations.push("dbaeumer.vscode-eslint", "esbenp.prettier-vscode");
+  for (const m of stackModules(config)) {
+    for (const ext of m.vscodeExtensions ?? []) if (!recommendations.includes(ext)) recommendations.push(ext);
   }
-  if (config.stack.languages.some((l) => l.id === "go")) recommendations.push("golang.go");
-  if (config.stack.languages.some((l) => l.id === "python")) recommendations.push("ms-python.python");
   recommendations.push("bierner.markdown-mermaid");
   return JSON.stringify({ recommendations }, null, 2);
 }
@@ -204,11 +214,9 @@ function settingsJson(config: Config): string {
     settings["editor.defaultFormatter"] = "esbenp.prettier-vscode";
     settings["editor.codeActionsOnSave"] = { "source.fixAll.eslint": "explicit" };
   }
-  if (config.stack.languages.some((l) => l.id === "go")) {
-    settings["[go]"] = { "editor.defaultFormatter": "golang.go" };
-  }
-  if (config.stack.languages.some((l) => l.id === "python")) {
-    settings["[python]"] = { "editor.defaultFormatter": "charliermarsh.ruff" };
+  // Per-language `[lang]` formatter blocks from the registry (single source).
+  for (const m of stackModules(config)) {
+    if (m.vscodeFormatter) settings[`[${m.id}]`] = { "editor.defaultFormatter": m.vscodeFormatter };
   }
   return JSON.stringify(settings, null, 2);
 }

@@ -8,13 +8,17 @@ export interface ModuleEntry {
   label: string;
   /** True when a dedicated template fragment exists; otherwise a generic block is emitted. */
   bundled?: boolean;
+  /** VS Code extensions recommended when this module is in the stack (`.vscode/extensions.json`). */
+  vscodeExtensions?: string[];
+  /** Per-language `[lang]` editor.defaultFormatter for `.vscode/settings.json`. */
+  vscodeFormatter?: string;
 }
 
 export const LANGUAGES: ModuleEntry[] = [
-  { id: "typescript", label: "TypeScript", bundled: true },
-  { id: "javascript", label: "JavaScript" },
-  { id: "go", label: "Go", bundled: true },
-  { id: "python", label: "Python", bundled: true },
+  { id: "typescript", label: "TypeScript", bundled: true, vscodeExtensions: ["dbaeumer.vscode-eslint", "esbenp.prettier-vscode"] },
+  { id: "javascript", label: "JavaScript", vscodeExtensions: ["dbaeumer.vscode-eslint", "esbenp.prettier-vscode"] },
+  { id: "go", label: "Go", bundled: true, vscodeExtensions: ["golang.go"], vscodeFormatter: "golang.go" },
+  { id: "python", label: "Python", bundled: true, vscodeExtensions: ["ms-python.python"], vscodeFormatter: "charliermarsh.ruff" },
   { id: "java", label: "Java" },
   { id: "csharp", label: "C#" },
 ];

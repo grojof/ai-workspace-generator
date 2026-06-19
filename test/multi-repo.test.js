@@ -93,6 +93,26 @@ test("multi-repo: root is canonical, each child gets its adapter + stack packs",
   }
 });
 
+test("multi-repo (0005): each child gets a Copilot path-scoped applyTo instruction; single-repo gets none", () => {
+  const multi = tmpRepo();
+  const single = tmpRepo();
+  try {
+    generate(multi, ConfigSchema.parse(MULTI));
+    // One .github/instructions/<slug>.instructions.md per child, scoped to its path.
+    const a = readFileSync(resolve(multi, ".github/instructions/app-a.instructions.md"), "utf8");
+    assert.match(a, /applyTo: "app-a\/\*\*"/);
+    assert.match(a, /app-a/);
+    assert.ok(readFileSync(resolve(multi, ".github/instructions/app-b.instructions.md"), "utf8"));
+    // Single-repo: no per-repo instruction (only the TS one when typescript is present).
+    generate(single, ConfigSchema.parse({ project: { name: "t" }, stack: { languages: [{ id: "typescript", version: "latest" }] } }));
+    assert.ok(readFileSync(resolve(single, ".github/instructions/typescript.instructions.md"), "utf8"));
+    assert.equal(existsSync(resolve(single, ".github/instructions/app-a.instructions.md")), false);
+  } finally {
+    rmSync(multi, { recursive: true, force: true });
+    rmSync(single, { recursive: true, force: true });
+  }
+});
+
 test("multi-repo generation is idempotent (second run 0 changed)", () => {
   const cwd = tmpRepo();
   try {
