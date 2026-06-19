@@ -1,0 +1,7 @@
+# >>> ai-workspace:begin:ignore
+# Gestionado por ai-workspace — edita workspace.config.yaml (scope:) y ejecuta sync.
+dist
+node_modules
+vendor
+**/*.min.js
+# <<< ai-workspace:end:ignore

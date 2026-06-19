@@ -1,0 +1,12 @@
+# Opt-in discovery meta-skill (0004). Base mirrored from vercel-labs/skills (MIT).
+id: find-skills
+base: vendor/vercel-skills/find-skills
+profile:
+  userType: [technical]
+loadMode: on-demand
+templated: false
+license: MIT
+attribution: "vercel-labs/skills (MIT), pinned be0dd25 — see vendor/vercel-skills/.source.json"
+trigger:
+  en: "discovering/installing skills from the open ecosystem (npx skills)"
+  es: "descubrir/instalar skills del ecosistema abierto (npx skills)"

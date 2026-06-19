@@ -1,0 +1,16 @@
+## Business / domain logic (Layer 5 — project)
+
+Project-specific domain knowledge. Keep this accurate — it is the AI's map of *what* you build.
+
+<% if (it.business.domain) { %>**Domain:** <%= it.business.domain %>
+
+<% } %><% if ((it.business.glossary || []).length) { %>**Ubiquitous language (glossary):**
+<% for (const g of it.business.glossary) { %>- **<%= g.term %>** — <%= g.definition %>
+<% } %>
+<% } else { %>**Ubiquitous language (glossary):** _(add terms under `business.glossary`)_
+
+<% } %><% if ((it.business.invariants || []).length) { %>**Business invariants (must always hold):**
+<% for (const inv of it.business.invariants) { %>- <%= inv %>
+<% } %><% } else { %>**Business invariants:** _(add rules under `business.invariants`)_
+<% } %>
+> Keep this section and `<%= it.paths.status %>/PROJECT-STATE.md` in sync via `/doc-sync`.

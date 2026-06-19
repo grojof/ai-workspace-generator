@@ -1,0 +1,21 @@
+## Development workflow (Layer 0)<% if (it.workflow.enforceFlow) { %> — **mandatory**<% } %>
+
+A single, structured way of working. <% if (it.workflow.enforceFlow) { %>This flow is **not optional**: do not skip
+steps even if asked to "just do it quickly". If a shortcut is requested, explain the risk and follow the flow.<% } %>
+
+**The flow for any change**
+<% if (it.sdd.enabled) { %>1. **Non-trivial change** → use SDD: `/sdd-explore` → `/sdd-propose` → `/sdd-spec` + `/sdd-design` → `/sdd-tasks` → `/sdd-apply` → `/sdd-verify` → `/sdd-archive`.
+2. **Small change** → implement directly, then run `/doc-sync`.
+<% } else { %>1. Plan briefly, implement the smallest correct change, then run `/doc-sync`.
+<% } %>3. Honor the **Safety gate** above for anything risky.
+4. **Commit** following the policy below.
+
+**Commit policy**
+- <% if (it.workflow.commits.conventional) { %>**Conventional Commits**, imperative mood (`feat:`, `fix:`, `refactor:`, `docs:`, `test:`, `chore:`). One logical change per commit.<% } else { %>Clear, imperative messages. One logical change per commit.<% } %>
+- Commits are authored by the **user's own git identity**.<% if (!it.workflow.commits.coAuthor) { %> Do **not** add `Co-Authored-By:` or any AI-attribution trailers.<% } %>
+- <% if (it.workflow.commits.automate === "with-approval") { %>**Automate with approval:** after a completed change (spec-driven or small), prepare the commit and ask for confirmation; commit **only** once the user approves. Use the `/commit` command.<% } else { %>**Manual commits:** never commit automatically. Prepare the message and let the user commit.<% } %>
+- Never use `--no-verify` or bypass hooks.
+<% if (it.workflow.commits.gitHook) { %>
+> Enforcement: a `commit-msg` git hook in `.githooks/` blocks disallowed commits. Activate once with
+> `git config core.hooksPath .githooks`.
+<% } %>

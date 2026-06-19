@@ -1,0 +1,8 @@
+## Python (Layer 3 — environment)
+
+- **Always use a virtual environment** (`python -m venv .venv`, or uv/poetry). Never install into system Python.
+- Activate it before working; keep `.venv/` git-ignored. Pin deps in a lockfile.
+- Why: isolates project deps, avoids version clashes across projects, and makes installs reproducible.
+- Manage interpreter versions with **pyenv** when you need multiple Python versions.
+
+> For exact commands on your OS, query **context7** (or the venv/uv/poetry docs).

@@ -1,0 +1,14 @@
+# Vendored skill (0005). Base mirrored from anthropics/skills (Apache-2.0). Update via 'ai-workspace skills sync'.
+# No stack binding: dev tooling (authoring skills), on-demand for any technical profile (experience does not
+# gate access). Perfect dogfood fit for this repo, which is itself a skill generator.
+id: skill-creator
+base: vendor/anthropic-skills/skill-creator
+profile:
+  userType: [technical]
+loadMode: on-demand
+templated: false
+license: Apache-2.0
+attribution: "anthropics/skills (Apache-2.0), pinned 5754626 — see vendor/anthropic-skills/.source.json + per-skill LICENSE.txt"
+trigger:
+  en: "authoring, structuring or evaluating a Claude skill (SKILL.md, references, packaging)"
+  es: "crear, estructurar o evaluar una skill de Claude (SKILL.md, references, empaquetado)"

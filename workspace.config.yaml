@@ -1,0 +1,70 @@
+# AI Workspace configuration — the generator dogfoods itself.
+# Edit and run `ai-workspace sync` to regenerate artifacts idempotently. Docs: AI-WORKSPACE.md
+version: 1
+project:
+  name: ai-workspace-generator
+  description: Node/TypeScript CLI that scaffolds and adapts AI workspaces (Claude Code + Copilot) from one config.
+  mode: existing
+  purpose: build
+profile:
+  userType: technical
+  experience: advanced
+company: none
+targets:
+  - claude
+language: es
+stack:
+  languages:
+    - id: typescript
+      version: latest
+  frameworks: []
+  environments:
+    - id: node-runtime
+      version: latest
+conventions:
+  prefixes: {}
+  fileNaming: kebab-case
+  banned: []
+  notes: []
+business:
+  glossary: []
+  invariants: []
+sdd:
+  enabled: true
+  backend: files
+  schema: lean
+  appProfile: null
+  constitution: false
+  vendorSkills: true
+docs: {}
+ingest:
+  sources: []
+  reconcileWithContext7: true
+  preferCompanyOnConflict: true
+distribution: {}
+scope:
+  ignore:
+    - dist
+    - node_modules
+    - vendor
+    - "**/*.min.js"
+  gitignoreManaged:
+    - .claude/settings.local.json
+  include: []
+mcp:
+  - context7
+skills: []
+livingDocs: true
+workflow:
+  commits:
+    conventional: true
+    coAuthor: false
+    automate: with-approval
+    gitHook: true
+  safetyGate: true
+  enforceFlow: true
+livingDocsHook: true
+tokenBudget:
+  agentsMd: 6000
+  perInstruction: 1500
+templatesVersion: 0.21.0

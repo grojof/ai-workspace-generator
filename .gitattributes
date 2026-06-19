@@ -1,0 +1,27 @@
+# Normalize line endings to LF across platforms. `eol=lf` is authoritative and overrides a
+# developer's core.autocrlf, so the working tree and the repo both use LF.
+* text=auto eol=lf
+
+# Binary files — never normalize (one pattern per line; git's .gitattributes has no brace expansion).
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.zip binary
+*.woff binary
+*.woff2 binary
+
+# >>> ai-workspace:begin:ai-workspace
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.zip binary
+*.woff binary
+*.woff2 binary
+# <<< ai-workspace:end:ai-workspace

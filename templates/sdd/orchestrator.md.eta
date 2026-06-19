@@ -1,0 +1,59 @@
+<% const constitution = it.sdd.enabled && it.sdd.constitution && it.project.mode === "new"; %><% if (it.sdd.methodology === "spdd") { %>## Structured-Prompt-Driven Development (SPDD)
+
+A methodology where the **structured prompt — the REASONS Canvas — is a first-class, version-controlled,
+maintained artifact** (Thoughtworks/SPDD). It extends spec-driven development: the prompt captures not just
+*what* the system does but the chosen **approach, structure, norms and safeguards**, and is kept in sync
+with the code. Same in-repo store and `/sdd-*` flow; **no external CLI is required or installed**.
+
+**When reality diverges, fix the prompt first — then the code.** The loop is **propose-and-review** (it
+proposes diffs; you approve — no silent rewrites): **logic/behaviour** → edit the Canvas, then propagate with
+the **sdd-code-maintenance** skill; **refactor/drift** → **`/sdd-sync`** (sdd-spec-sync) folds code changes
+back into the Canvas.<% } else { %>## Spec-Driven Development (SDD)
+
+A lightweight **methodology — not a tool dependency**. We adopt the best *ideas* from two SDD projects
+and keep every artifact as plain Markdown; **no external CLI is required or installed**:
+
+- **Spec-Kit** → the greenfield *bootstrap*: a project **constitution** (principles) and a **clarify** step.
+- **OpenSpec** → the steady state: changes as **deltas** against a living spec baseline, then archived.<% } %>
+
+Backend: **<%= it.sdd.backend %>**.
+
+**Lifecycle**
+
+```mermaid
+flowchart LR
+<% if (constitution) { %>  C[constitution] -.once.-> E
+<% } %>  E[explore] --> P[propose] --> CL[clarify] --> S[spec]
+  P --> D[design]
+  S --> T[tasks]
+  D --> T
+  T --> A[apply] --> V[verify] --> R[archive]
+```
+
+**Which idea applies, by project mode**
+<% if (it.project.mode === "new") { %>- **This is a new project** (`mode: new`): write the **constitution** once (Spec-Kit idea), then evolve
+  through delta changes (OpenSpec idea).
+<% } else { %>- **This is an existing project** (`mode: existing`): **no constitution bootstrap** — every new feature
+  is a **delta change** (OpenSpec idea) against the current specs. This is the normal, everyday case.
+<% } %>- Project *mode* governs the one-time ramp; per-feature, the size/risk of the change decides whether the
+  full flow is worth it.
+
+**Commands** (Claude: `/sdd-*`; Copilot: prompt files in `.github/prompts/`)
+<% if (constitution) { %>- `/sdd-constitution` — define the project's principles (once).
+<% } %>- `/sdd-explore <topic>` — investigate before committing.
+- `/sdd-propose` → `/sdd-clarify` → `/sdd-spec` + `/sdd-design` → `/sdd-tasks` → `/sdd-apply` → `/sdd-verify` → `/sdd-archive`.
+
+**Artifacts** live in <% if (it.sdd.backend === "none") { %>the conversation (not persisted — enable a backend to keep them).<% } else { %>`<%= it.paths.changes %>/<change-name>/` and are **versioned in git** (reviewable in PRs, readable by any AI tool). The store follows OpenSpec's *layout* (specs + changes + archive) as a convention — it is **not** the OpenSpec CLI.<% } %>
+
+**Rules**
+- For non-trivial features, create a proposal/spec before implementing.
+- `clarify` resolves ambiguity *before* the spec is finalized. Specs are the source of truth for *what*;
+  design for *how*; tasks track progress.
+<% if (constitution) { %>- New specs and designs must honor `<%= it.paths.constitution %>`.
+<% } %><% if (it.sdd.schema === "reasons") { %>- **Schema: REASONS Canvas** (enterprise mode). Specs use the closed 8-section schema + frontmatter<% if (it.sdd.appProfile) { %> (profile <%= it.sdd.appProfile %>)<% } else { %>. Pick the app profile (A/B) first with the **sdd-onboarding** skill<% } %>. Load the **sdd-spec-schema** skill when authoring/validating; full schema, examples and the controls catalogue load on demand.
+<% } %><% if (it.sdd.schema === "reasons") { %>- **Builder workflow (author side).** Go idea → app with the on-demand skills: **sdd-init** (scaffold) → **sdd-spec-capture** (interview → spec) → **sdd-spec-review** (sign-off → `user-reviewed`) → **sdd-code-generation** → **sdd-test-generation** → **sdd-self-review** → **sdd-handoff**; **sdd-code-maintenance** propagates later spec edits. **sdd-reverse-engineering** recovers a spec from code that lacks one.
+- **Spec lifecycle (`status`).** REASONS specs carry a `status`: `draft → user-reviewed → it-approved → implemented → retired`. **sdd-spec-review** drives the transitions — owner sign-off promotes `draft → user-reviewed` (code/tests generate from there); all four **sdd-audit-\*** green is the gate for `it-approved`.
+<% } %><% if (it.sdd.schema === "reasons") { %>- **Audits (reviewer side).** Before approving a spec, run the **sdd-audit-security / -style / -stack / -architecture** skills against the control catalogue (loaded on demand). All green is the precondition for sign-off.
+<% } %>- After implementing, run `/sdd-verify` against the spec, then `/sdd-archive` (folds the delta into `<%= it.paths.specs %>/`).
+<% if (it.sdd.backend === "hybrid") { %>- Engram (if installed) augments cross-session memory; the in-repo files remain canonical.
+<% } %>

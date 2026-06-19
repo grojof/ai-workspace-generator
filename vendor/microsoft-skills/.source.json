@@ -1,0 +1,12 @@
+{
+  "source": "microsoft/skills",
+  "repo": "https://github.com/microsoft/skills",
+  "ref": "main",
+  "sha": "69e4442a24174cf097ea310332ef549f78cfeef0",
+  "license": "MIT",
+  "fetched": "2026-06-18",
+  "vendored": [
+    { "from": ".github/plugins/azure-sdk-typescript/skills/frontend-ui-dark-ts", "to": "frontend-ui-dark-ts" }
+  ],
+  "note": "Base mirror — do NOT edit; update via 'skills sync'. Binary assets (Segoe UI fonts, logos) excluded. © Microsoft, MIT."
+}

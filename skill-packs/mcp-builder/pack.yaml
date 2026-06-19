@@ -1,0 +1,13 @@
+# Vendored skill (0005). Base mirrored from anthropics/skills (Apache-2.0). Update via 'ai-workspace skills sync'.
+# No stack binding: dev tooling (building MCP servers), on-demand for any technical profile.
+id: mcp-builder
+base: vendor/anthropic-skills/mcp-builder
+profile:
+  userType: [technical]
+loadMode: on-demand
+templated: false
+license: Apache-2.0
+attribution: "anthropics/skills (Apache-2.0), pinned 5754626 — see vendor/anthropic-skills/.source.json + per-skill LICENSE.txt"
+trigger:
+  en: "building or evaluating an MCP server (tools, resources, Node or Python, best practices)"
+  es: "construir o evaluar un servidor MCP (tools, resources, Node o Python, buenas prácticas)"

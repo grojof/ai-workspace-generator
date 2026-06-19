@@ -1,0 +1,9 @@
+## Python (Layer 1 — language) · target v<%= it.entry.version %>
+
+- Format with **ruff** (or black) and lint with **ruff**; CI fails on violations. Sort imports.
+- **Type hints** everywhere public; check with mypy/pyright. Avoid `Any` at boundaries.
+- Use a virtualenv and a lockfile (uv/poetry/pip-tools). Pin versions; don't install globally.
+- Prefer dataclasses/pydantic for structured data; validate external input explicitly.
+- Tests with pytest; name `test_*.py`. No bare `except:` — catch specific exceptions.
+- Versions: follow the versioning policy above; for existing apps stay on the current minor and upgrade
+  only via `dependency-upgrade`. Confirm specifics in **context7** for `python@<%= it.entry.version %>`.

@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [],
+    "deny": []
+  },
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo \"Recordatorio: ejecuta /doc-sync para refrescar las docs vivas si cambió el estado del proyecto.\""
+          }
+        ]
+      }
+    ]
+  }
+}

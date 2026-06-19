@@ -1,0 +1,47 @@
+# Dependencies & build output
+node_modules/
+dist/
+
+# Logs & OS noise
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db
+
+# Local env & secrets
+.env
+.env.*
+!.env.example
+
+# Tooling caches / packs
+*.tgz
+coverage/
+.cache/
+
+# AI workspace local overrides (per-developer, not shared)
+.claude/settings.local.json
+
+# Vendored external skill/source material (agent-skills, anthropic-skills, …). The TEXT source is tracked
+# for clean diffs + history; build artifacts and heavy binaries are excluded.
+vendor/**/dist/
+vendor/**/*.zip
+vendor/**/*.skill
+vendor/**/*.png
+vendor/**/*.jpg
+vendor/**/*.jpeg
+vendor/**/*.gif
+vendor/**/*.ttf
+vendor/**/*.otf
+vendor/**/*.pdf
+vendor/**/*.pptx
+vendor/**/*.potx
+vendor/**/*.dotx
+vendor/**/*.docx
+vendor/**/*.xlsx
+vendor/**/*.xltx
+vendor/**/*.thmx
+
+# >>> ai-workspace:begin:ai-workspace
+# Gestionado por ai-workspace — edita workspace.config.yaml (scope:) y ejecuta sync.
+.claude/settings.local.json
+# <<< ai-workspace:end:ai-workspace

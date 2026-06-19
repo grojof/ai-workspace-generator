@@ -1,0 +1,12 @@
+{
+  "source": "vercel-labs/skills",
+  "repo": "https://github.com/vercel-labs/skills",
+  "ref": "main",
+  "sha": "be0dd25b4a8665894a56f45ef582cc02ca802c39",
+  "license": "MIT",
+  "fetched": "2026-06-18",
+  "vendored": [
+    { "from": "skills/find-skills", "to": "find-skills" }
+  ],
+  "note": "Base mirror — do NOT edit; update via 'skills sync'. © Vercel, MIT."
+}

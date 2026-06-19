@@ -1,0 +1,11 @@
+# Vendored stack skill (0004). Base mirrored from microsoft/skills (MIT). Update via 'ai-workspace skills sync'.
+id: frontend-ui-dark-ts
+base: vendor/microsoft-skills/frontend-ui-dark-ts
+stackBinding:
+  frameworks: [react]
+profile:
+  userType: [technical]
+loadMode: on-demand
+templated: false
+license: MIT
+attribution: "microsoft/skills (MIT), pinned 69e4442 — see vendor/microsoft-skills/.source.json"

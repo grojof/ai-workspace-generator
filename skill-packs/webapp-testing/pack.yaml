@@ -1,0 +1,14 @@
+# Vendored skill (0005). Base mirrored from anthropics/skills (Apache-2.0). Update via 'ai-workspace skills sync'.
+id: webapp-testing
+base: vendor/anthropic-skills/webapp-testing
+stackBinding:
+  frameworks: [react, nextjs, vue, angular]
+profile:
+  userType: [technical]
+loadMode: on-demand
+templated: false
+license: Apache-2.0
+attribution: "anthropics/skills (Apache-2.0), pinned 5754626 — see vendor/anthropic-skills/.source.json + per-skill LICENSE.txt"
+trigger:
+  en: "testing a running web app end-to-end (browser automation, console logs, Playwright-style flows)"
+  es: "probar una web app de extremo a extremo (automatización de navegador, logs de consola, flujos Playwright)"

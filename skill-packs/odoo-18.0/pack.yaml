@@ -1,0 +1,16 @@
+# Stack skill pack — metadata our generator adds on top of the vendored base (skills-as-data, 0003).
+# The SKILL.md + references/ are the BASE (mirrored from vendor/agent-skills, MIT). This file is the OVERLAY
+# of routing/gating metadata. A pack is copied into a workspace only when its stackBinding matches the
+# config's stack and the active profile is allowed.
+id: odoo-18.0
+base: vendor/agent-skills/skills/odoo-18.0
+stackBinding:
+  environments: [odoo]
+profile:
+  userType: [technical]
+loadMode: on-demand
+license: MIT
+attribution: "unclecatvn/agent-skills (MIT), pinned v1.0.10 — see vendor/agent-skills/.source.json"
+trigger:
+  en: "developing Odoo 18 modules / addons (models, views, security, OWL, reports, tests)"
+  es: "desarrollar módulos/addons de Odoo 18 (modelos, vistas, seguridad, OWL, reports, tests)"

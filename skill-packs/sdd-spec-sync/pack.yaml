@@ -1,0 +1,9 @@
+id: sdd-spec-sync
+gating:
+  sdd:
+    enabled: true
+    methodology: spdd
+profile:
+  userType: [business, technical]
+routing: false
+templated: true

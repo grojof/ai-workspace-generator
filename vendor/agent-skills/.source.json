@@ -1,0 +1,14 @@
+{
+  "source": "unclecatvn/agent-skills",
+  "repo": "https://github.com/unclecatvn/agent-skills",
+  "ref": "v1.0.10",
+  "sha": "a9a609bdccfaea374f83c70bd70d754828f58414",
+  "license": "MIT",
+  "fetched": "2026-06-18",
+  "vendored": [
+    "skills/odoo-18.0",
+    "agents/odoo-code-review",
+    "agents/odoo-code-tracer"
+  ],
+  "note": "Base layer mirrored from upstream — do NOT edit here; update via `skills sync` (pin + reviewed bump). Any company overlay is kept separate as `overlay.<company>.md` in the pack (see docs/project/EXTENDING.md)."
+}

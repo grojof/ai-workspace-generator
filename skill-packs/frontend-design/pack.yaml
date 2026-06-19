@@ -1,0 +1,14 @@
+# Vendored skill (0005). Base mirrored from anthropics/skills (Apache-2.0). Update via 'ai-workspace skills sync'.
+id: frontend-design
+base: vendor/anthropic-skills/frontend-design
+stackBinding:
+  frameworks: [react, nextjs, vue, angular]
+profile:
+  userType: [technical]
+loadMode: on-demand
+templated: false
+license: Apache-2.0
+attribution: "anthropics/skills (Apache-2.0), pinned 5754626 — see vendor/anthropic-skills/.source.json + per-skill LICENSE.txt"
+trigger:
+  en: "designing or polishing a web frontend (layout, typography, color, spacing, visual taste)"
+  es: "diseñar o pulir un frontend web (layout, tipografía, color, espaciado, criterio visual)"

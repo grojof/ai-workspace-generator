@@ -1,0 +1,16 @@
+#!/bin/sh
+# Managed by ai-workspace. Activate once: git config core.hooksPath .githooks
+msg_file="$1"
+subject="$(head -n1 "$msg_file")"
+if grep -qiE '^Co-Authored-By:' "$msg_file"; then
+  echo "x Commit policy: Co-Authored-By / AI attribution trailers are not allowed." >&2
+  exit 1
+fi
+case "$subject" in
+  feat:*|fix:*|refactor:*|docs:*|test:*|chore:*|build:*|ci:*|perf:*|style:*|revert:*|feat\(*|fix\(*|refactor\(*|docs\(*|test\(*|chore\(*|build\(*|ci\(*|perf\(*|style\(*|revert\(*) ;;
+  Merge*|Revert*) ;;
+  *)
+    echo "x Commit policy: use Conventional Commits (e.g. 'feat: ...'). Got: $subject" >&2
+    exit 1 ;;
+esac
+exit 0

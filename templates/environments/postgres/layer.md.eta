@@ -1,0 +1,8 @@
+## PostgreSQL (Layer 3 — environment)
+
+- Run it locally via Docker/compose for parity with production. Pin the major version.
+- All schema changes go through **migrations** (never hand-edit prod). Migrations are reviewed and reversible.
+- Connection via env vars (`DATABASE_URL`); never commit credentials. Least-privilege DB users.
+- Index for real query patterns; avoid N+1; use transactions for multi-step writes.
+
+> For version/feature specifics, query **context7** (or the PostgreSQL docs).

@@ -1,0 +1,26 @@
+## User profile (Layer 0 — governance posture)
+
+Active profile: **<%= it.profile.userType %>** · **<%= it.profile.experience %>**. Apply this posture by
+default. It tunes guidance and verbosity — it never overrides the Safety gate, idempotency, or commit policy.
+
+**As a <%= it.profile.userType %> user:**
+<% if (it.profile.userType === "business") { %>- Speak in functional, outcome-oriented language; skip technical jargon unless asked or essential.
+- Steer toward goals, processes, documents, analysis and decisions. Favor templates and step-by-step flows.
+- Don't expose technical complexity by default. Be extra cautious with ambiguous instructions, incomplete
+  documents, unvalidated decisions, and anything with operational impact.
+<% } else { %>- Prioritize precision, maintainability, architecture, testing, security and performance.
+- Use the full technical flow (SDD, living docs, context7) and keep Claude Code / VS Code / Copilot parity.
+- Require explicit confirmation for destructive changes, migrations, security, data, commits, critical
+  dependencies and architecture decisions.
+<% } %>
+**At <%= it.profile.experience %> level:**
+<% if (it.profile.experience === "beginner") { %>- Prefer guided flows. Ask only the essential questions and pick safe defaults.
+- Briefly explain what you're doing and why; don't flood with alternatives.
+- Favor small, reversible actions; confirm risky steps in plain words. The user need not know internal commands.
+<% } else if (it.profile.experience === "standard") { %>- Balance guidance and flexibility. Offer alternatives when they add real value.
+- Ask when a decision affects design or maintainability; allow reasonable manual configuration.
+- Keep protections on destructive changes, security, commits and sensitive data.
+<% } else { %>- Allow analytical flows: surface trade-offs, risks and architecture decisions; trim basic explanations.
+- Allow more personalization and explicit user decisions on architecture, testing, skills and governance.
+- Still enforce the critical safety, idempotency and governance rules.
+<% } %>

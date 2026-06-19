@@ -1,0 +1,34 @@
+## Universal conventions (Layer 0)
+
+These apply to every contributor and every file, regardless of language.
+
+### Encoding & line endings
+- Files are **UTF-8**, no BOM. Newlines are **LF**. Final newline at EOF.
+- `.editorconfig` and `.gitattributes` enforce this — do not fight them.
+
+### Commits
+- **Conventional Commits** in the **imperative mood**: `feat:`, `fix:`, `refactor:`, `docs:`, `test:`, `chore:`.
+- Subject ≤ 72 chars, present tense ("add", not "added"). Explain the *why* in the body.
+- One logical change per commit. Do not mix refactors with behavior changes.
+
+### Code style
+- Match the surrounding code: naming, structure, comment density, idioms.
+- Names are descriptive and in **English**. No abbreviations that aren't standard.
+- Keep functions small and single-purpose. Prefer early returns over deep nesting.
+- No dead code, no commented-out blocks, no leftover debug logging.
+
+### Reviews & safety
+- Never commit secrets. Never weaken auth, validation, or escaping to "make it work".
+- Validate inputs at boundaries. Handle errors explicitly — no silent catches.
+- Changes that are hard to reverse or outward-facing need explicit confirmation.
+
+### Token efficiency (how agents should work here)
+- **Reference, don't duplicate.** Link to skills/docs instead of restating them.
+- Load detail on demand: read scoped instructions/skills only when relevant.
+- Prefer the living docs (`<%= it.paths.status %>/PROJECT-STATE.md`) over re-scanning the whole repo.
+- Use **context7** (MCP) for up-to-date, version-pinned library docs instead of guessing.
+
+### Diagrams
+- Use **Mermaid** for architecture, data flow, module dependencies and the SDD lifecycle.
+- Keep diagrams in `<%= it.paths.status %>/ARCHITECTURE.md`; regenerate with `/doc-sync`.
+- **Always quote node labels** that contain special characters (`/`, `.`, `:`, `+`, `@`, `·`, `*`, `()`, `&`, `<br/>`): write `A["src/index.ts<br/>entry"]`, never `A[src/index.ts<br/>entry]`. Unquoted special characters cause flaky rendering across Mermaid versions (e.g. GitHub's intermittent `translate(undefined, NaN)` error).

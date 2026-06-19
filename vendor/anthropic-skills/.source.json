@@ -1,0 +1,15 @@
+{
+  "source": "anthropics/skills",
+  "repo": "https://github.com/anthropics/skills",
+  "ref": "main",
+  "sha": "57546260929473d4e0d1c1bb75297be2fdfa1949",
+  "license": "Apache-2.0",
+  "fetched": "2026-06-18",
+  "vendored": [
+    { "from": "skills/frontend-design", "to": "frontend-design" },
+    { "from": "skills/webapp-testing", "to": "webapp-testing" },
+    { "from": "skills/skill-creator", "to": "skill-creator" },
+    { "from": "skills/mcp-builder", "to": "mcp-builder" }
+  ],
+  "note": "Base mirror — do NOT edit; update via 'skills sync'. Apache-2.0 (per-skill LICENSE.txt retained). Doc skills (docx/pdf/pptx/xlsx) are source-available and deliberately NOT vendored. © Anthropic."
+}

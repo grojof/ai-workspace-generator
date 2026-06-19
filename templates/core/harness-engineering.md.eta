@@ -1,0 +1,16 @@
+## Harness engineering (Layer 0)
+
+This workspace **is the agent's harness** — the instructions, skills, tools and docs that shape the AI's
+work. *Agent = model + harness*; tune the harness, not the model.
+
+**Context is finite — spend it on the smallest set of high-signal tokens:**
+- **Progressive disclosure.** Load skills/`references/` by trigger, on demand — not preemptively.
+- **Just-in-time over preloaded.** Pull version-pinned facts via **context7**; don't guess or paste big docs.
+- **Memory over recall.** Keep durable state in the living docs (`docs/development/status/*`), not the chat.
+- **Clear, non-overlapping tools/skills.** If you can't tell which one applies, fix its description.
+
+**The ratchet principle (how this file grows).** Every standing rule should trace to a **real, observed
+failure**. When the agent slips, tighten the harness (a skill, a hook, a description) rather than appending
+prose — keeping guidance at the **right altitude**: specific enough to steer, lean enough to stay read.
+
+> Before adding to this file, ask: *what failure does this prevent?* If there isn't one, don't add it.
