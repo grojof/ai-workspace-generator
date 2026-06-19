@@ -105,6 +105,7 @@ Tras `init`, lee `AI-WORKSPACE.md`: el índice de todo lo creado.
 
 ## Documentación (en `docs/`)
 
+- **[Guía de uso](docs/project/USAGE.md)** — referencia de la CLI (cada comando), `workspace.config.yaml` y **multi-repo**.
 - **[Arquitectura](docs/project/ARCHITECTURE.md)** — config → componer → renderizar → escribir; capas, regiones gestionadas, i18n.
 - **[Harness Engineering](docs/project/harness-engineering.md)** — la filosofía: *Agente = Modelo + Harness*, context engineering y el ratchet principle.
 - **[Metodologías: SDD vs SPDD](docs/project/methodologies.md)** — cuándo usar cada flujo, con ejemplo end-to-end.
