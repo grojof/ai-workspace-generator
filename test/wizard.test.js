@@ -10,13 +10,13 @@ const DETECTED = {
   runtime: "node@20",
   notes: [],
 };
-const basics = (over = {}) => ({ name: "demo", language: "es", targets: ["claude", "copilot"], ...over });
+const basics = (over = {}) => ({ name: "demo", language: "es", targets: ["claude", "copilot"], userType: "technical", experience: "standard", ...over });
 
-test("simpleDefaults: a detected stack ⇒ existing + technical, stack accepted, safetyGuard off", () => {
+test("simpleDefaults: a detected stack ⇒ existing mode, stack accepted, safetyGuard off; profile from basics", () => {
   const i = simpleDefaults(DETECTED, basics());
   assert.equal(i.mode, "existing");
-  assert.equal(i.userType, "technical");
-  assert.equal(i.experience, "standard");
+  assert.equal(i.userType, "technical"); // from basics, not inferred
+  assert.equal(i.experience, "standard"); // from basics, not hardcoded
   assert.equal(i.purpose, "build");
   assert.equal(i.company, "none");
   assert.deepEqual(i.langIds, ["typescript"]);
@@ -27,12 +27,24 @@ test("simpleDefaults: a detected stack ⇒ existing + technical, stack accepted,
   assert.equal(i.useContext7, true);
 });
 
-test("simpleDefaults: no detected stack ⇒ new + business, empty stack, safetyGuard warn", () => {
+test("simpleDefaults: no detected stack ⇒ new mode, empty stack, safetyGuard warn", () => {
   const i = simpleDefaults(EMPTY, basics());
   assert.equal(i.mode, "new");
-  assert.equal(i.userType, "business");
   assert.deepEqual(i.langIds, []);
   assert.equal(i.safetyGuard, "warn");
+});
+
+test("simpleDefaults: profile is independent of detection (never silently inferred)", () => {
+  // A detected (existing) stack with an explicit business/beginner profile must be honored verbatim.
+  const i = simpleDefaults(DETECTED, basics({ userType: "business", experience: "beginner" }));
+  assert.equal(i.mode, "existing"); // mode still derives from detection
+  assert.equal(i.userType, "business"); // profile comes from the user's choice
+  assert.equal(i.experience, "beginner");
+  // And an empty stack with a technical/advanced choice is likewise honored.
+  const j = simpleDefaults(EMPTY, basics({ userType: "technical", experience: "advanced" }));
+  assert.equal(j.mode, "new");
+  assert.equal(j.userType, "technical");
+  assert.equal(j.experience, "advanced");
 });
 
 test("buildConfig(simpleDefaults) ⇒ valid Config with documented Simple defaults + detected versions", () => {
