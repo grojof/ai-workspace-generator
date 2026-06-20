@@ -71,6 +71,27 @@ test("invariant · AGENTS.md block order is a stable contract (golden)", () => {
   }
 });
 
+test("invariant · tech-selection block is greenfield-gated (new + empty stack only), after skill-routing", () => {
+  const make = (raw) => {
+    const cwd = tmpRepo();
+    try {
+      generate(cwd, ConfigSchema.parse(raw));
+      return blockOrder(readFileSync(resolve(cwd, "AGENTS.md"), "utf8"));
+    } finally {
+      rmSync(cwd, { recursive: true, force: true });
+    }
+  };
+  // Greenfield with no stack ⇒ present, immediately after skill-routing.
+  const green = make({ project: { name: "g", mode: "new" } });
+  assert.ok(green.includes("tech-selection"), "greenfield empty-stack should include tech-selection");
+  assert.equal(green[green.indexOf("skill-routing") + 1], "tech-selection", "tech-selection must follow skill-routing");
+  // Existing project ⇒ absent.
+  assert.ok(!make({ project: { name: "e", mode: "existing" } }).includes("tech-selection"), "existing repo must not get tech-selection");
+  // New project that already chose a stack ⇒ absent (no nagging).
+  const configured = make({ project: { name: "c", mode: "new" }, stack: { languages: [{ id: "typescript", version: "latest" }] } });
+  assert.ok(!configured.includes("tech-selection"), "a configured greenfield repo must not get tech-selection");
+});
+
 test("invariant · the Layer-0 core prefix is fixed and config-independent", () => {
   // Whatever the stack/company/features, the first eight blocks never move:
   // they are the governance spine every downstream repo relies on.
