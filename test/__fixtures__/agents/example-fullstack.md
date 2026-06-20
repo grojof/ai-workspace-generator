@@ -39,6 +39,7 @@ These apply to every contributor and every file, regardless of language.
 - Load detail on demand: read scoped instructions/skills only when relevant.
 - Prefer the living docs (`docs/development/status/PROJECT-STATE.md`) over re-scanning the whole repo.
 - Use **context7** (MCP) for up-to-date, version-pinned library docs instead of guessing.
+- **Offer, don't dump.** When extra explanation is optional, offer "say **X** and I'll explain X" instead of long unsolicited detail.
 
 ### Diagrams
 - Use **Mermaid** for architecture, data flow, module dependencies and the SDD lifecycle.
@@ -356,7 +357,7 @@ flowchart LR
 The project keeps an always-current, token-cheap snapshot of its own state so agents get context
 without re-scanning everything.
 
-- `docs/development/status/PROJECT-STATE.md` — overview, module map, lightweight decisions log, current status.
+- `docs/development/status/PROJECT-STATE.md` — overview, module map, **stack & production-target decision (what + why)**, lightweight decisions log, current status.
 - `docs/development/status/ARCHITECTURE.md` — architecture with **Mermaid** diagrams.
 
 **Keep it fresh:** run `/doc-sync` (Claude) or the `doc-sync` prompt (Copilot) when you finish a task.

@@ -39,6 +39,7 @@ These apply to every contributor and every file, regardless of language.
 - Load detail on demand: read scoped instructions/skills only when relevant.
 - Prefer the living docs (`docs/development/status/PROJECT-STATE.md`) over re-scanning the whole repo.
 - Use **context7** (MCP) for up-to-date, version-pinned library docs instead of guessing.
+- **Offer, don't dump.** When extra explanation is optional, offer "say **X** and I'll explain X" instead of long unsolicited detail.
 
 ### Diagrams
 - Use **Mermaid** for architecture, data flow, module dependencies and the SDD lifecycle.
@@ -191,6 +192,30 @@ Load skills by their *trigger*, not preemptively. Selection for the **technical*
 > Don't activate skills that don't apply to this profile.
 <!-- ai-workspace:end:skill-routing -->
 
+<!-- ai-workspace:begin:tech-selection -->
+## Choosing the stack (Layer 0 — greenfield)
+
+This project has **no technology chosen yet**. Picking the language, framework, runtime/environment and the
+**production target** is the highest-leverage decision here — do **not** default to the first option that comes
+to mind, and do not start coding before it is decided.
+
+**Before writing code, run a short selection step:**
+1. **Clarify constraints** — what it must do, who runs it, where it must ship (web · API/service · CLI ·
+   desktop · mobile · data/ML · embedded), team skills, and hard limits (latency, cost, compliance, offline).
+2. **Determine the production target explicitly** — where it will *run* in production (serverless · container ·
+   VM · edge · managed PaaS · on-device). The target constrains which stacks are viable, so decide it early.
+3. **Present 2–3 coherent options** — each a language ↔ framework ↔ runtime/environment that fit together for
+   that target, with pros, cons, risks and a one-line "best when…". Use **context7** for current version and
+   compatibility facts; don't guess.
+4. **Recommend one with reasoning, then wait for the user's decision.** Never lock in a stack silently — this
+   is a Safety-gate decision.
+5. **Once chosen, record and materialize it:** capture the decision in `docs/development/status/PROJECT-STATE.md`
+   (stack + dev environment + production target + the *why*), then run
+   `ai-workspace add <language|framework|environment> <id>` so the workspace regenerates the matching layers.
+
+> Keep it lean: offer "say **X** and I'll explain X" rather than dumping a full comparison unasked.
+<!-- ai-workspace:end:tech-selection -->
+
 <!-- ai-workspace:begin:learning -->
 ## Learning workspace (purpose: learn)
 
@@ -280,7 +305,7 @@ flowchart LR
 The project keeps an always-current, token-cheap snapshot of its own state so agents get context
 without re-scanning everything.
 
-- `docs/development/status/PROJECT-STATE.md` — overview, module map, lightweight decisions log, current status.
+- `docs/development/status/PROJECT-STATE.md` — overview, module map, **stack & production-target decision (what + why)**, lightweight decisions log, current status.
 - `docs/development/status/ARCHITECTURE.md` — architecture with **Mermaid** diagrams.
 
 **Keep it fresh:** run `/doc-sync` (Claude) or the `doc-sync` prompt (Copilot) when you finish a task.

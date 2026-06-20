@@ -27,6 +27,7 @@ These apply to every contributor and every file, regardless of language.
 - Load detail on demand: read scoped instructions/skills only when relevant.
 - Prefer the living docs (`<%= it.paths.status %>/PROJECT-STATE.md`) over re-scanning the whole repo.
 - Use **context7** (MCP) for up-to-date, version-pinned library docs instead of guessing.
+- **Offer, don't dump.** When extra explanation is optional, offer "say **X** and I'll explain X" instead of long unsolicited detail.
 
 ### Diagrams
 - Use **Mermaid** for architecture, data flow, module dependencies and the SDD lifecycle.

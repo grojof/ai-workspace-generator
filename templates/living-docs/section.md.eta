@@ -3,7 +3,7 @@
 The project keeps an always-current, token-cheap snapshot of its own state so agents get context
 without re-scanning everything.
 
-- `<%= it.paths.status %>/PROJECT-STATE.md` — overview, module map, lightweight decisions log, current status.
+- `<%= it.paths.status %>/PROJECT-STATE.md` — overview, module map, **stack & production-target decision (what + why)**, lightweight decisions log, current status.
 - `<%= it.paths.status %>/ARCHITECTURE.md` — architecture with **Mermaid** diagrams.
 
 **Keep it fresh:** run `/doc-sync` (Claude) or the `doc-sync` prompt (Copilot) when you finish a task.

@@ -1,0 +1,21 @@
+## Choosing the stack (Layer 0 — greenfield)
+
+This project has **no technology chosen yet**. Picking the language, framework, runtime/environment and the
+**production target** is the highest-leverage decision here — do **not** default to the first option that comes
+to mind, and do not start coding before it is decided.
+
+**Before writing code, run a short selection step:**
+1. **Clarify constraints** — what it must do, who runs it, where it must ship (web · API/service · CLI ·
+   desktop · mobile · data/ML · embedded), team skills, and hard limits (latency, cost, compliance, offline).
+2. **Determine the production target explicitly** — where it will *run* in production (serverless · container ·
+   VM · edge · managed PaaS · on-device). The target constrains which stacks are viable, so decide it early.
+3. **Present 2–3 coherent options** — each a language ↔ framework ↔ runtime/environment that fit together for
+   that target, with pros, cons, risks and a one-line "best when…". Use **context7** for current version and
+   compatibility facts; don't guess.
+4. **Recommend one with reasoning, then wait for the user's decision.** Never lock in a stack silently — this
+   is a Safety-gate decision.
+5. **Once chosen, record and materialize it:** capture the decision in `<%= it.paths.status %>/PROJECT-STATE.md`
+   (stack + dev environment + production target + the *why*), then run
+   `ai-workspace add <language|framework|environment> <id>` so the workspace regenerates the matching layers.
+
+> Keep it lean: offer "say **X** and I'll explain X" rather than dumping a full comparison unasked.

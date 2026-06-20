@@ -85,6 +85,10 @@ export const BLOCK_MANIFEST: readonly BlockEntry[] = [
   { kind: "template", id: "routing", template: "core/routing.md.eta" },
   // Skill routing: which skills to surface for the active profile (derived from the skill registry).
   { kind: "render", id: "skill-routing", render: (config) => renderSkillRouting(config) },
+  // Greenfield only: how to choose the stack + production target before any per-stack layers exist. Gated to
+  // new projects with no language/framework yet, so configured/existing repos aren't nagged. Sits after
+  // skill-routing (keeps the fixed Layer-0 prefix) and where the stack layers would otherwise begin.
+  { kind: "template", id: "tech-selection", template: "core/tech-selection.md.eta", when: (c) => c.project.mode === "new" && c.stack.languages.length === 0 && c.stack.frameworks.length === 0 },
   // Layers 1-3: one block per stack entry; the render helpers fall back to a generic block + context7.
   { kind: "expand", expand: (config) => config.stack.languages.map((l) => ({ id: `lang-${l.id}`, content: renderLanguage(config, l) })) },
   { kind: "expand", expand: (config) => config.stack.frameworks.map((f) => ({ id: `fw-${f.id}`, content: renderFramework(config, f) })) },
