@@ -62,8 +62,9 @@ configure: ejecuta la skill **`/configure`** y propone tu `workspace.config.yaml
 | `claude` | `CLAUDE.md` + skills `.claude/` + `.mcp.json` | Claude Code |
 | `copilot` | `.github/copilot-instructions.md` + `instructions/*` | **VS Code y Visual Studio** (activa el toggle en *Tools → Options → GitHub → Copilot*) |
 | `codex` | **`AGENTS.md`** (instrucciones nativas) + `.codex/config.toml` | OpenAI Codex (CLI/IDE), multiplataforma |
+| `opencode` | **`AGENTS.md` + `.claude/skills/`** (lectura nativa) + `.opencode/opencode.json` (MCP) | [OpenCode](https://opencode.ai) (TUI open-source), multiplataforma |
 
-- `AGENTS.md` se genera **siempre** (fuente única de verdad **y** adaptador de Codex).
+- `AGENTS.md` se genera **siempre** (fuente única de verdad **y** adaptador nativo de Codex y OpenCode).
 - **`vscode: false`** omite la carpeta `.vscode/` (para Visual Studio o fuera de VS Code).
 - **Multi-repo:** un `repos:` opcional gobierna varios repos enlazados (cada uno con su `path`/`stack`); el
   root es coordinador y cada hijo recibe su adaptador. `distribution.perRepo` reparte la distribución por repo.

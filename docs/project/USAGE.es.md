@@ -183,10 +183,13 @@ repos: []               # multi-repo (ver abajo)
 | `claude` | `CLAUDE.md` (importa `@AGENTS.md`) + skills `.claude/` + `.mcp.json` | Claude Code |
 | `copilot` | `.github/copilot-instructions.md` + `instructions/*.instructions.md` (+ `.vscode/mcp.json` si `vscode`) | **Funciona en VS Code y en Visual Studio** |
 | `codex` | **`AGENTS.md` es su fichero de instrucciones** (nativo) + `.codex/config.toml` (MCP) | OpenAI Codex (CLI/IDE), multiplataforma |
+| `opencode` | **`AGENTS.md` + `.claude/skills/` se leen nativamente** + `.opencode/opencode.json` (MCP, solo si lo configuras) | [OpenCode](https://opencode.ai) (TUI open-source), multiplataforma |
 
-- `AGENTS.md` se genera siempre (es la fuente única **y** el adaptador de Codex). Con `targets: [codex]`
-  obtienes solo `AGENTS.md` + `.codex/config.toml`, sin `CLAUDE.md` ni ficheros de Copilot.
-- **`vscode: false`** omite toda la carpeta `.vscode/` — útil si trabajas en **Visual Studio** o fuera de VS Code.
+- `AGENTS.md` se genera siempre (es la fuente única **y** el adaptador nativo de Codex *y* OpenCode). Con
+  `targets: [codex]` u `[opencode]` obtienes `AGENTS.md` + el fichero MCP de esa herramienta, sin `CLAUDE.md`
+  ni ficheros de Copilot.
+- **`vscode: false`** omite toda la carpeta `.vscode/` — útil en **Visual Studio**, **OpenCode** (es un TUI) o
+  fuera de VS Code.
 
 ### GitHub Copilot en Visual Studio
 Visual Studio 2022 (17.10+) lee los mismos ficheros que se generan con el target `copilot`. Solo hay que
@@ -199,6 +202,29 @@ loaded from .github/copilot-instructions.md files and added to requests"**. A pa
 Codex lee `AGENTS.md` de forma nativa (no necesita adaptador propio). Si activas el target `codex`, además se
 genera `.codex/config.toml` con los servidores MCP a nivel de proyecto (p. ej. context7). El Codex CLI es de
 terminal y multiplataforma, así que conviven con cualquier IDE (incluido Visual Studio).
+
+### OpenCode
+[OpenCode](https://opencode.ai) es un agente de terminal open-source y agnóstico de proveedor. Casi todo lo que
+genera esta herramienta funciona ahí **sin ficheros extra**:
+
+- **Instrucciones:** OpenCode lee `AGENTS.md` de forma nativa (está en sus `instructions` por defecto), así que
+  toda la gobernanza por capas se aplica tal cual.
+- **Skills:** OpenCode descubre skills en `.claude/skills/<nombre>/SKILL.md` (una ruta compatible con Claude que
+  busca por defecto) — la misma carpeta que ya emite el target `claude`. **Se reutilizan tal cual, no se genera
+  nada extra.** Activa también el target `claude` si quieres esas skills en disco.
+- **MCP:** lo único que OpenCode necesita es la config de servidores. El target `opencode` escribe un fichero
+  **propio y dedicado `.opencode/opencode.json`** con solo `$schema` + `mcp`. OpenCode hace **deep-merge** de la
+  config entre ámbitos, así que ese fichero se combina con tu `opencode.json` en vez de sobrescribirlo.
+
+**Cosas a tener en cuenta con OpenCode:**
+- `.opencode/opencode.json` lo **regenera `sync`** — pon *tus* ajustes de OpenCode (modelo, tema, agentes,
+  permisos…) en el `opencode.json` de la raíz del proyecto (o el global `~/.config/opencode/`), que se fusiona
+  por encima. No edites a mano el fichero generado; solo lleva `mcp`.
+- Lleva solo `$schema` y `mcp` a propósito — OpenCode da `ConfigInvalidError` ante claves de primer nivel
+  desconocidas.
+- Si no usas MCP, **no se escribe `.opencode/opencode.json`** — basta con `AGENTS.md`.
+- Los slash commands (`/sdd-*`, `/commit`, …) **no** se proyectan (todavía) al formato de comandos de OpenCode.
+  Puedes lanzar esos flujos en lenguaje natural, o definir los tuyos en `.opencode/command/`.
 
 ## Multi-repo
 

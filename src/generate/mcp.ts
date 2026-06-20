@@ -46,6 +46,21 @@ export function buildVscodeMcp(ids: string[]): string {
   return JSON.stringify({ servers: out }, null, 2);
 }
 
+/**
+ * `.opencode/opencode.json` for OpenCode (key: `mcp`). OpenCode reads `AGENTS.md` as its instructions and
+ * discovers skills from `.claude/skills/` natively, so this dedicated, tool-owned file only declares MCP. It
+ * deep-merges with the user's own OpenCode config (project + global), so it never clobbers their settings.
+ * Only `$schema` + `mcp` are emitted (unknown top-level keys raise OpenCode's ConfigInvalidError).
+ */
+export function buildOpencodeMcp(ids: string[]): string {
+  const servers = serversFor(ids);
+  const mcp: Record<string, unknown> = {};
+  for (const [id, def] of Object.entries(servers)) {
+    mcp[id] = { type: "local", command: [def.command, ...def.args], enabled: true, ...(def.env ? { env: def.env } : {}) };
+  }
+  return JSON.stringify({ $schema: "https://opencode.ai/config.json", mcp }, null, 2);
+}
+
 /** TOML string literal (double-quoted, minimal escaping for our controlled values). */
 function tomlStr(s: string): string {
   return `"${s.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`;
