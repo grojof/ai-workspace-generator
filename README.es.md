@@ -20,13 +20,27 @@ negocio reales.
 
 **Requisitos:** Node.js ≥ 20, y al menos uno de: VS Code + Copilot · Claude Code · Visual Studio + Copilot · Codex.
 
+**Fácil (recomendada)** — instala el tarball precompilado del último GitHub Release (sin clonar ni compilar):
+
+```bash
+npm i -g https://github.com/grojof/ai-workspace-generator/releases/latest/download/ai-workspace-generator.tgz
+ai-workspace --version
+```
+
+**Experta / desde el código:**
+
 ```bash
 git clone https://github.com/grojof/ai-workspace-generator.git
 cd ai-workspace-generator
 npm install && npm run build && npm link
 ```
 
+**Actualizar:** repite la instalación fácil para la última release, o `git pull && npm run build` desde el código.
+
 > El paquete es **`ai-workspace-generator`**; el comando que instala es **`ai-workspace`**.
+>
+> ¿Aún no tienes Node? Dile a tu asistente de IA *"instala ai-workspace desde &lt;URL del repo&gt;"* y deja que
+> te guíe la instalación. Un binario autónomo sin Node está planificado aparte.
 
 ## Uso en 3 pasos
 

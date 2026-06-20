@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { Command } from "commander";
 import pc from "picocolors";
+import { CLI_VERSION } from "./version.js";
 import { runInit } from "./commands/init.js";
 import { runSync } from "./commands/sync.js";
 import { runDoctor } from "./commands/doctor.js";
@@ -18,7 +19,7 @@ const program = new Command();
 program
   .name("ai-workspace")
   .description("Generate and adapt an AI workspace (Claude Code + GitHub Copilot) for any project.")
-  .version("0.1.0");
+  .version(CLI_VERSION);
 
 program
   .command("init")

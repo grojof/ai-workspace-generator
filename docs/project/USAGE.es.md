@@ -16,11 +16,29 @@ para tareas puntuales (añadir un módulo, actualizar plantillas, empaquetar).
 **Node.js ≥ 20** y VS Code con Copilot y/o Claude Code. El paquete es `ai-workspace-generator`; el comando
 instalado es **`ai-workspace`**.
 
+**Fácil (recomendada) — tarball precompilado del último GitHub Release** (sin clonar ni compilar):
+
+```bash
+npm i -g https://github.com/grojof/ai-workspace-generator/releases/latest/download/ai-workspace-generator.tgz
+ai-workspace --version
+```
+
+**Experta / desde el código:**
+
 ```bash
 git clone https://github.com/grojof/ai-workspace-generator.git
 cd ai-workspace-generator
 npm install && npm run build && npm link
 ```
+
+**Actualizar:** repite la instalación fácil para la última release, o `git pull && npm run build` desde el código.
+
+> **Instalación guiada por IA.** ¿Aún no tienes Node/git? Dile a tu asistente *"instala ai-workspace desde
+> &lt;URL del repo&gt;"* y deja que compruebe los requisitos y te guíe la instalación según tu SO (pregunta
+> antes de instalar nada). Un binario autónomo sin Node está planificado como cambio aparte.
+>
+> **Publicar una release (mantenedores).** `node scripts/release.mjs` compila + empaqueta el tarball e imprime
+> el comando `gh release create` sin publicar (Safety gate); añade `--publish` para crear la Release.
 
 ## Flujo de trabajo típico
 
