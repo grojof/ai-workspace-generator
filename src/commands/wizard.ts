@@ -75,18 +75,23 @@ export function buildConfig(inputs: WizardInputs, detected: DetectedStack): Conf
   });
 }
 
-/** The three basics the Simple path collects interactively; everything else is a documented default. */
+/**
+ * The basics the Simple path collects interactively; everything else is a documented default. The governance
+ * profile (`userType`, `experience`) is an explicit choice — detection seeds the stack, never the profile.
+ */
 export interface SimpleBasics {
   name: string;
   description?: string;
   language: "es" | "en";
   targets: ("claude" | "copilot" | "codex")[];
+  userType: "business" | "technical";
+  experience: "beginner" | "standard" | "advanced";
   from?: string[];
 }
 
 /**
  * Simple-mode inputs: accept the detected stack and apply best-practice defaults. A detected stack implies an
- * existing, technical project; an empty one implies a new project.
+ * existing *project* (vs new); the governance profile comes from `basics`, never inferred from detection.
  */
 export function simpleDefaults(detected: DetectedStack, basics: SimpleBasics): WizardInputs {
   const detectedExisting = detected.languages.length > 0 || detected.frameworks.length > 0;
@@ -97,8 +102,8 @@ export function simpleDefaults(detected: DetectedStack, basics: SimpleBasics): W
     language: basics.language,
     mode,
     purpose: "build",
-    userType: detectedExisting ? "technical" : "business",
-    experience: "standard",
+    userType: basics.userType,
+    experience: basics.experience,
     company: "none",
     targets: basics.targets,
     vscode: true,

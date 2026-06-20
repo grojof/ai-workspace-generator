@@ -131,15 +131,17 @@ export async function runInit(cwd: string, options: InitOptions = {}): Promise<v
   });
   bail(projectMode);
 
-  // Profile: two orthogonal dimensions that drive governance posture. Smart defaults keep this
-  // "two quick confirmations" — a detected stack implies a technical user; standard is the safe middle.
+  // Profile: two orthogonal dimensions that drive governance posture. This is an explicit choice — detection
+  // seeds the STACK, not the profile, so the default must not be keyed off `detectedExisting` (that mislabels
+  // users). `technical` is the neutral default for a dev tool; the hint makes the decoupling explicit.
+  note("Detection seeds the stack only — your user type & experience are your choice (they set the governance posture).", "Profile / Perfil");
   const userType = await select({
     message: "User type / Tipo de usuario",
     options: [
       { value: "technical", label: "Technical / Técnico", hint: "desarrollo, devops, datos, sistemas, infra" },
       { value: "business", label: "Business / Negocio", hint: "procesos, documentación, análisis, gestión" },
     ],
-    initialValue: detectedExisting ? "technical" : "business",
+    initialValue: "technical",
   });
   bail(userType);
 
@@ -361,6 +363,27 @@ export async function runInit(cwd: string, options: InitOptions = {}): Promise<v
       required: true,
     });
     bail(sTargets);
+    // Profile is an explicit choice even in Simple mode — detection seeds the stack, never the governance
+    // posture. Two quick prompts replace the old silent guess (which mislabeled users as technical/business).
+    const sUserType = await select({
+      message: "User type / Tipo de usuario",
+      options: [
+        { value: "technical", label: "Technical / Técnico", hint: "desarrollo, devops, datos, sistemas, infra" },
+        { value: "business", label: "Business / Negocio", hint: "procesos, documentación, análisis, gestión" },
+      ],
+      initialValue: "technical",
+    });
+    bail(sUserType);
+    const sExperience = await select({
+      message: "Experience level / Nivel de experiencia",
+      options: [
+        { value: "beginner", label: "Beginner / Aprendiz", hint: "guía clara, pocas decisiones, caminos seguros" },
+        { value: "standard", label: "Standard / Autónomo", hint: "equilibrio entre guía y flexibilidad" },
+        { value: "advanced", label: "Advanced / Experto", hint: "más análisis, trade-offs y autonomía" },
+      ],
+      initialValue: "standard",
+    });
+    bail(sExperience);
     const fmt = (a: { id: string }[]) => a.map((x) => x.id).join(", ") || "—";
     note(
       `Languages: ${fmt(detected.languages)}\nFrameworks: ${fmt(detected.frameworks)}\nEnvironments: ${fmt(detected.environments)}\n\nDefaults: build · SDD (files) · living docs · context7 · company none. Confirm at the end.`,
@@ -370,6 +393,8 @@ export async function runInit(cwd: string, options: InitOptions = {}): Promise<v
       name: String(sName),
       language: sLang as "es" | "en",
       targets: sTargets as ("claude" | "copilot" | "codex")[],
+      userType: sUserType as "business" | "technical",
+      experience: sExperience as "beginner" | "standard" | "advanced",
       from: options.from,
     });
   }
