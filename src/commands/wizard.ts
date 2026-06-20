@@ -18,7 +18,7 @@ export interface WizardInputs {
   userType: "business" | "technical";
   experience: "beginner" | "standard" | "advanced";
   company: "none" | "example";
-  targets: ("claude" | "copilot" | "codex")[];
+  targets: ("claude" | "copilot" | "codex" | "opencode")[];
   /** Generate `.vscode/` recommendations (off for Visual Studio / non-VS-Code users). */
   vscode: boolean;
   langIds: string[];
@@ -83,7 +83,7 @@ export interface SimpleBasics {
   name: string;
   description?: string;
   language: "es" | "en";
-  targets: ("claude" | "copilot" | "codex")[];
+  targets: ("claude" | "copilot" | "codex" | "opencode")[];
   userType: "business" | "technical";
   experience: "beginner" | "standard" | "advanced";
   from?: string[];

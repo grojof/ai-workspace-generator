@@ -565,6 +565,39 @@ test("codex target (0006): context7 off → .codex/config.toml has the header bu
   }
 });
 
+test("opencode target (0011): AGENTS.md adapter + .opencode/opencode.json (MCP); native skills; no Claude/Copilot when opencode-only", () => {
+  const cwd = tmpRepo();
+  try {
+    generate(cwd, ConfigSchema.parse({ project: { name: "t" }, targets: ["opencode"], vscode: false }));
+    // AGENTS.md is OpenCode's instructions file (read natively); MCP goes to .opencode/opencode.json.
+    assert.ok(readFileSync(resolve(cwd, "AGENTS.md"), "utf8"));
+    const json = JSON.parse(readFileSync(resolve(cwd, ".opencode/opencode.json"), "utf8"));
+    assert.equal(json.$schema, "https://opencode.ai/config.json");
+    assert.deepEqual(json.mcp.context7, { type: "local", command: ["npx", "-y", "@upstash/context7-mcp"], enabled: true });
+    // Only $schema + mcp (unknown top-level keys would error in OpenCode).
+    assert.deepEqual(Object.keys(json).sort(), ["$schema", "mcp"]);
+    // opencode-only → no Claude/Copilot adapters.
+    assert.equal(existsSync(resolve(cwd, "CLAUDE.md")), false);
+    assert.equal(existsSync(resolve(cwd, ".github/copilot-instructions.md")), false);
+    // idempotent.
+    const second = generate(cwd, ConfigSchema.parse({ project: { name: "t" }, targets: ["opencode"], vscode: false }));
+    assert.equal(second.artifacts.filter((a) => a.status !== "unchanged").length, 0);
+  } finally {
+    rmSync(cwd, { recursive: true, force: true });
+  }
+});
+
+test("opencode target (0011): no MCP ⇒ no .opencode/opencode.json (AGENTS.md alone)", () => {
+  const cwd = tmpRepo();
+  try {
+    generate(cwd, ConfigSchema.parse({ project: { name: "t" }, targets: ["opencode"], mcp: [], vscode: false }));
+    assert.ok(readFileSync(resolve(cwd, "AGENTS.md"), "utf8"));
+    assert.equal(existsSync(resolve(cwd, ".opencode/opencode.json")), false);
+  } finally {
+    rmSync(cwd, { recursive: true, force: true });
+  }
+});
+
 test("vscode flag (0006): false omits .vscode/*; default true keeps it", () => {
   const off = tmpRepo();
   const on = tmpRepo();

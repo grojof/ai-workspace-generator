@@ -4,7 +4,7 @@ import { resolveRepos, unionStack, type Config, type ResolvedRepo } from "../con
 import { renderTemplate, setLocale } from "../render/engine.js";
 import { writeFile, writeIfMissing, writeManaged, type WriteResult } from "../render/writer.js";
 import { composeBlocks } from "./agents.js";
-import { buildClaudeMcp, buildVscodeMcp, buildCodexMcp } from "./mcp.js";
+import { buildClaudeMcp, buildVscodeMcp, buildCodexMcp, buildOpencodeMcp } from "./mcp.js";
 import { generateScope } from "./scope.js";
 import { generateSdd } from "./sdd.js";
 import { generateSkills } from "./skills.js";
@@ -192,6 +192,12 @@ function generateWorkspace(cwd: string, config: Config, add: (r: WriteResult, de
   // 3b. Codex adapter — AGENTS.md is its instructions file (already written above); add project-scoped MCP.
   if (config.targets.includes("codex")) {
     add(writeFile(resolve(cwd, ".codex/config.toml"), buildCodexMcp(config.mcp)), t.desc.codexConfig);
+  }
+
+  // 3c. OpenCode adapter — AGENTS.md is read natively (so are skills from .claude/skills/). Only MCP needs a
+  // tool-native file; it deep-merges with the user's own config. Skip it when no MCP is configured.
+  if (config.targets.includes("opencode") && config.mcp.length) {
+    add(writeFile(resolve(cwd, ".opencode/opencode.json"), buildOpencodeMcp(config.mcp)), t.desc.opencodeConfig);
   }
 
   // 4. Shared format/encoding files.

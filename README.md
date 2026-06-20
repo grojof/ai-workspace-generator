@@ -61,8 +61,9 @@ configure it: run the **`/configure`** skill and it proposes your `workspace.con
 | `claude` | `CLAUDE.md` + `.claude/` skills + `.mcp.json` | Claude Code |
 | `copilot` | `.github/copilot-instructions.md` + `instructions/*` | **VS Code and Visual Studio** (enable the toggle in *Tools → Options → GitHub → Copilot*) |
 | `codex` | **`AGENTS.md`** (native instructions) + `.codex/config.toml` | OpenAI Codex (CLI/IDE), cross-platform |
+| `opencode` | **`AGENTS.md` + `.claude/skills/`** (read natively) + `.opencode/opencode.json` (MCP) | [OpenCode](https://opencode.ai) (open-source TUI), cross-platform |
 
-- `AGENTS.md` is **always** generated (single source of truth **and** Codex's adapter).
+- `AGENTS.md` is **always** generated (single source of truth **and** the native adapter for Codex & OpenCode).
 - **`vscode: false`** skips the `.vscode/` folder (for Visual Studio or non-VS-Code users).
 - **Multi-repo:** an optional `repos:` list governs several linked repos (each with its `path`/`stack`); the
   root is the coordinator and each child gets its own adapter. `distribution.perRepo` splits distribution per repo.

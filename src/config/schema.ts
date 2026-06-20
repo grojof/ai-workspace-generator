@@ -194,7 +194,7 @@ const BaseConfigSchema = z.object({
    * `example` is a placeholder org you can rename/extend — see `templates/company/` and docs/project/EXTENDING.md.
    */
   company: z.enum(["none", "example"]).default("none"),
-  targets: z.array(z.enum(["claude", "copilot", "codex"])).default(["claude", "copilot"]),
+  targets: z.array(z.enum(["claude", "copilot", "codex", "opencode"])).default(["claude", "copilot"]),
   /** Generate `.vscode/` recommendations (extensions/settings/mcp). Off for Visual Studio / non-VS-Code users. */
   vscode: z.boolean().default(true),
   /** Language of generated, human-facing content (instructions, guides, docs). */
