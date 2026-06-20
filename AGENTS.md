@@ -41,6 +41,7 @@ These apply to every contributor and every file, regardless of language.
 - Load detail on demand: read scoped instructions/skills only when relevant.
 - Prefer the living docs (`docs/development/status/PROJECT-STATE.md`) over re-scanning the whole repo.
 - Use **context7** (MCP) for up-to-date, version-pinned library docs instead of guessing.
+- **Offer, don't dump.** When extra explanation is optional, offer "say **X** and I'll explain X" instead of long unsolicited detail.
 
 ### Diagrams
 - Use **Mermaid** for architecture, data flow, module dependencies and the SDD lifecycle.
@@ -163,6 +164,7 @@ Load skills by their *trigger*, not preemptively. Selection for the **technical*
 | `sdd-*` | planning/implementing a non-trivial change | suggested |
 | `living-docs` | after finishing a task or when project state changed | suggested |
 | `ai-workspace-guide` | new here — how this workspace works | suggested |
+| `configure-workspace` | configuring or re-configuring the workspace (analyze an existing repo, or set up a new one) | suggested |
 | `dependency-upgrade` | before any version bump or migration (assess first) | on-demand · high risk |
 | `vscode-setup` | setting up VS Code / extensions | on-demand |
 | `find-skills` | discovering/installing skills from the open ecosystem (npx skills) | on-demand |
@@ -270,7 +272,7 @@ flowchart LR
 The project keeps an always-current, token-cheap snapshot of its own state so agents get context
 without re-scanning everything.
 
-- `docs/development/status/PROJECT-STATE.md` — overview, module map, lightweight decisions log, current status.
+- `docs/development/status/PROJECT-STATE.md` — overview, module map, **stack & production-target decision (what + why)**, lightweight decisions log, current status.
 - `docs/development/status/ARCHITECTURE.md` — architecture with **Mermaid** diagrams.
 
 **Keep it fresh:** run `/doc-sync` (Claude) or the `doc-sync` prompt (Copilot) when you finish a task.

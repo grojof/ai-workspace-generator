@@ -51,6 +51,7 @@ El workspace de IA de este proyecto fue creado y adaptado por **ai-workspace**. 
 - `.claude/skills/sdd-archive/SKILL.md` — Skill vendorizada (.claude/skills/).
 - `.claude/skills/_shared/sdd-convention.md` — Skill vendorizada (.claude/skills/).
 - `.claude/skills/living-docs/SKILL.md` — Skill vendorizada (.claude/skills/).
+- `.claude/skills/find-skills/LICENSE.txt` — Skill vendorizada (.claude/skills/).
 - `.claude/skills/find-skills/SKILL.md` — Skill vendorizada (.claude/skills/).
 - `.claude/skills/mcp-builder/LICENSE.txt` — Skill vendorizada (.claude/skills/).
 - `.claude/skills/mcp-builder/reference/evaluation.md` — Skill vendorizada (.claude/skills/).
@@ -91,6 +92,8 @@ El workspace de IA de este proyecto fue creado y adaptado por **ai-workspace**. 
 - `.githooks/commit-msg` — Gobernanza: versiones, seguridad, commits.
 - `.claude/skills/ai-workspace-guide/SKILL.md` — Skill vendorizada (.claude/skills/).
 - `.claude/commands/aiws-guide.md` — Skill vendorizada (.claude/skills/).
+- `.claude/skills/configure-workspace/SKILL.md` — Skill vendorizada (.claude/skills/).
+- `.claude/commands/configure.md` — Skill vendorizada (.claude/skills/).
 - `.vscode/extensions.json` — Extensiones recomendadas de VS Code.
 - `.vscode/settings.json` — Extensiones recomendadas de VS Code.
 - `.claude/skills/vscode-setup/SKILL.md` — Extensiones recomendadas de VS Code.
