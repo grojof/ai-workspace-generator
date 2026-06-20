@@ -22,7 +22,8 @@
     "typecheck": "tsc --noEmit",
     "pretest": "tsc -p tsconfig.json",
     "test": "node --test",
-    "test:coverage": "node --test --experimental-test-coverage"
+    "test:coverage": "node --test --experimental-test-coverage",
+    "release": "node scripts/release.mjs"
   },
   "keywords": [
     "ai",

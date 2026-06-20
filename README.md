@@ -19,13 +19,27 @@ utilities). It can also target a **company** as an optional extension point (`co
 
 **Requirements:** Node.js ≥ 20, and at least one of: VS Code + Copilot · Claude Code · Visual Studio + Copilot · Codex.
 
+**Easy (recommended)** — install the prebuilt tarball from the latest GitHub Release (no clone, no build):
+
+```bash
+npm i -g https://github.com/grojof/ai-workspace-generator/releases/latest/download/ai-workspace-generator.tgz
+ai-workspace --version
+```
+
+**Expert / from source:**
+
 ```bash
 git clone https://github.com/grojof/ai-workspace-generator.git
 cd ai-workspace-generator
 npm install && npm run build && npm link
 ```
 
+**Update:** re-run the easy install for the newest release, or `git pull && npm run build` from source.
+
 > The package is **`ai-workspace-generator`**; the installed command is **`ai-workspace`**.
+>
+> No Node yet? Tell your AI assistant *"install ai-workspace from &lt;repo URL&gt;"* and let it guide the
+> setup. A truly Node-less standalone binary is planned separately.
 
 ## Use in 3 steps
 
