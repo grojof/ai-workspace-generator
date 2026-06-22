@@ -58,7 +58,10 @@ mantenimiento mínimo. **Sin datos de negocio reales.**
   **nosotros** autoramos — los packs **vendored** (`base:`) y los **stack packs** conservan su nombre de
   ecosistema. Migración de namespace **automatizada** en `ai-workspace upgrade` (`src/commands/migrate.ts`,
   idempotente, `--check`). Los packs de empresa declaran su `relation` (new / extends / overrides:`<aiws-id>`)
-  en `pack.yaml` — primitiva auditable para `aiws-reconcile`. Hechos: F1 (namespace + migración), F2a (packs
-  `sdd-*` autorados → `aiws-sdd-*` + invariante), F2b (`relation`). TEMPLATES_VERSION 0.38.0. Pendientes: **F2c**
-  (packs git de empresa + `company` → objeto + guard runtime; requiere spec/design propio — Safety gate),
-  F3 (manifiesto de integridad + `aiws-verify`), F4 (`aiws-reconcile`).
+  en `pack.yaml` — primitiva auditable para `aiws-reconcile`. Integridad **verificable** (no candado): `generate` escribe `.ai-workspace/manifest.json` (hash de regiones
+  `aiws:*` en ficheros managed — la prosa del usuario fuera de marcadores es libre; fichero completo en skills/
+  commands `aiws-*`); `ai-workspace verify` / `doctor --strict` recomputan y salen con error ante manipulación
+  (CI gate). Hechos: F1 (namespace + migración), F2a (packs `sdd-*` → `aiws-sdd-*` + invariante), F2b
+  (`relation`), F3 (manifiesto + `verify`). TEMPLATES_VERSION 0.39.0. Pendientes: **F2c** (packs git de empresa +
+  `company` → objeto + guard runtime; requiere spec/design propio — Safety gate), **F3c** (auto-sanación +
+  hook `safetyGuard` sobre ficheros base), **F4** (`aiws-reconcile`).
