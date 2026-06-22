@@ -51,6 +51,8 @@ El workspace de IA de este proyecto fue creado y adaptado por **ai-workspace**. 
 - `.claude/skills/aiws-sdd-archive/SKILL.md` — Skill vendorizada (.claude/skills/).
 - `.claude/skills/_shared/aiws-sdd-convention.md` — Skill vendorizada (.claude/skills/).
 - `.claude/skills/aiws-living-docs/SKILL.md` — Skill vendorizada (.claude/skills/).
+- `.claude/skills/aiws-audit/SKILL.md` — Skill vendorizada (.claude/skills/).
+- `.claude/commands/aiws-audit.md` — Skill vendorizada (.claude/skills/).
 - `.claude/skills/find-skills/LICENSE.txt` — Skill vendorizada (.claude/skills/).
 - `.claude/skills/find-skills/SKILL.md` — Skill vendorizada (.claude/skills/).
 - `.claude/skills/mcp-builder/LICENSE.txt` — Skill vendorizada (.claude/skills/).

@@ -177,6 +177,7 @@ Load skills by their *trigger*, not preemptively. Selection for the **technical*
 | `aiws-workspace-guide` | new here — how this workspace works | suggested |
 | `aiws-configure-workspace` | configuring or re-configuring the workspace (analyze an existing repo, or set up a new one) | suggested |
 | `aiws-dependency-upgrade` | before any version bump or migration (assess first) | on-demand · high risk |
+| `aiws-audit` | periodically or after big changes — audit workspace health & coherence (read-only) | on-demand |
 | `aiws-vscode-setup` | setting up VS Code / extensions | on-demand |
 | `find-skills` | discovering/installing skills from the open ecosystem (npx skills) | on-demand |
 | `mcp-builder` | building or evaluating an MCP server (tools, resources, Node or Python, best practices) | on-demand |
