@@ -1,204 +1,204 @@
 {
   "version": 1,
-  "source": "aiws@0.51.0",
+  "source": "aiws@0.52.0",
   "entries": [
     {
       "path": ".claude/commands/aiws-audit.md",
-      "source": "aiws@0.51.0",
+      "source": "aiws@0.52.0",
       "kind": "file",
       "hash": "37d37479f300b6244c7e12c87ec195d0e991f793acbde0224c3f09aeeb9037cb"
     },
     {
       "path": ".claude/commands/aiws-commit.md",
-      "source": "aiws@0.51.0",
+      "source": "aiws@0.52.0",
       "kind": "file",
       "hash": "b3542dcff13efd8229f54236c5e8cb5ac2c46aa1ccb63e8f8c7eb5c8e697f6e5"
     },
     {
       "path": ".claude/commands/aiws-configure.md",
-      "source": "aiws@0.51.0",
+      "source": "aiws@0.52.0",
       "kind": "file",
       "hash": "febed56411c2e119b59a4c42c60036586f9115f23042360d8d5dcee4e1d9d99b"
     },
     {
       "path": ".claude/commands/aiws-doc-sync.md",
-      "source": "aiws@0.51.0",
+      "source": "aiws@0.52.0",
       "kind": "file",
       "hash": "fa8f9bed003f1467a02e611ef45e3802b68f124a39b210f5622b1d73c9981eda"
     },
     {
       "path": ".claude/commands/aiws-guide.md",
-      "source": "aiws@0.51.0",
+      "source": "aiws@0.52.0",
       "kind": "file",
       "hash": "bd7a178b542bf71f5ec8540484c46bf8275030b23a3f650165e1409a6f9cbb11"
     },
     {
       "path": ".claude/commands/aiws-sdd-apply.md",
-      "source": "aiws@0.51.0",
+      "source": "aiws@0.52.0",
       "kind": "file",
       "hash": "1f9c78447fe1c06a4a6a1c1e6cfd7856cbab2ef395a6c11ff6440dd343345b88"
     },
     {
       "path": ".claude/commands/aiws-sdd-archive.md",
-      "source": "aiws@0.51.0",
+      "source": "aiws@0.52.0",
       "kind": "file",
       "hash": "476bfd1f3e9fd109c2e52d41d558f01664029aa1187e6b4127810dac04ce0fe8"
     },
     {
       "path": ".claude/commands/aiws-sdd-clarify.md",
-      "source": "aiws@0.51.0",
+      "source": "aiws@0.52.0",
       "kind": "file",
       "hash": "1be274089796c32fac1ddefff255176f4eef451a3daf468f23c8633b554a1287"
     },
     {
       "path": ".claude/commands/aiws-sdd-design.md",
-      "source": "aiws@0.51.0",
+      "source": "aiws@0.52.0",
       "kind": "file",
       "hash": "2a4a01d2d96149577f8ca2732f947a20ec72fd88587fc711f4cb89f4f6c47d38"
     },
     {
       "path": ".claude/commands/aiws-sdd-explore.md",
-      "source": "aiws@0.51.0",
+      "source": "aiws@0.52.0",
       "kind": "file",
       "hash": "5d424b6cfdd2763fde1c73ce1ab663fb865173edd6f67c07b7c9c5286326357e"
     },
     {
       "path": ".claude/commands/aiws-sdd-propose.md",
-      "source": "aiws@0.51.0",
+      "source": "aiws@0.52.0",
       "kind": "file",
       "hash": "1cd176b9c711827183066d41e39bb691a50ac4db00996b473490bf4dd05783c5"
     },
     {
       "path": ".claude/commands/aiws-sdd-spec.md",
-      "source": "aiws@0.51.0",
+      "source": "aiws@0.52.0",
       "kind": "file",
       "hash": "70906ae5c2d68fa23a2e7897a6db3e2219a66acb6b7d602a0cf8f2ed35a5aa84"
     },
     {
       "path": ".claude/commands/aiws-sdd-tasks.md",
-      "source": "aiws@0.51.0",
+      "source": "aiws@0.52.0",
       "kind": "file",
       "hash": "c1455966a95da9568d20221f0d4706d11ef4d9e84696282caa535a82e76664cd"
     },
     {
       "path": ".claude/commands/aiws-sdd-verify.md",
-      "source": "aiws@0.51.0",
+      "source": "aiws@0.52.0",
       "kind": "file",
       "hash": "f312b207ddf0f073e71bcd4250d31813c3d3f97cf52f40a1ca99cf13cc621588"
     },
     {
       "path": ".claude/commands/aiws-upgrade-deps.md",
-      "source": "aiws@0.51.0",
+      "source": "aiws@0.52.0",
       "kind": "file",
       "hash": "4441d80e81c215d0a27fd3ee2202acc2d329e7bd3d9956080c372a8f4b74b55a"
     },
     {
       "path": ".claude/skills/_shared/aiws-sdd-convention.md",
-      "source": "aiws@0.51.0",
+      "source": "aiws@0.52.0",
       "kind": "file",
       "hash": "4d23e6df5bd8eded4d413f4e16b76906065c23fb6d8c399f66fc44d13fac91d0"
     },
     {
       "path": ".claude/skills/aiws-audit/SKILL.md",
-      "source": "aiws@0.51.0",
+      "source": "aiws@0.52.0",
       "kind": "file",
-      "hash": "b343182844600e1c4892d43c67b689e45de2c745a3951cf2ced5f25f4a75fe17"
+      "hash": "11158d8eb80ced552a62297e8f237367c93ec564bbf65109562788e2dc730c52"
     },
     {
       "path": ".claude/skills/aiws-configure-workspace/SKILL.md",
-      "source": "aiws@0.51.0",
+      "source": "aiws@0.52.0",
       "kind": "file",
-      "hash": "7c710b47d05c4cdea0b0f6bbd0ab283ede98e3d51142ddb3ef2ab5fca70f0aaa"
+      "hash": "9e633ce12030863f60461a3173c6c21e5599c229ad3c82cf43e88867ec833508"
     },
     {
       "path": ".claude/skills/aiws-dependency-upgrade/SKILL.md",
-      "source": "aiws@0.51.0",
+      "source": "aiws@0.52.0",
       "kind": "file",
-      "hash": "5f509ec00679b9484360dab9064f2be39dc96394d858507db25139955ffd75bc"
+      "hash": "de78a765adc384ff47b118146bbfc87e3c2373c88fb238d56c7dab76d4e62d69"
     },
     {
       "path": ".claude/skills/aiws-living-docs/SKILL.md",
-      "source": "aiws@0.51.0",
+      "source": "aiws@0.52.0",
       "kind": "file",
-      "hash": "bacb975ff4dbee39b0a08da9cef8d6ad039ac37a0e63a414fbca946890a7c032"
+      "hash": "62b137b527f5a7c48a083db8c4c983c017f71c615694c61dc4dcb742c54854fa"
     },
     {
       "path": ".claude/skills/aiws-sdd-apply/SKILL.md",
-      "source": "aiws@0.51.0",
+      "source": "aiws@0.52.0",
       "kind": "file",
-      "hash": "dd2ab962c82b22c440478fd4aa5b8b8eed632a417f9aca9f3fa01782165619e6"
+      "hash": "6ec4d7e1f6dc225bed9948e9d4d63eda53c78a821c0bbca250fff762e0de67d1"
     },
     {
       "path": ".claude/skills/aiws-sdd-archive/SKILL.md",
-      "source": "aiws@0.51.0",
+      "source": "aiws@0.52.0",
       "kind": "file",
-      "hash": "9c70d117f05e4409ae50f7d1dc7903a9bc4906ee6a48738cfe9c35ad158eaa10"
+      "hash": "9315cd58e4a3e922f360d9486a8ea09af07c0bf92d49622833b399d1e3b014fb"
     },
     {
       "path": ".claude/skills/aiws-sdd-clarify/SKILL.md",
-      "source": "aiws@0.51.0",
+      "source": "aiws@0.52.0",
       "kind": "file",
-      "hash": "9e5475b73476a2ec0d84a795003cc89e5fb9f0b32d114a29724fd9b0a7c2ae0d"
+      "hash": "f1b98231dd7e8dae6e669c8b5842350c87556787690cc722d3ced3a163e65f08"
     },
     {
       "path": ".claude/skills/aiws-sdd-design/SKILL.md",
-      "source": "aiws@0.51.0",
+      "source": "aiws@0.52.0",
       "kind": "file",
-      "hash": "7fea7cb0966aeb767d99c44e9cd74ad43462ae7a2c8a099a4aa14e3d3e3a6055"
+      "hash": "683f0a61cb2035e915cf85c1a88488889566464eba8c12c1a06e76f53ff91a57"
     },
     {
       "path": ".claude/skills/aiws-sdd-explore/SKILL.md",
-      "source": "aiws@0.51.0",
+      "source": "aiws@0.52.0",
       "kind": "file",
-      "hash": "35fabcdf4590777fe32d944216e30bbec4ed2f87228c8c7328efb7761cf73fae"
+      "hash": "16a5c01a1cc80b0a00593071ee0a4a50e08a3aa92bbefb6e5d58489ad3ed7e8f"
     },
     {
       "path": ".claude/skills/aiws-sdd-propose/SKILL.md",
-      "source": "aiws@0.51.0",
+      "source": "aiws@0.52.0",
       "kind": "file",
-      "hash": "4e58027f0a0d97ebc7ba31e7ed22ca0251e776832bd605b6e29f3ed8b221d55d"
+      "hash": "463a14ac2a9fb58519fa6c7b54ef9132ebb62d95a893ac3c845ea385ee8ce84f"
     },
     {
       "path": ".claude/skills/aiws-sdd-spec/SKILL.md",
-      "source": "aiws@0.51.0",
+      "source": "aiws@0.52.0",
       "kind": "file",
-      "hash": "fdf081bb9d09c40dcfc456da5ac2761651b57cc7a46dcfe7ea9a010171be7850"
+      "hash": "1af2ad9eff2eab7e52dfa578b8d5a7b28cdd0a774723ecc1f093f03e394c710d"
     },
     {
       "path": ".claude/skills/aiws-sdd-tasks/SKILL.md",
-      "source": "aiws@0.51.0",
+      "source": "aiws@0.52.0",
       "kind": "file",
-      "hash": "7b03ab216fe3ace9df1b3d16d5d97ba33e08a6ce80249b43b7294a29a517e7a9"
+      "hash": "7d30733ca61e613b8bd54915d61fba13d07ef2417198193e568fa90cf16b8175"
     },
     {
       "path": ".claude/skills/aiws-sdd-verify/SKILL.md",
-      "source": "aiws@0.51.0",
+      "source": "aiws@0.52.0",
       "kind": "file",
-      "hash": "fbb3582641e3da2043a0db8617319af915e8be73ac9e6087de728e405c26e819"
+      "hash": "4ce1b28de1f446991c91c7c850da346dab86a706b5658c411587244958bdf2ae"
     },
     {
       "path": ".claude/skills/aiws-secure-commit/SKILL.md",
-      "source": "aiws@0.51.0",
+      "source": "aiws@0.52.0",
       "kind": "file",
-      "hash": "22b1ef4fdc4394bf7ddca237c37ac98e9789049e4eecdf5df2271c2af8a161ac"
+      "hash": "d653c2b1be4a1734c88faeb1a02063562eef7cbc885595cad5d2d95edab9b8a2"
     },
     {
       "path": ".claude/skills/aiws-vscode-setup/SKILL.md",
-      "source": "aiws@0.51.0",
+      "source": "aiws@0.52.0",
       "kind": "file",
-      "hash": "1d9894fd1f9c948d1ede0efb84fff4f97b3c6b4fcb65450f8b4211e43b06df6b"
+      "hash": "98aaa1c2f5b636306f34e4a8dcf9174804b76ae1878c70d120d7744481942ef0"
     },
     {
       "path": ".claude/skills/aiws-workspace-guide/SKILL.md",
-      "source": "aiws@0.51.0",
+      "source": "aiws@0.52.0",
       "kind": "file",
-      "hash": "b46a49c41925fa4eaf4bfceae440a1acbdfd74e9f57635c2cd5afd1bb48028ca"
+      "hash": "3716508d0bb994bbd3b3f2403a0ada622fa21fb5086d2497903848ee420ad771"
     },
     {
       "path": "AGENTS.md",
-      "source": "aiws@0.51.0",
+      "source": "aiws@0.52.0",
       "kind": "managed",
-      "hash": "92dbd6eb60efc6fdf90ee4e88655344140cfdc3818438159c73f79f2e27573a8",
+      "hash": "72ae375f3ce91878535b972573b9beb6683793a888002007b488f1fc33e0b12a",
       "blocks": [
         "aiws:header",
         "aiws:core",
@@ -219,7 +219,7 @@
     },
     {
       "path": "CLAUDE.md",
-      "source": "aiws@0.51.0",
+      "source": "aiws@0.52.0",
       "kind": "managed",
       "hash": "3eb3b0bcba490005c217026df921980b0aaa61983a652e64e1307c7704ea5ab4",
       "blocks": [
