@@ -47,6 +47,9 @@ mantenimiento mínimo. **Sin datos de negocio reales.**
   paraguas (cambio 0004); `distribution.perRepo: true` emite un plugin por repo (cambio 0005).
 - **Hooks de gobernanza** — safety guard opt-in (`workflow.hooks.safetyGuard`).
 - **Company overlay (opcional)** — placeholder `templates/company/example/`; ningún dato de empresa real.
+- **Coherencia de docs (0016a)** — `docs.contract` (config, con default; README raíz = índice `authored`) +
+  checks en `doctor` (refs colgantes + huérfanos, `warn`, `docCoherence.ts` puro y testeado); `doc-sync` cubre
+  `docs/project/`. El store SDD queda fuera de alcance.
 
 ## Decisiones vigentes
 
@@ -71,5 +74,10 @@ mantenimiento mínimo. **Sin datos de negocio reales.**
   empresa vs base (🔵 único / 🟢 redundante / 🟡 conflicto / ⚠️ drift) y la skill `aiws-reconcile` lo convierte
   en propose-and-review. **ADR 0003 COMPLETO (A–F):** A tenencia · B namespace+procedencia · C `relation` ·
   D extender/actualizar (packs git) · E integridad (manifiesto+`verify`+auto-sanación+confinamiento) ·
-  F reconciliación. TEMPLATES_VERSION 0.46.0. Pendiente (cierre): aplicar las foundations a este propio repo
-  (dogfood) + release, al final.
+  F reconciliación. **Aplicado al propio repo (dogfood) y publicado en `v0.2.0`.**
+- **Calidad post-v0.2.0 (auditoría jun-2026):** PR #51 (audit-remediation) añadió **ESLint + Prettier + `.nvmrc`**
+  (exigidos en CI), `any→unknown` en el borde de detección, eliminó el self-plugin redundante y revivió el
+  `CHANGELOG`. PR #52 (**0016a**) añadió el **contrato de docs** (`docs.contract`, default; el README raíz es el
+  índice `authored`) y checks de coherencia en `doctor` (refs colgantes + huérfanos, `warn`, `docCoherence.ts`),
+  con `doc-sync` cubriendo `docs/project/`. TEMPLATES_VERSION **0.49.0**. Pendiente: 0016b (`aiws-audit` read-only),
+  0016c (split de AGENTS.md, diferido).

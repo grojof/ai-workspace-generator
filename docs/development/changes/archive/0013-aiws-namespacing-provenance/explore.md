@@ -1,6 +1,6 @@
 # Exploration: 0013 — F1: `aiws-` namespacing + provenance
 
-> Foundation change F1 from [ADR 0003](../../../project/decisions/0003-foundations-tenancy-provenance-reconciliation.md).
+> Foundation change F1 from [ADR 0003](../../../../project/decisions/0003-foundations-tenancy-provenance-reconciliation.md).
 > Enables every later foundation (relation, integrity, reconcile) and de-risks 0012.
 
 ## Goal
@@ -20,12 +20,12 @@ containing `:` (e.g. `aiws:core`) works at write time. The only blocker is the *
 prefix stays (the tool's marker), the **id** gains the `aiws:` tier.
 
 **Where ids/names are produced:**
-- Block ids — `BLOCK_MANIFEST` ([src/generate/blockManifest.ts](../../../../src/generate/blockManifest.ts)): `header`,`core`,`profile`,`versioning`,`safety`,`workflow`,`harness-engineering`,`routing`,`skill-routing`,`tech-selection`,`lang-*`,`fw-*`,`env-*`,`company-overlay`,`company`,`business`,`sdd`,`living-docs`.
-- SDD skills/commands/prompts — `p.name` in [strings.ts](../../../../src/i18n/strings.ts) drives [sdd.ts](../../../../src/generate/sdd.ts) (`.claude/commands/${p.name}.md`, `/sdd-*`) + [skills.ts](../../../../src/generate/skills.ts) (`.claude/skills/${p.name}/SKILL.md`).
-- Governance skills/commands — [governance.ts](../../../../src/generate/governance.ts): `secure-commit`, `dependency-upgrade`, `/commit`, `/upgrade-deps`.
-- Guide skills/commands — [guides.ts](../../../../src/generate/guides.ts): `ai-workspace-guide`, `configure-workspace`, `vscode-setup`, `/configure`, `/aiws-guide`.
+- Block ids — `BLOCK_MANIFEST` ([src/generate/blockManifest.ts](../../../../../src/generate/blockManifest.ts)): `header`,`core`,`profile`,`versioning`,`safety`,`workflow`,`harness-engineering`,`routing`,`skill-routing`,`tech-selection`,`lang-*`,`fw-*`,`env-*`,`company-overlay`,`company`,`business`,`sdd`,`living-docs`.
+- SDD skills/commands/prompts — `p.name` in [strings.ts](../../../../../src/i18n/strings.ts) drives [sdd.ts](../../../../../src/generate/sdd.ts) (`.claude/commands/${p.name}.md`, `/sdd-*`) + [skills.ts](../../../../../src/generate/skills.ts) (`.claude/skills/${p.name}/SKILL.md`).
+- Governance skills/commands — [governance.ts](../../../../../src/generate/governance.ts): `secure-commit`, `dependency-upgrade`, `/commit`, `/upgrade-deps`.
+- Guide skills/commands — [guides.ts](../../../../../src/generate/guides.ts): `ai-workspace-guide`, `configure-workspace`, `vscode-setup`, `/configure`, `/aiws-guide`.
 - `living-docs` skill — skills.ts.
-- Skill **registry** ids + triggers — [modules/skills.ts](../../../../src/modules/skills.ts) (`secure-commit`, `dependency-upgrade`, `sdd-*`, `configure-workspace`, …) → rendered by [skillRouting.ts](../../../../src/generate/skillRouting.ts).
+- Skill **registry** ids + triggers — [modules/skills.ts](../../../../../src/modules/skills.ts) (`secure-commit`, `dependency-upgrade`, `sdd-*`, `configure-workspace`, …) → rendered by [skillRouting.ts](../../../../../src/generate/skillRouting.ts).
 - Stack-pack ids — `skill-packs/*/pack.yaml` (e.g. `sdd-spec-schema`, `sdd-audit-*`, `odoo-18.0`). These are **base** packs → also `aiws-`? (open question — see below).
 - **Doc references to names** inside templates: `routing.md.eta`, `workflow.md.eta`, `sdd/orchestrator.md.eta` mention `/sdd-*`, `secure-commit`, `dependency-upgrade`, `ai-workspace-guide`, `vscode-setup`.
 - **Frontmatter** helpers (`frontmatter()` in skills.ts & guides.ts) → add `source:` provenance.

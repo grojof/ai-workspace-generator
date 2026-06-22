@@ -16,8 +16,8 @@
 ### Backlog cleanup (separate commit / follow-up, repo-only)
 - [x] Fix block-id table in `docs/project/ARCHITECTURE.md` (`header`→`aiws:header`, …). *(in this PR)*
 - [x] Link ADR 0003 from `MAINTAINING.md` (was the orphan `doctor` caught). *(in this PR)*
-- [ ] Refresh `docs/development/status/PROJECT-STATE.md` (v0.2.0 shipped, ADR 0003 complete, audit-remediation done).
-- [ ] Archive changes 0012–0015 (fold baseline deltas into `specs/`, move folders to `changes/archive/`); check stale checkboxes (0013 reserved-ns guard landed in F2c). **→ own follow-up pass.**
+- [x] Refresh `docs/development/status/PROJECT-STATE.md` (v0.2.0 shipped, ADR 0003 complete, audit-remediation + 0016a done).
+- [x] Archive changes 0012–0015 → `changes/archive/` (precedent: move folders, no per-change specs/ duplication); fixed 0013 stale checkbox (reserved-ns guard landed in F2c) + relative-link depth; `doctor` caught + we fixed the ADR 0003 → 0012 link broken by the move.
 
 ## 0016b — `aiws-audit` self-audit skill + command (read-only)
 - [ ] Generated `aiws-audit` skill + `/aiws-audit` command → read-only, dated report under `docs/development/`.
