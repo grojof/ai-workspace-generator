@@ -5,7 +5,7 @@ description: >
 license: Apache-2.0
 metadata:
   author: ai-workspace
-  source: aiws@0.47.0
+  source: aiws@0.48.0
   version: "1.0"
 ---
 
@@ -32,4 +32,4 @@ Merge the delta spec into the stable specs, then move the change folder to the a
 2. Fill the section template above; keep it concise and high-signal.
 3. Self-check against the quality bar before moving to the next phase.
 
-> Artifacts live in `docs/development/changes/<change>/` and are versioned in git. Follow the SDD lifecycle in AGENTS.md and `_shared/sdd-convention.md`.
+> Artifacts live in `docs/development/changes/<change>/` and are versioned in git. Follow the SDD lifecycle in AGENTS.md and `_shared/aiws-sdd-convention.md`.

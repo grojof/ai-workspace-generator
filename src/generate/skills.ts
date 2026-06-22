@@ -34,7 +34,7 @@ function sddSkill(p: Phase, config: Config): string {
     "2. Fill the section template above; keep it concise and high-signal.",
     "3. Self-check against the quality bar before moving to the next phase.",
     "",
-    `> ${storeLine} Follow the SDD lifecycle in AGENTS.md and \`_shared/sdd-convention.md\`.`,
+    `> ${storeLine} Follow the SDD lifecycle in AGENTS.md and \`_shared/aiws-sdd-convention.md\`.`,
   );
 
   return [frontmatter(aiwsId(p.name), description), ...body].join("\n");
@@ -182,7 +182,7 @@ export function generateSkills(cwd: string, config: Config): WriteResult[] {
     // reference, not a user-owned scaffold (0012d).
     results.push(
       writeFile(
-        resolve(cwd, ".claude/skills/_shared/sdd-convention.md"),
+        resolve(cwd, ".claude/skills/_shared/aiws-sdd-convention.md"),
         sddConvention(config),
       ),
     );

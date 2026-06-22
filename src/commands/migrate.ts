@@ -94,6 +94,9 @@ function legacySiblingOf(rel: string): { path: string; isDir: boolean } | null {
   if (m) return { path: `${m[1]}${m[2]}.md`, isDir: false };
   m = rel.match(/^(.*\/prompts\/)aiws-(.+)\.prompt\.md$/);
   if (m) return { path: `${m[1]}${m[2]}.prompt.md`, isDir: false };
+  // Shared references under `_shared/` that gained the `aiws-` prefix (e.g. sdd-convention.md).
+  m = rel.match(/^(.*\/skills\/_shared\/)aiws-(.+\.md)$/);
+  if (m) return { path: `${m[1]}${m[2]}`, isDir: false };
   return null;
 }
 

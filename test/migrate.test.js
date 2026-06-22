@@ -89,6 +89,8 @@ test("migrate · prune: legacy renamed skill folders + command files are removed
     // Simulate leftovers from the pre-aiws layout (F1a rename): a bare skill folder and a bare command.
     cpSync(resolve(cwd, ".claude/skills/aiws-secure-commit"), resolve(cwd, ".claude/skills/secure-commit"), { recursive: true });
     cpSync(resolve(cwd, ".claude/commands/aiws-sdd-explore.md"), resolve(cwd, ".claude/commands/sdd-explore.md"));
+    // A shared reference that gained the aiws- prefix (e.g. _shared/sdd-convention.md → aiws-sdd-convention.md).
+    writeFileSync(resolve(cwd, ".claude/skills/_shared/sdd-convention.md"), "legacy convention");
     // A user-authored skill that is NOT an aiws- sibling must never be touched.
     mkdirSync(resolve(cwd, ".claude/skills/my-custom"), { recursive: true });
     writeFileSync(resolve(cwd, ".claude/skills/my-custom/SKILL.md"), "custom");
@@ -98,6 +100,9 @@ test("migrate · prune: legacy renamed skill folders + command files are removed
 
     assert.ok(removed.includes(".claude/skills/secure-commit/"), "legacy skill folder removed");
     assert.ok(removed.includes(".claude/commands/sdd-explore.md"), "legacy command removed");
+    assert.ok(removed.includes(".claude/skills/_shared/sdd-convention.md"), "legacy _shared reference removed");
+    assert.equal(existsSync(resolve(cwd, ".claude/skills/_shared/sdd-convention.md")), false);
+    assert.ok(existsSync(resolve(cwd, ".claude/skills/_shared/aiws-sdd-convention.md")), "renamed _shared reference kept");
     assert.equal(existsSync(resolve(cwd, ".claude/skills/secure-commit")), false);
     assert.equal(existsSync(resolve(cwd, ".claude/commands/sdd-explore.md")), false);
     // Kept: the namespaced replacement, the user skill, and an un-renamed pack skill.
