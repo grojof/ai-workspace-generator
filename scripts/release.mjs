@@ -52,7 +52,19 @@ console.log(`\n• Publishing GitHub Release ${tag} …\n`);
 const notesFile = join(tmpdir(), `aiws-release-notes-${version}.md`);
 writeFileSync(notesFile, notes);
 try {
-  run("gh", ["release", "create", tag, tarball, latest, "--target", "main", "--title", tag, "--notes-file", notesFile]);
+  run("gh", [
+    "release",
+    "create",
+    tag,
+    tarball,
+    latest,
+    "--target",
+    "main",
+    "--title",
+    tag,
+    "--notes-file",
+    notesFile,
+  ]);
 } finally {
   rmSync(notesFile, { force: true });
 }

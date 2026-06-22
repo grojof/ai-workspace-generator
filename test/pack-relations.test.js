@@ -1,6 +1,11 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { parsePackManifest, packRelation, assertRelationsResolve, loadPacks } from "../dist/generate/stackPacks.js";
+import {
+  parsePackManifest,
+  packRelation,
+  assertRelationsResolve,
+  loadPacks,
+} from "../dist/generate/stackPacks.js";
 
 // ADR 0003 F2b: a company pack declares how it relates to the base via `pack.yaml`'s `relation` field —
 // the auditable primitive `aiws-reconcile` reads. Format is validated by the schema; `overrides:` target
@@ -24,7 +29,10 @@ test("relation · schema rejects malformed values and non-reserved override targ
   // overrides with no target.
   assert.throws(() => parsePackManifest({ ...base, relation: "overrides:" }), /relation must be/);
   // overrides a non-reserved (non-aiws) id — only base skills can be overridden.
-  assert.throws(() => parsePackManifest({ ...base, relation: "overrides:my-skill" }), /must target a base aiws- id/);
+  assert.throws(
+    () => parsePackManifest({ ...base, relation: "overrides:my-skill" }),
+    /must target a base aiws- id/,
+  );
 });
 
 test("relation · existence check rejects a dangling override, accepts real base ids + the orchestrator glob", () => {

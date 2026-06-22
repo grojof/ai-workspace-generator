@@ -1,8 +1,0 @@
-{
-  "name": "ai-workspace-generator",
-  "version": "0.1.0",
-  "description": "Generate and adapt an AI workspace (Claude Code + Copilot) for any project: layered instructions, SDD, living docs, MCPs.",
-  "author": { "name": "ai-workspace" },
-  "license": "Apache-2.0",
-  "commands": "./commands"
-}

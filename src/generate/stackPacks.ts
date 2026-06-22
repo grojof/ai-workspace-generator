@@ -89,11 +89,17 @@ const PackManifestSchema = z.object({
       if (val === "new" || val === "extends") return;
       const m = /^overrides:(.+)$/.exec(val);
       if (!m) {
-        ctx.addIssue({ code: z.ZodIssueCode.custom, message: `relation must be "new", "extends", or "overrides:<aiws-id>" (got "${val}")` });
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `relation must be "new", "extends", or "overrides:<aiws-id>" (got "${val}")`,
+        });
         return;
       }
       if (!isReservedNamespace(m[1])) {
-        ctx.addIssue({ code: z.ZodIssueCode.custom, message: `relation "overrides:${m[1]}" must target a base aiws- id` });
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `relation "overrides:${m[1]}" must target a base aiws- id`,
+        });
       }
     }),
   /** Whether this pack contributes a `skill-routing` row. `false` when routing stays in the catalog (migration). */
@@ -154,7 +160,9 @@ export function assertRelationsResolve(packs: LoadedPack[]): void {
     if (r.kind !== "overrides" || !r.target) continue;
     const resolves = ids.has(r.target) || (ids.has("aiws-sdd-*") && r.target.startsWith("aiws-sdd-"));
     if (!resolves) {
-      throw new Error(`pack "${manifest.id}": relation "overrides:${r.target}" names no base skill (not in the aiws- catalog).`);
+      throw new Error(
+        `pack "${manifest.id}": relation "overrides:${r.target}" names no base skill (not in the aiws- catalog).`,
+      );
     }
   }
 }
@@ -170,7 +178,9 @@ function readPacksFrom(root: string, opts: { external: boolean }): LoadedPack[] 
     if (!existsSync(manifestPath)) continue;
     const manifest = PackManifestSchema.parse(parse(readFileSync(manifestPath, "utf8")));
     if (opts.external && isReservedNamespace(manifest.id)) {
-      throw new Error(`company pack "${manifest.id}" uses the reserved \`aiws\` namespace — only the base may. Use a \`corp-<handle>-\` id.`);
+      throw new Error(
+        `company pack "${manifest.id}" uses the reserved \`aiws\` namespace — only the base may. Use a \`corp-<handle>-\` id.`,
+      );
     }
     packs.push({ manifest, dir: join(root, entry.name) });
   }
@@ -301,7 +311,11 @@ export function availablePacks(config: Config): AvailablePack[] {
   for (const { manifest, dir } of loadPacks()) {
     // Only the user-choosable library (routing:true). Feature bundles (corp-*/sdd-*) come with company/SDD.
     if (!manifest.routing || !packApplies(manifest, config)) continue;
-    const desc = manifest.trigger?.[config.language] ?? manifest.trigger?.en ?? frontmatterDescription(join(dir, "SKILL.md")) ?? manifest.id;
+    const desc =
+      manifest.trigger?.[config.language] ??
+      manifest.trigger?.en ??
+      frontmatterDescription(join(dir, "SKILL.md")) ??
+      manifest.id;
     out.push({ id: manifest.id, description: desc.replace(/\s+/g, " ").trim() });
   }
   return out.sort((a, b) => a.id.localeCompare(b.id));
@@ -316,7 +330,8 @@ export function stackPackSkillEntries(config: Config): SkillEntry[] {
   const entries: SkillEntry[] = [];
   for (const { manifest } of loadPacks()) {
     if (!manifest.routing || !packApplies(manifest, config) || !packSelected(manifest, config)) continue;
-    const userType: SkillUserType = manifest.profile.userType.length === 1 ? manifest.profile.userType[0]! : "both";
+    const userType: SkillUserType =
+      manifest.profile.userType.length === 1 ? manifest.profile.userType[0]! : "both";
     entries.push({
       id: manifest.id,
       domain: "development",
@@ -325,7 +340,10 @@ export function stackPackSkillEntries(config: Config): SkillEntry[] {
       loadMode: manifest.loadMode,
       risk: "low",
       enabled: () => true,
-      trigger: manifest.trigger ?? { en: `working with the ${manifest.id} stack`, es: `trabajar con el stack ${manifest.id}` },
+      trigger: manifest.trigger ?? {
+        en: `working with the ${manifest.id} stack`,
+        es: `trabajar con el stack ${manifest.id}`,
+      },
     });
   }
   return entries;

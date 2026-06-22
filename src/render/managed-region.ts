@@ -41,18 +41,10 @@ export function wrapBlock(style: CommentStyle, id: string, content: string): str
  * inner content is replaced; otherwise the block is appended. Content outside
  * any managed block is left untouched.
  */
-export function upsertBlock(
-  existing: string,
-  style: CommentStyle,
-  id: string,
-  content: string,
-): string {
+export function upsertBlock(existing: string, style: CommentStyle, id: string, content: string): string {
   const { begin, end } = markers(style, id);
   const block = wrapBlock(style, id, content);
-  const re = new RegExp(
-    `${escapeRegExp(begin)}[\\s\\S]*?${escapeRegExp(end)}`,
-    "m",
-  );
+  const re = new RegExp(`${escapeRegExp(begin)}[\\s\\S]*?${escapeRegExp(end)}`, "m");
   if (re.test(existing)) {
     return existing.replace(re, block);
   }
@@ -63,10 +55,7 @@ export function upsertBlock(
 /** Remove a managed block (and its surrounding blank lines) if present. */
 export function removeBlock(existing: string, style: CommentStyle, id: string): string {
   const { begin, end } = markers(style, id);
-  const re = new RegExp(
-    `\\n*${escapeRegExp(begin)}[\\s\\S]*?${escapeRegExp(end)}\\n*`,
-    "m",
-  );
+  const re = new RegExp(`\\n*${escapeRegExp(begin)}[\\s\\S]*?${escapeRegExp(end)}\\n*`, "m");
   return existing.replace(re, "\n");
 }
 
@@ -76,8 +65,5 @@ export function upsertBlocks(
   style: CommentStyle,
   blocks: Array<{ id: string; content: string }>,
 ): string {
-  return blocks.reduce(
-    (acc, b) => upsertBlock(acc, style, b.id, b.content),
-    existing,
-  );
+  return blocks.reduce((acc, b) => upsertBlock(acc, style, b.id, b.content), existing);
 }

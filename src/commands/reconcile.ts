@@ -25,19 +25,32 @@ const ICON: Record<ReconcileKind, string> = { unique: "🔵", redundant: "🟢",
 export function reconcile(cwd: string): ReconcileFinding[] {
   const out: ReconcileFinding[] = [];
   const base = baseCatalogIds();
-  const resolves = (target: string): boolean => base.has(target) || (base.has("aiws-sdd-*") && target.startsWith("aiws-sdd-"));
+  const resolves = (target: string): boolean =>
+    base.has(target) || (base.has("aiws-sdd-*") && target.startsWith("aiws-sdd-"));
 
   for (const { manifest } of loadCompanyPacks(cwd)) {
     const r = packRelation(manifest);
     if (r.kind === "new") {
       out.push({ kind: "unique", unit: manifest.id, message: "independent company skill — keep" });
     } else if (r.kind === "extends") {
-      out.push({ kind: "unique", unit: manifest.id, message: "extends the base catalog — keep (review against new base)" });
+      out.push({
+        kind: "unique",
+        unit: manifest.id,
+        message: "extends the base catalog — keep (review against new base)",
+      });
     } else if (r.kind === "overrides" && r.target) {
       if (resolves(r.target)) {
-        out.push({ kind: "conflict", unit: manifest.id, message: `overrides \`${r.target}\` — compare against the current base version; you decide` });
+        out.push({
+          kind: "conflict",
+          unit: manifest.id,
+          message: `overrides \`${r.target}\` — compare against the current base version; you decide`,
+        });
       } else {
-        out.push({ kind: "redundant", unit: manifest.id, message: `overrides \`${r.target}\`, which is no longer in the base — stale; review/remove` });
+        out.push({
+          kind: "redundant",
+          unit: manifest.id,
+          message: `overrides \`${r.target}\`, which is no longer in the base — stale; review/remove`,
+        });
       }
     }
   }
@@ -67,7 +80,13 @@ export function runReconcile(cwd: string): void {
   }
   const n = (k: ReconcileKind) => findings.filter((f) => f.kind === k).length;
   console.log(
-    pc.dim(`\n  🔵 ${n("unique")} unique · 🟢 ${n("redundant")} redundant · 🟡 ${n("conflict")} conflict · ⚠️ ${n("drift")} drift`),
+    pc.dim(
+      `\n  🔵 ${n("unique")} unique · 🟢 ${n("redundant")} redundant · 🟡 ${n("conflict")} conflict · ⚠️ ${n("drift")} drift`,
+    ),
   );
-  console.log(pc.yellow("\n  Review with the `aiws-reconcile` skill — it proposes changes for your approval; nothing is auto-applied.\n"));
+  console.log(
+    pc.yellow(
+      "\n  Review with the `aiws-reconcile` skill — it proposes changes for your approval; nothing is auto-applied.\n",
+    ),
+  );
 }

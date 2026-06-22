@@ -92,8 +92,22 @@ test("profile block renders only the active governance posture", () => {
   const biz = tmpRepo();
   const tech = tmpRepo();
   try {
-    generate(biz, ConfigSchema.parse({ project: { name: "t" }, language: "en", profile: { userType: "business", experience: "beginner" } }));
-    generate(tech, ConfigSchema.parse({ project: { name: "t" }, language: "en", profile: { userType: "technical", experience: "advanced" } }));
+    generate(
+      biz,
+      ConfigSchema.parse({
+        project: { name: "t" },
+        language: "en",
+        profile: { userType: "business", experience: "beginner" },
+      }),
+    );
+    generate(
+      tech,
+      ConfigSchema.parse({
+        project: { name: "t" },
+        language: "en",
+        profile: { userType: "technical", experience: "advanced" },
+      }),
+    );
     const bizAgents = readFileSync(resolve(biz, "AGENTS.md"), "utf8");
     const techAgents = readFileSync(resolve(tech, "AGENTS.md"), "utf8");
     // Block exists in both.
@@ -128,7 +142,13 @@ test("profile defaults to technical/standard when unspecified", () => {
 test("environment modules render a block", () => {
   const cwd = tmpRepo();
   try {
-    generate(cwd, ConfigSchema.parse({ project: { name: "t" }, stack: { environments: [{ id: "wsl", version: "latest" }] } }));
+    generate(
+      cwd,
+      ConfigSchema.parse({
+        project: { name: "t" },
+        stack: { environments: [{ id: "wsl", version: "latest" }] },
+      }),
+    );
     assert.match(readFileSync(resolve(cwd, "AGENTS.md"), "utf8"), /ai-workspace:begin:aiws:env-wsl/);
   } finally {
     rmSync(cwd, { recursive: true, force: true });
@@ -158,7 +178,14 @@ test("docs layout uses stable English folders (development/specs/changes/status)
 test("docs.development overrides the development root", () => {
   const cwd = tmpRepo();
   try {
-    generate(cwd, ConfigSchema.parse({ project: { name: "t", mode: "new" }, language: "en", docs: { development: "dev" } }));
+    generate(
+      cwd,
+      ConfigSchema.parse({
+        project: { name: "t", mode: "new" },
+        language: "en",
+        docs: { development: "dev" },
+      }),
+    );
     assert.ok(readFileSync(resolve(cwd, "dev/README.md"), "utf8"));
     assert.ok(readFileSync(resolve(cwd, "dev/status/PROJECT-STATE.md"), "utf8"));
     assert.match(readFileSync(resolve(cwd, "AGENTS.md"), "utf8"), /dev\/changes/);
@@ -171,8 +198,22 @@ test("skill-routing block is profile-filtered", () => {
   const biz = tmpRepo();
   const tech = tmpRepo();
   try {
-    generate(biz, ConfigSchema.parse({ project: { name: "t" }, language: "en", profile: { userType: "business", experience: "standard" } }));
-    generate(tech, ConfigSchema.parse({ project: { name: "t" }, language: "en", profile: { userType: "technical", experience: "standard" } }));
+    generate(
+      biz,
+      ConfigSchema.parse({
+        project: { name: "t" },
+        language: "en",
+        profile: { userType: "business", experience: "standard" },
+      }),
+    );
+    generate(
+      tech,
+      ConfigSchema.parse({
+        project: { name: "t" },
+        language: "en",
+        profile: { userType: "technical", experience: "standard" },
+      }),
+    );
     const blockOf = (s) => s.match(/begin:aiws:skill-routing[\s\S]*?end:aiws:skill-routing/)[0];
     const bizBlock = blockOf(readFileSync(resolve(biz, "AGENTS.md"), "utf8"));
     const techBlock = blockOf(readFileSync(resolve(tech, "AGENTS.md"), "utf8"));
@@ -227,14 +268,31 @@ test("reasons schema mode generates the spec-schema skill + routing; lean does n
       assert.equal(existsSync(resolve(lean, `.claude/skills/aiws-sdd-audit-${a}/SKILL.md`)), false);
     }
     // reasons → builder workflow + reverse-engineering skills exist; lean → not.
-    for (const b of ["aiws-sdd-init", "aiws-sdd-spec-capture", "aiws-sdd-spec-review", "aiws-sdd-code-generation", "aiws-sdd-code-maintenance", "aiws-sdd-test-generation", "aiws-sdd-self-review", "aiws-sdd-handoff", "aiws-sdd-reverse-engineering", "aiws-sdd-migrate"]) {
+    for (const b of [
+      "aiws-sdd-init",
+      "aiws-sdd-spec-capture",
+      "aiws-sdd-spec-review",
+      "aiws-sdd-code-generation",
+      "aiws-sdd-code-maintenance",
+      "aiws-sdd-test-generation",
+      "aiws-sdd-self-review",
+      "aiws-sdd-handoff",
+      "aiws-sdd-reverse-engineering",
+      "aiws-sdd-migrate",
+    ]) {
       assert.ok(readFileSync(resolve(reasons, `.claude/skills/${b}/SKILL.md`), "utf8"));
       assert.equal(existsSync(resolve(lean, `.claude/skills/${b}/SKILL.md`)), false);
     }
     assert.match(readFileSync(resolve(reasons, "AGENTS.md"), "utf8"), /aiws-sdd-spec-capture/);
     // reasons → the spec lifecycle is documented and routed.
-    assert.match(readFileSync(resolve(reasons, "AGENTS.md"), "utf8"), /status.*draft.*user-reviewed.*it-approved/);
-    assert.match(readFileSync(resolve(reasons, ".claude/skills/aiws-sdd-spec-schema/SKILL.md"), "utf8"), /Lifecycle/);
+    assert.match(
+      readFileSync(resolve(reasons, "AGENTS.md"), "utf8"),
+      /status.*draft.*user-reviewed.*it-approved/,
+    );
+    assert.match(
+      readFileSync(resolve(reasons, ".claude/skills/aiws-sdd-spec-schema/SKILL.md"), "utf8"),
+      /Lifecycle/,
+    );
   } finally {
     rmSync(reasons, { recursive: true, force: true });
     rmSync(lean, { recursive: true, force: true });
@@ -244,7 +302,10 @@ test("reasons schema mode generates the spec-schema skill + routing; lean does n
 test("package builds a plugin + marketplace + org-skill zips; idempotent and valid zip", () => {
   const cwd = tmpRepo();
   try {
-    writeFileSync(join(cwd, "workspace.config.yaml"), "project:\n  name: Acme Portal\ncompany: example\nprofile:\n  userType: technical\nsdd:\n  schema: reasons\nstack:\n  environments:\n    - id: odoo\n      version: latest\n");
+    writeFileSync(
+      join(cwd, "workspace.config.yaml"),
+      "project:\n  name: Acme Portal\ncompany: example\nprofile:\n  userType: technical\nsdd:\n  schema: reasons\nstack:\n  environments:\n    - id: odoo\n      version: latest\n",
+    );
     runPackage(cwd);
     // umbrella plugin + private marketplace exist with the expected identifiers.
     assert.ok(existsSync(resolve(cwd, "plugins/acme-portal/.claude-plugin/plugin.json")));
@@ -286,7 +347,9 @@ test("distribution config sets a stable org plugin name/owner", () => {
     runPackage(cwd);
     // The plugin folder + marketplace use the configured names, not the repo name.
     assert.ok(existsSync(resolve(cwd, "plugins/acme-ai-workspace/.claude-plugin/plugin.json")));
-    const plug = JSON.parse(readFileSync(resolve(cwd, "plugins/acme-ai-workspace/.claude-plugin/plugin.json"), "utf8"));
+    const plug = JSON.parse(
+      readFileSync(resolve(cwd, "plugins/acme-ai-workspace/.claude-plugin/plugin.json"), "utf8"),
+    );
     assert.equal(plug.name, "acme-ai-workspace");
     assert.equal(plug.author.name, "Acme IT");
     const mkt = JSON.parse(readFileSync(resolve(cwd, ".claude-plugin/marketplace.json"), "utf8"));
@@ -302,16 +365,28 @@ test("stack packs (0004/0005): framework-bound vs technical opt-in gating (exper
   const reactStd = tmpRepo();
   const plain = tmpRepo();
   try {
-    const tech = (experience, stack) => ({ project: { name: "t" }, profile: { userType: "technical", experience }, stack });
-    generate(reactAdv, ConfigSchema.parse(tech("advanced", { frameworks: [{ id: "react", version: "latest" }] })));
-    generate(reactStd, ConfigSchema.parse(tech("standard", { frameworks: [{ id: "react", version: "latest" }] })));
+    const tech = (experience, stack) => ({
+      project: { name: "t" },
+      profile: { userType: "technical", experience },
+      stack,
+    });
+    generate(
+      reactAdv,
+      ConfigSchema.parse(tech("advanced", { frameworks: [{ id: "react", version: "latest" }] })),
+    );
+    generate(
+      reactStd,
+      ConfigSchema.parse(tech("standard", { frameworks: [{ id: "react", version: "latest" }] })),
+    );
     generate(plain, ConfigSchema.parse(tech("advanced", {})));
     const has = (d, id) => existsSync(resolve(d, ".claude/skills", id, "SKILL.md"));
     // react framework → the frontend stack packs (incl. references), regardless of experience level.
     for (const d of [reactAdv, reactStd]) {
       for (const id of ["frontend-ui-dark-ts", "frontend-design", "webapp-testing"]) assert.ok(has(d, id));
     }
-    assert.ok(readFileSync(resolve(reactAdv, ".claude/skills/frontend-ui-dark-ts/references/components.md"), "utf8"));
+    assert.ok(
+      readFileSync(resolve(reactAdv, ".claude/skills/frontend-ui-dark-ts/references/components.md"), "utf8"),
+    );
     // Apache-2.0 skills retain their LICENSE.txt when shipped (license-retention compliance).
     assert.ok(existsSync(resolve(reactAdv, ".claude/skills/frontend-design/LICENSE.txt")));
     // Opt-in dev tooling (no stack binding): available to ANY technical profile — experience does not gate.
@@ -330,7 +405,11 @@ test("config.skills (0006): explicit list filters the library; empty = all; feat
   const picked = tmpRepo();
   const feat = tmpRepo();
   try {
-    const base = { project: { name: "t" }, profile: { userType: "technical", experience: "advanced" }, stack: { environments: [{ id: "odoo", version: "latest" }] } };
+    const base = {
+      project: { name: "t" },
+      profile: { userType: "technical", experience: "advanced" },
+      stack: { environments: [{ id: "odoo", version: "latest" }] },
+    };
     generate(all, ConfigSchema.parse(base)); // skills:[] → every available library pack
     generate(picked, ConfigSchema.parse({ ...base, skills: ["odoo-18.0"] }));
     generate(feat, ConfigSchema.parse({ ...base, sdd: { schema: "reasons" }, skills: ["odoo-18.0"] }));
@@ -349,8 +428,16 @@ test("config.skills (0006): explicit list filters the library; empty = all; feat
 });
 
 test("skills sync: diffTrees classifies add/change/remove; hashTree ignores CRLF/LF noise", () => {
-  const oldT = new Map([["a", "1"], ["b", "2"], ["c", "3"]]);
-  const newT = new Map([["a", "1"], ["b", "9"], ["d", "4"]]);
+  const oldT = new Map([
+    ["a", "1"],
+    ["b", "2"],
+    ["c", "3"],
+  ]);
+  const newT = new Map([
+    ["a", "1"],
+    ["b", "9"],
+    ["d", "4"],
+  ]);
   const d = diffTrees(oldT, newT);
   assert.deepEqual(d.added, ["d"]);
   assert.deepEqual(d.changed, ["b"]);
@@ -374,12 +461,34 @@ test("stack packs: a bound pack (odoo) is copied for technical; gated by stack +
   const biz = tmpRepo();
   try {
     const odooStack = { environments: [{ id: "odoo", version: "latest" }] };
-    generate(odoo, ConfigSchema.parse({ project: { name: "t" }, profile: { userType: "technical", experience: "standard" }, stack: odooStack }));
-    generate(plain, ConfigSchema.parse({ project: { name: "t" }, profile: { userType: "technical", experience: "standard" } }));
-    generate(biz, ConfigSchema.parse({ project: { name: "t" }, profile: { userType: "business", experience: "standard" }, stack: odooStack }));
+    generate(
+      odoo,
+      ConfigSchema.parse({
+        project: { name: "t" },
+        profile: { userType: "technical", experience: "standard" },
+        stack: odooStack,
+      }),
+    );
+    generate(
+      plain,
+      ConfigSchema.parse({
+        project: { name: "t" },
+        profile: { userType: "technical", experience: "standard" },
+      }),
+    );
+    generate(
+      biz,
+      ConfigSchema.parse({
+        project: { name: "t" },
+        profile: { userType: "business", experience: "standard" },
+        stack: odooStack,
+      }),
+    );
     // odoo stack + technical → the full pack (SKILL.md + a reference guide) is present.
     assert.ok(readFileSync(resolve(odoo, ".claude/skills/odoo-18.0/SKILL.md"), "utf8"));
-    assert.ok(readFileSync(resolve(odoo, ".claude/skills/odoo-18.0/references/odoo-18-model-guide.md"), "utf8"));
+    assert.ok(
+      readFileSync(resolve(odoo, ".claude/skills/odoo-18.0/references/odoo-18-model-guide.md"), "utf8"),
+    );
     // the pack.yaml overlay is NOT shipped into the workspace.
     assert.equal(existsSync(resolve(odoo, ".claude/skills/odoo-18.0/pack.yaml")), false);
     // no odoo in the stack → not copied.
@@ -392,7 +501,14 @@ test("stack packs: a bound pack (odoo) is copied for technical; gated by stack +
     assert.doesNotMatch(readFileSync(resolve(plain, "AGENTS.md"), "utf8"), /odoo-18\.0/);
     assert.doesNotMatch(readFileSync(resolve(biz, "AGENTS.md"), "utf8"), /odoo-18\.0/);
     // idempotent: a second generate reports everything unchanged.
-    const second = generate(odoo, ConfigSchema.parse({ project: { name: "t" }, profile: { userType: "technical", experience: "standard" }, stack: odooStack })).artifacts;
+    const second = generate(
+      odoo,
+      ConfigSchema.parse({
+        project: { name: "t" },
+        profile: { userType: "technical", experience: "standard" },
+        stack: odooStack,
+      }),
+    ).artifacts;
     assert.equal(second.filter((a) => a.status !== "unchanged" && a.path.includes("odoo-18.0")).length, 0);
   } finally {
     rmSync(odoo, { recursive: true, force: true });
@@ -406,8 +522,21 @@ test("pack companion agents ship to .claude/agents; generic overlay merges into 
   const plain = tmpRepo();
   try {
     const odooStack = { environments: [{ id: "odoo", version: "latest" }] };
-    generate(odoo, ConfigSchema.parse({ project: { name: "t" }, profile: { userType: "technical", experience: "standard" }, stack: odooStack }));
-    generate(plain, ConfigSchema.parse({ project: { name: "t" }, profile: { userType: "technical", experience: "standard" } }));
+    generate(
+      odoo,
+      ConfigSchema.parse({
+        project: { name: "t" },
+        profile: { userType: "technical", experience: "standard" },
+        stack: odooStack,
+      }),
+    );
+    generate(
+      plain,
+      ConfigSchema.parse({
+        project: { name: "t" },
+        profile: { userType: "technical", experience: "standard" },
+      }),
+    );
     // odoo pack applies → its companion subagents land in .claude/agents/ (not under the skill dir).
     for (const a of ["odoo-code-review", "odoo-code-tracer"]) {
       assert.ok(readFileSync(resolve(odoo, `.claude/agents/${a}.md`), "utf8"));
@@ -473,7 +602,18 @@ test("package (0004): multi-repo aggregates root + child skills/agents into one 
 test("vscode tooling (0005): extensions + formatters come from the registry", () => {
   const cwd = tmpRepo();
   try {
-    generate(cwd, ConfigSchema.parse({ project: { name: "t" }, stack: { languages: [{ id: "go", version: "latest" }, { id: "python", version: "latest" }] } }));
+    generate(
+      cwd,
+      ConfigSchema.parse({
+        project: { name: "t" },
+        stack: {
+          languages: [
+            { id: "go", version: "latest" },
+            { id: "python", version: "latest" },
+          ],
+        },
+      }),
+    );
     const ext = JSON.parse(readFileSync(resolve(cwd, ".vscode/extensions.json"), "utf8"));
     assert.ok(ext.recommendations.includes("golang.go"));
     assert.ok(ext.recommendations.includes("ms-python.python"));
@@ -491,17 +631,24 @@ test("package (0005): distribution.perRepo emits one plugin per child; default s
   const perRepo = tmpRepo();
   const umbrella = tmpRepo();
   try {
-    const repos = "repos:\n  - path: app-a\n    stack:\n      environments:\n        - id: odoo\n          version: latest\n  - path: app-b\n    stack:\n      frameworks:\n        - id: react\n          version: latest\n";
-    const base = "project:\n  name: Multi Workspace\nprofile:\n  userType: technical\n  experience: advanced\n";
+    const repos =
+      "repos:\n  - path: app-a\n    stack:\n      environments:\n        - id: odoo\n          version: latest\n  - path: app-b\n    stack:\n      frameworks:\n        - id: react\n          version: latest\n";
+    const base =
+      "project:\n  name: Multi Workspace\nprofile:\n  userType: technical\n  experience: advanced\n";
     writeFileSync(join(perRepo, "workspace.config.yaml"), base + "distribution:\n  perRepo: true\n" + repos);
     writeFileSync(join(umbrella, "workspace.config.yaml"), base + repos);
     runPackage(perRepo);
     runPackage(umbrella);
     // perRepo → one plugin per child, each with that child's stack skill; a multi-plugin marketplace.
     assert.ok(existsSync(resolve(perRepo, "plugins/multi-workspace-app-a/skills/odoo-18.0/SKILL.md")));
-    assert.ok(existsSync(resolve(perRepo, "plugins/multi-workspace-app-b/skills/frontend-ui-dark-ts/SKILL.md")));
+    assert.ok(
+      existsSync(resolve(perRepo, "plugins/multi-workspace-app-b/skills/frontend-ui-dark-ts/SKILL.md")),
+    );
     const mkt = JSON.parse(readFileSync(resolve(perRepo, ".claude-plugin/marketplace.json"), "utf8"));
-    assert.deepEqual(mkt.plugins.map((p) => p.name).sort(), ["multi-workspace-app-a", "multi-workspace-app-b"]);
+    assert.deepEqual(mkt.plugins.map((p) => p.name).sort(), [
+      "multi-workspace-app-a",
+      "multi-workspace-app-b",
+    ]);
     // default (no perRepo) → single umbrella plugin aggregating both.
     assert.ok(existsSync(resolve(umbrella, "plugins/multi-workspace/skills/odoo-18.0/SKILL.md")));
     assert.ok(existsSync(resolve(umbrella, "plugins/multi-workspace/skills/frontend-ui-dark-ts/SKILL.md")));
@@ -518,7 +665,10 @@ test("doctor (0005): warns on a stack id not in the registry", () => {
   const logs = [];
   const orig = console.log;
   try {
-    writeFileSync(join(cwd, "workspace.config.yaml"), "project:\n  name: t\nstack:\n  languages:\n    - id: cobol\n      version: latest\n");
+    writeFileSync(
+      join(cwd, "workspace.config.yaml"),
+      "project:\n  name: t\nstack:\n  languages:\n    - id: cobol\n      version: latest\n",
+    );
     generate(cwd, loadConfig(cwd)); // so AGENTS.md exists → doctor reports no error (only a warning)
     console.log = (...a) => logs.push(a.join(" "));
     runDoctor(cwd);
@@ -546,7 +696,10 @@ test("codex target (0006): AGENTS.md is the adapter + .codex/config.toml; no Cla
     assert.equal(existsSync(resolve(cwd, ".github/copilot-instructions.md")), false);
     assert.equal(existsSync(resolve(cwd, ".vscode/extensions.json")), false);
     // idempotent.
-    const second = generate(cwd, ConfigSchema.parse({ project: { name: "t" }, targets: ["codex"], vscode: false }));
+    const second = generate(
+      cwd,
+      ConfigSchema.parse({ project: { name: "t" }, targets: ["codex"], vscode: false }),
+    );
     assert.equal(second.artifacts.filter((a) => a.status !== "unchanged").length, 0);
   } finally {
     rmSync(cwd, { recursive: true, force: true });
@@ -573,14 +726,21 @@ test("opencode target (0011): AGENTS.md adapter + .opencode/opencode.json (MCP);
     assert.ok(readFileSync(resolve(cwd, "AGENTS.md"), "utf8"));
     const json = JSON.parse(readFileSync(resolve(cwd, ".opencode/opencode.json"), "utf8"));
     assert.equal(json.$schema, "https://opencode.ai/config.json");
-    assert.deepEqual(json.mcp.context7, { type: "local", command: ["npx", "-y", "@upstash/context7-mcp"], enabled: true });
+    assert.deepEqual(json.mcp.context7, {
+      type: "local",
+      command: ["npx", "-y", "@upstash/context7-mcp"],
+      enabled: true,
+    });
     // Only $schema + mcp (unknown top-level keys would error in OpenCode).
     assert.deepEqual(Object.keys(json).sort(), ["$schema", "mcp"]);
     // opencode-only → no Claude/Copilot adapters.
     assert.equal(existsSync(resolve(cwd, "CLAUDE.md")), false);
     assert.equal(existsSync(resolve(cwd, ".github/copilot-instructions.md")), false);
     // idempotent.
-    const second = generate(cwd, ConfigSchema.parse({ project: { name: "t" }, targets: ["opencode"], vscode: false }));
+    const second = generate(
+      cwd,
+      ConfigSchema.parse({ project: { name: "t" }, targets: ["opencode"], vscode: false }),
+    );
     assert.equal(second.artifacts.filter((a) => a.status !== "unchanged").length, 0);
   } finally {
     rmSync(cwd, { recursive: true, force: true });
@@ -590,7 +750,10 @@ test("opencode target (0011): AGENTS.md adapter + .opencode/opencode.json (MCP);
 test("opencode target (0011): no MCP ⇒ no .opencode/opencode.json (AGENTS.md alone)", () => {
   const cwd = tmpRepo();
   try {
-    generate(cwd, ConfigSchema.parse({ project: { name: "t" }, targets: ["opencode"], mcp: [], vscode: false }));
+    generate(
+      cwd,
+      ConfigSchema.parse({ project: { name: "t" }, targets: ["opencode"], mcp: [], vscode: false }),
+    );
     assert.ok(readFileSync(resolve(cwd, "AGENTS.md"), "utf8"));
     assert.equal(existsSync(resolve(cwd, ".opencode/opencode.json")), false);
   } finally {
@@ -602,8 +765,21 @@ test("vscode flag (0006): false omits .vscode/*; default true keeps it", () => {
   const off = tmpRepo();
   const on = tmpRepo();
   try {
-    generate(off, ConfigSchema.parse({ project: { name: "t" }, vscode: false, stack: { languages: [{ id: "typescript", version: "latest" }] } }));
-    generate(on, ConfigSchema.parse({ project: { name: "t" }, stack: { languages: [{ id: "typescript", version: "latest" }] } }));
+    generate(
+      off,
+      ConfigSchema.parse({
+        project: { name: "t" },
+        vscode: false,
+        stack: { languages: [{ id: "typescript", version: "latest" }] },
+      }),
+    );
+    generate(
+      on,
+      ConfigSchema.parse({
+        project: { name: "t" },
+        stack: { languages: [{ id: "typescript", version: "latest" }] },
+      }),
+    );
     assert.equal(existsSync(resolve(off, ".vscode/extensions.json")), false);
     assert.equal(existsSync(resolve(off, ".vscode/settings.json")), false);
     assert.equal(existsSync(resolve(off, ".vscode/mcp.json")), false);
@@ -628,7 +804,15 @@ test("commit-msg hook is generated and blocks co-author", () => {
 test("copilot mirror is a thin pointer, not a full mirror; path-scoped instructions kept (0012c)", () => {
   const cwd = tmpRepo();
   try {
-    generate(cwd, ConfigSchema.parse({ project: { name: "t" }, language: "en", targets: ["copilot"], stack: { languages: [{ id: "typescript", version: "latest" }] } }));
+    generate(
+      cwd,
+      ConfigSchema.parse({
+        project: { name: "t" },
+        language: "en",
+        targets: ["copilot"],
+        stack: { languages: [{ id: "typescript", version: "latest" }] },
+      }),
+    );
     const mirror = readFileSync(resolve(cwd, ".github/copilot-instructions.md"), "utf8");
     // Thin pointer: exactly one managed block, points to AGENTS.md, does NOT re-emit governance blocks.
     assert.equal((mirror.match(/ai-workspace:begin:/g) || []).length, 1);

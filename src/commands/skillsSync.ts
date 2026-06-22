@@ -1,6 +1,15 @@
 import { execSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { existsSync, readFileSync, readdirSync, writeFileSync, rmSync, mkdirSync, mkdtempSync, copyFileSync } from "node:fs";
+import {
+  existsSync,
+  readFileSync,
+  readdirSync,
+  writeFileSync,
+  rmSync,
+  mkdirSync,
+  mkdtempSync,
+  copyFileSync,
+} from "node:fs";
 import { resolve, join, dirname, basename } from "node:path";
 import { tmpdir } from "node:os";
 import pc from "picocolors";
@@ -75,7 +84,9 @@ function copyInto(srcFile: string, destFile: string): void {
 /** Highest semver tag of a remote repo (or null). */
 function latestTag(repoUrl: string): string | null {
   try {
-    const out = execSync(`git ls-remote --tags --refs "${repoUrl}"`, { stdio: ["ignore", "pipe", "ignore"] }).toString();
+    const out = execSync(`git ls-remote --tags --refs "${repoUrl}"`, {
+      stdio: ["ignore", "pipe", "ignore"],
+    }).toString();
     const tags = [...out.matchAll(/refs\/tags\/(v?\d+\.\d+\.\d+)\b/g)].map((m) => m[1]!);
     if (tags.length === 0) return null;
     return tags.sort((a, b) => {
@@ -130,7 +141,9 @@ function printDiff(label: string, d: TreeDiff): boolean {
     console.log(`  ${pc.dim(`${label}: up to date`)}`);
     return false;
   }
-  console.log(`  ${pc.bold(label)}: ${pc.green(`+${d.added.length}`)} ${pc.yellow(`~${d.changed.length}`)} ${pc.red(`-${d.removed.length}`)}`);
+  console.log(
+    `  ${pc.bold(label)}: ${pc.green(`+${d.added.length}`)} ${pc.yellow(`~${d.changed.length}`)} ${pc.red(`-${d.removed.length}`)}`,
+  );
   for (const f of d.added) console.log(`    ${pc.green("+")} ${f}`);
   for (const f of d.changed) console.log(`    ${pc.yellow("~")} ${f}`);
   for (const f of d.removed) console.log(`    ${pc.red("-")} ${f}`);
@@ -165,7 +178,11 @@ function listSources(root: string): VendorSource[] {
     if (!e.isDirectory()) continue;
     const jp = join(vroot, e.name, ".source.json");
     if (!existsSync(jp)) continue;
-    out.push({ name: e.name, dir: join(vroot, e.name), json: JSON.parse(readFileSync(jp, "utf8")) as SourceJson });
+    out.push({
+      name: e.name,
+      dir: join(vroot, e.name),
+      json: JSON.parse(readFileSync(jp, "utf8")) as SourceJson,
+    });
   }
   return out;
 }
@@ -185,8 +202,12 @@ function syncSource(s: VendorSource, opts: { ref?: string; apply?: boolean; sour
 
   const tmp = mkdtempSync(join(tmpdir(), "askills-sync-"));
   try {
-    execSync(`git clone --quiet --depth 1 --branch "${ref}" "${src.repo}" "${tmp}"`, { stdio: ["ignore", "ignore", "pipe"] });
-    const newSha = execSync("git rev-parse HEAD", { cwd: tmp, stdio: ["ignore", "pipe", "ignore"] }).toString().trim();
+    execSync(`git clone --quiet --depth 1 --branch "${ref}" "${src.repo}" "${tmp}"`, {
+      stdio: ["ignore", "ignore", "pipe"],
+    });
+    const newSha = execSync("git rev-parse HEAD", { cwd: tmp, stdio: ["ignore", "pipe", "ignore"] })
+      .toString()
+      .trim();
 
     let anyChange = false;
     for (const { from, to } of entries(src.vendored)) {
@@ -226,7 +247,11 @@ export function runSkillsSync(opts: { ref?: string; apply?: boolean; source?: st
   let sources = listSources(root);
   if (opts.source) sources = sources.filter((s) => s.name === opts.source);
   if (sources.length === 0) {
-    throw new Error(opts.source ? `No vendor/${opts.source}/.source.json found.` : "No vendored sources under vendor/*/.source.json.");
+    throw new Error(
+      opts.source
+        ? `No vendor/${opts.source}/.source.json found.`
+        : "No vendored sources under vendor/*/.source.json.",
+    );
   }
 
   let applied = false;
@@ -235,9 +260,15 @@ export function runSkillsSync(opts: { ref?: string; apply?: boolean; source?: st
   if (opts.apply && applied) {
     const packs = propagateToPacks(root);
     console.log(pc.green(`\n  Propagated the base into packs: ${packs.join(", ") || "(none)"}.`));
-    console.log(pc.dim("  Review `git diff`, run `npm run build && npm test`, bump TEMPLATES_VERSION if output changed, then commit.\n"));
+    console.log(
+      pc.dim(
+        "  Review `git diff`, run `npm run build && npm test`, bump TEMPLATES_VERSION if output changed, then commit.\n",
+      ),
+    );
   } else if (!opts.apply) {
-    console.log(pc.yellow("\n  Dry run. Re-run with --apply to update vendor/ + skill-packs/ and re-seal the pin.\n"));
+    console.log(
+      pc.yellow("\n  Dry run. Re-run with --apply to update vendor/ + skill-packs/ and re-seal the pin.\n"),
+    );
   } else {
     console.log(pc.green("\n  Already up to date — nothing to apply.\n"));
   }

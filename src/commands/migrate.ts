@@ -80,7 +80,11 @@ export function migrateBlockIds(cwd: string, config: Config): BlockIdMigration[]
 }
 
 function relPath(cwd: string, abs: string): string {
-  return abs.slice(cwd.length).replace(/^[/\\]+/, "").split("\\").join("/");
+  return abs
+    .slice(cwd.length)
+    .replace(/^[/\\]+/, "")
+    .split("\\")
+    .join("/");
 }
 
 /**

@@ -17,9 +17,7 @@ export function configExists(cwd: string): boolean {
 export function loadConfig(cwd: string): Config {
   const path = configPath(cwd);
   if (!existsSync(path)) {
-    throw new Error(
-      `No ${CONFIG_FILENAME} found in ${cwd}. Run \`ai-workspace init\` first.`,
-    );
+    throw new Error(`No ${CONFIG_FILENAME} found in ${cwd}. Run \`ai-workspace init\` first.`);
   }
   const raw = parse(readFileSync(path, "utf8")) ?? {};
   const parsed = ConfigSchema.safeParse(raw);

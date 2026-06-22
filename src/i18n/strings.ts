@@ -63,7 +63,8 @@ const en: Strings = {
     copilot: "Copilot repo-wide instructions (mirror of AGENTS.md).",
     vscodeMcp: "MCP servers for VS Code / Copilot.",
     codexConfig: "MCP servers for Codex (.codex/config.toml; AGENTS.md is its instructions).",
-    opencodeConfig: "MCP servers for OpenCode (.opencode/opencode.json; AGENTS.md + .claude/skills are read natively).",
+    opencodeConfig:
+      "MCP servers for OpenCode (.opencode/opencode.json; AGENTS.md + .claude/skills are read natively).",
     tsInstructions: "Path-scoped Copilot rules for TypeScript files.",
     editorconfig: "Editor formatting & encoding (UTF-8/LF).",
     gitattributes: "Git line-ending normalization.",
@@ -83,8 +84,19 @@ const en: Strings = {
       description:
         "Capture a new project's non-negotiable principles (test-first, simplicity, anti-abstraction, integration-first) in a constitution every later spec must honour. Use once, at the birth of a greenfield project — not for existing repos or per-feature work.",
       reads: ["the project's goals and constraints", "any existing house style or org conventions"],
-      produces: { file: "constitution.md", sections: ["Principles (numbered, each with a one-line rationale)", "Constraints", "Amendment rule (rationale + approval required)"] },
-      quality: ["Each principle is testable, not a platitude", "Numbered and stable (amendments are deliberate)", "No feature specifics — only durable rules"],
+      produces: {
+        file: "constitution.md",
+        sections: [
+          "Principles (numbered, each with a one-line rationale)",
+          "Constraints",
+          "Amendment rule (rationale + approval required)",
+        ],
+      },
+      quality: [
+        "Each principle is testable, not a platitude",
+        "Numbered and stable (amendments are deliberate)",
+        "No feature specifics — only durable rules",
+      ],
     },
     {
       name: "sdd-explore",
@@ -92,9 +104,26 @@ const en: Strings = {
       does: "Clarify the problem, survey the code, list open questions and options. Write findings to the change's `explore.md`.",
       description:
         "Investigate a feature or bug before committing to an approach: frame the problem, survey the relevant code, and lay out options with trade-offs. Use at the very start of a non-trivial change, when the problem or solution space is still unclear.",
-      reads: ["the request / issue", "the relevant modules and their tests", "related prior changes in the archive"],
-      produces: { file: "explore.md", sections: ["Problem (grounded in the code)", "Current reality", "Open questions", "Options with trade-offs", "Recommendation"] },
-      quality: ["Claims cite real files/symbols, not assumptions", "At least two options weighed", "Open questions are explicit, not glossed over"],
+      reads: [
+        "the request / issue",
+        "the relevant modules and their tests",
+        "related prior changes in the archive",
+      ],
+      produces: {
+        file: "explore.md",
+        sections: [
+          "Problem (grounded in the code)",
+          "Current reality",
+          "Open questions",
+          "Options with trade-offs",
+          "Recommendation",
+        ],
+      },
+      quality: [
+        "Claims cite real files/symbols, not assumptions",
+        "At least two options weighed",
+        "Open questions are explicit, not glossed over",
+      ],
     },
     {
       name: "sdd-propose",
@@ -103,8 +132,15 @@ const en: Strings = {
       description:
         "Turn an explored idea into a reviewable proposal: state the why, the scope (in and out), the approach, and the risks. Use once exploration converges and before writing the spec — it is the decision artifact a reviewer signs off.",
       reads: ["explore.md", "the constitution / AGENTS.md guard-rails"],
-      produces: { file: "proposal.md", sections: ["Why", "What (scope: in / out)", "Approach", "Decisions to confirm", "Risks"] },
-      quality: ["Scope boundaries are explicit (what it will NOT do)", "Any plausible-alternative decision is surfaced, not assumed", "Risks name a mitigation"],
+      produces: {
+        file: "proposal.md",
+        sections: ["Why", "What (scope: in / out)", "Approach", "Decisions to confirm", "Risks"],
+      },
+      quality: [
+        "Scope boundaries are explicit (what it will NOT do)",
+        "Any plausible-alternative decision is surfaced, not assumed",
+        "Risks name a mitigation",
+      ],
     },
     {
       name: "sdd-clarify",
@@ -113,8 +149,15 @@ const en: Strings = {
       description:
         "Surface and resolve ambiguity before the spec is written: ask targeted questions about underspecified behaviour, edge cases and decisions, and record the answers. Use between proposal and spec whenever the proposal leaves choices open.",
       reads: ["proposal.md", "explore.md", "any `[NEEDS CLARIFICATION]` markers"],
-      produces: { file: "clarify.md", sections: ["Questions (each with options + a recommendation)", "Decisions (the chosen answer + why)"] },
-      quality: ["Each question changes what the spec would say", "Decisions are concrete enough to remove the ambiguity", "No open `[NEEDS CLARIFICATION]` left for the spec"],
+      produces: {
+        file: "clarify.md",
+        sections: ["Questions (each with options + a recommendation)", "Decisions (the chosen answer + why)"],
+      },
+      quality: [
+        "Each question changes what the spec would say",
+        "Decisions are concrete enough to remove the ambiguity",
+        "No open `[NEEDS CLARIFICATION]` left for the spec",
+      ],
     },
     {
       name: "sdd-spec",
@@ -148,8 +191,22 @@ const en: Strings = {
       description:
         "Decide HOW the spec is met: the technical approach, the key architecture decisions and their trade-offs, with Mermaid diagrams where they clarify. Use after the spec is stable, before breaking work into tasks.",
       reads: ["spec.md", "the existing architecture (`ARCHITECTURE.md`) and affected modules"],
-      produces: { file: "design.md", sections: ["Approach", "Architecture decisions (option chosen + why)", "Diagrams (Mermaid, quoted labels)", "Data / contracts", "Trade-offs & complexity"] },
-      quality: ["Every spec requirement is covered by the design", "Decisions record the rejected alternatives", "Diagram labels with special chars are quoted", "No gold-plating beyond the spec"],
+      produces: {
+        file: "design.md",
+        sections: [
+          "Approach",
+          "Architecture decisions (option chosen + why)",
+          "Diagrams (Mermaid, quoted labels)",
+          "Data / contracts",
+          "Trade-offs & complexity",
+        ],
+      },
+      quality: [
+        "Every spec requirement is covered by the design",
+        "Decisions record the rejected alternatives",
+        "Diagram labels with special chars are quoted",
+        "No gold-plating beyond the spec",
+      ],
     },
     {
       name: "sdd-tasks",
@@ -158,8 +215,19 @@ const en: Strings = {
       description:
         "Break the spec and design into an ordered, checkable task list — small, verifiable steps that map back to requirements. Use once spec and design are agreed, to drive (and track) implementation.",
       reads: ["spec.md", "design.md"],
-      produces: { file: "tasks.md", sections: ["Ordered tasks (checkboxes)", "[P] markers for parallelizable work", "Each task traces to a requirement"] },
-      quality: ["Tasks are small and independently verifiable", "Order respects real dependencies", "Together they cover every requirement"],
+      produces: {
+        file: "tasks.md",
+        sections: [
+          "Ordered tasks (checkboxes)",
+          "[P] markers for parallelizable work",
+          "Each task traces to a requirement",
+        ],
+      },
+      quality: [
+        "Tasks are small and independently verifiable",
+        "Order respects real dependencies",
+        "Together they cover every requirement",
+      ],
     },
     {
       name: "sdd-apply",
@@ -168,8 +236,18 @@ const en: Strings = {
       description:
         "Implement the tasks in order, keeping the code aligned with the spec and design, checking each off as it lands. Use to execute an agreed plan — if reality diverges from the spec, stop and update the spec first.",
       reads: ["tasks.md", "spec.md", "design.md"],
-      produces: { file: "tasks.md (kept current)", sections: ["Tasks checked off as completed", "Notes on any deviation (with the spec updated to match)"] },
-      quality: ["Code matches the spec — divergence updates the spec, not silently the code", "Tests accompany behaviour", "Each task checked off only when actually done"],
+      produces: {
+        file: "tasks.md (kept current)",
+        sections: [
+          "Tasks checked off as completed",
+          "Notes on any deviation (with the spec updated to match)",
+        ],
+      },
+      quality: [
+        "Code matches the spec — divergence updates the spec, not silently the code",
+        "Tests accompany behaviour",
+        "Each task checked off only when actually done",
+      ],
     },
     {
       name: "sdd-verify",
@@ -178,8 +256,19 @@ const en: Strings = {
       description:
         "Validate the implementation against the spec: walk every requirement and acceptance scenario, run the checks, and report any gaps. Use after apply, before archiving — it is the evidence the change is actually done.",
       reads: ["spec.md (requirements + scenarios)", "the implemented code and its tests"],
-      produces: { file: "verify-report.md", sections: ["Per-requirement result (pass / fail / partial)", "Evidence (tests, output)", "Gaps and follow-ups"] },
-      quality: ["Every requirement and scenario is checked", "Failures are reported honestly with the evidence", "No requirement marked done without proof"],
+      produces: {
+        file: "verify-report.md",
+        sections: [
+          "Per-requirement result (pass / fail / partial)",
+          "Evidence (tests, output)",
+          "Gaps and follow-ups",
+        ],
+      },
+      quality: [
+        "Every requirement and scenario is checked",
+        "Failures are reported honestly with the evidence",
+        "No requirement marked done without proof",
+      ],
     },
     {
       name: "sdd-archive",
@@ -188,15 +277,26 @@ const en: Strings = {
       description:
         "Fold a verified change's delta into the stable specs and move its folder to the archive. Use only after verify passes: ADDED requirements are appended, MODIFIED replace, REMOVED delete; then the change is archived with its full history.",
       reads: ["verify-report.md (must pass)", "spec.md delta", "the target `specs/` baseline"],
-      produces: { file: "specs/ (updated) + archive/<date-name>/", sections: ["Apply delta: ADDED→append, MODIFIED→replace, REMOVED→delete", "Move the change folder to the archive (full context preserved)"] },
-      quality: ["Verify passed before archiving", "Delta merge rules applied exactly", "Stable specs remain internally consistent after merge"],
+      produces: {
+        file: "specs/ (updated) + archive/<date-name>/",
+        sections: [
+          "Apply delta: ADDED→append, MODIFIED→replace, REMOVED→delete",
+          "Move the change folder to the archive (full context preserved)",
+        ],
+      },
+      quality: [
+        "Verify passed before archiving",
+        "Delta merge rules applied exactly",
+        "Stable specs remain internally consistent after merge",
+      ],
     },
   ],
 };
 
 const es: Strings = {
   scopeHeader: "Gestionado por ai-workspace — edita workspace.config.yaml (scope:) y ejecuta sync.",
-  docSyncReminder: "Recordatorio: ejecuta /aiws-doc-sync para refrescar las docs vivas si cambió el estado del proyecto.",
+  docSyncReminder:
+    "Recordatorio: ejecuta /aiws-doc-sync para refrescar las docs vivas si cambió el estado del proyecto.",
   desc: {
     agents: "Fuente única de verdad para todos los agentes de IA.",
     claudeAdapter: "Adaptador de Claude Code (importa @AGENTS.md).",
@@ -205,7 +305,8 @@ const es: Strings = {
     copilot: "Instrucciones de Copilot para el repo (espejo de AGENTS.md).",
     vscodeMcp: "Servidores MCP para VS Code / Copilot.",
     codexConfig: "Servidores MCP para Codex (.codex/config.toml; AGENTS.md son sus instrucciones).",
-    opencodeConfig: "Servidores MCP para OpenCode (.opencode/opencode.json; AGENTS.md y .claude/skills se leen de forma nativa).",
+    opencodeConfig:
+      "Servidores MCP para OpenCode (.opencode/opencode.json; AGENTS.md y .claude/skills se leen de forma nativa).",
     tsInstructions: "Reglas de Copilot con ámbito para ficheros TypeScript.",
     editorconfig: "Formato y codificación del editor (UTF-8/LF).",
     gitattributes: "Normalización de fin de línea en Git.",
@@ -218,21 +319,61 @@ const es: Strings = {
     manifest: "Manifiesto de integridad de los artefactos base.",
   },
   phases: [
-    { name: "sdd-constitution", summary: "Establecer los principios del proyecto (arranque greenfield).", does: "Captura los principios y límites no-negociables del proyecto en el `constitution.md` del proyecto. Hazlo una sola vez al nacer el proyecto; las specs y diseños posteriores deben respetarlo. (Idea tomada de Spec-Kit; solo para proyectos nuevos.)" },
-    { name: "sdd-explore", summary: "Investigar antes de comprometerse a un cambio.", does: "Aclara el problema, revisa el código, lista preguntas abiertas y opciones. Escribe los hallazgos en el `explore.md` del cambio." },
-    { name: "sdd-propose", summary: "Crear una propuesta de cambio.", does: "Indica intención, alcance, enfoque y riesgos en el `proposal.md` del cambio." },
-    { name: "sdd-clarify", summary: "Resolver ambigüedades antes de escribir la spec.", does: "Haz preguntas concretas sobre las zonas poco definidas y registra las decisiones en el `clarify.md` del cambio, para que la spec resultante no tenga ambigüedades. (Idea tomada de Spec-Kit.)" },
-    { name: "sdd-spec", summary: "Escribir requisitos y escenarios (delta spec).", does: "Captura QUÉ debe cumplirse en el `spec.md` del cambio. Requisitos con escenarios de aceptación." },
-    { name: "sdd-design", summary: "Diseño técnico y decisiones de arquitectura.", does: "Captura el CÓMO en el `design.md` del cambio, con diagramas Mermaid cuando aporten." },
-    { name: "sdd-tasks", summary: "Desglosar el cambio en una checklist de tareas.", does: "Deriva una checklist ordenada desde spec + design en el `tasks.md` del cambio." },
-    { name: "sdd-apply", summary: "Implementar las tareas siguiendo spec y design.", does: "Implementa las tareas en orden, marcándolas en `tasks.md`. Mantén el código alineado con la spec." },
-    { name: "sdd-verify", summary: "Validar la implementación contra la spec.", does: "Comprueba cada requisito/escenario; reporta huecos en el `verify-report.md` del cambio." },
-    { name: "sdd-archive", summary: "Integrar el cambio en las specs principales y archivar.", does: "Funde la delta spec en las specs estables, y mueve la carpeta del cambio al archivo." },
+    {
+      name: "sdd-constitution",
+      summary: "Establecer los principios del proyecto (arranque greenfield).",
+      does: "Captura los principios y límites no-negociables del proyecto en el `constitution.md` del proyecto. Hazlo una sola vez al nacer el proyecto; las specs y diseños posteriores deben respetarlo. (Idea tomada de Spec-Kit; solo para proyectos nuevos.)",
+    },
+    {
+      name: "sdd-explore",
+      summary: "Investigar antes de comprometerse a un cambio.",
+      does: "Aclara el problema, revisa el código, lista preguntas abiertas y opciones. Escribe los hallazgos en el `explore.md` del cambio.",
+    },
+    {
+      name: "sdd-propose",
+      summary: "Crear una propuesta de cambio.",
+      does: "Indica intención, alcance, enfoque y riesgos en el `proposal.md` del cambio.",
+    },
+    {
+      name: "sdd-clarify",
+      summary: "Resolver ambigüedades antes de escribir la spec.",
+      does: "Haz preguntas concretas sobre las zonas poco definidas y registra las decisiones en el `clarify.md` del cambio, para que la spec resultante no tenga ambigüedades. (Idea tomada de Spec-Kit.)",
+    },
+    {
+      name: "sdd-spec",
+      summary: "Escribir requisitos y escenarios (delta spec).",
+      does: "Captura QUÉ debe cumplirse en el `spec.md` del cambio. Requisitos con escenarios de aceptación.",
+    },
+    {
+      name: "sdd-design",
+      summary: "Diseño técnico y decisiones de arquitectura.",
+      does: "Captura el CÓMO en el `design.md` del cambio, con diagramas Mermaid cuando aporten.",
+    },
+    {
+      name: "sdd-tasks",
+      summary: "Desglosar el cambio en una checklist de tareas.",
+      does: "Deriva una checklist ordenada desde spec + design en el `tasks.md` del cambio.",
+    },
+    {
+      name: "sdd-apply",
+      summary: "Implementar las tareas siguiendo spec y design.",
+      does: "Implementa las tareas en orden, marcándolas en `tasks.md`. Mantén el código alineado con la spec.",
+    },
+    {
+      name: "sdd-verify",
+      summary: "Validar la implementación contra la spec.",
+      does: "Comprueba cada requisito/escenario; reporta huecos en el `verify-report.md` del cambio.",
+    },
+    {
+      name: "sdd-archive",
+      summary: "Integrar el cambio en las specs principales y archivar.",
+      does: "Funde la delta spec en las specs estables, y mueve la carpeta del cambio al archivo.",
+    },
   ],
 };
 
 const TABLE: Record<Locale, Strings> = { es, en };
 
 export function strings(locale: string): Strings {
-  return TABLE[(locale as Locale)] ?? en;
+  return TABLE[locale as Locale] ?? en;
 }

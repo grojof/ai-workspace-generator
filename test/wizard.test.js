@@ -10,7 +10,14 @@ const DETECTED = {
   runtime: "node@20",
   notes: [],
 };
-const basics = (over = {}) => ({ name: "demo", language: "es", targets: ["claude", "copilot"], userType: "technical", experience: "standard", ...over });
+const basics = (over = {}) => ({
+  name: "demo",
+  language: "es",
+  targets: ["claude", "copilot"],
+  userType: "technical",
+  experience: "standard",
+  ...over,
+});
 
 test("simpleDefaults: a detected stack ⇒ existing mode, stack accepted, safetyGuard off; profile from basics", () => {
   const i = simpleDefaults(DETECTED, basics());
@@ -62,12 +69,24 @@ test("buildConfig(simpleDefaults) ⇒ valid Config with documented Simple defaul
 
 test("buildConfig: advanced-like input maps stack + company⇒reasons + context7 off ⇒ no mcp", () => {
   const inputs = {
-    name: "app", description: "x", language: "en",
-    mode: "new", purpose: "build", userType: "technical", experience: "advanced",
-    company: "example", targets: ["claude"],
-    langIds: ["go"], fwIds: [], envIds: ["wsl"],
-    sddEnabled: true, sddBackend: "files", sddMethodology: "sdd",
-    livingDocs: false, useContext7: false, safetyGuard: "block",
+    name: "app",
+    description: "x",
+    language: "en",
+    mode: "new",
+    purpose: "build",
+    userType: "technical",
+    experience: "advanced",
+    company: "example",
+    targets: ["claude"],
+    langIds: ["go"],
+    fwIds: [],
+    envIds: ["wsl"],
+    sddEnabled: true,
+    sddBackend: "files",
+    sddMethodology: "sdd",
+    livingDocs: false,
+    useContext7: false,
+    safetyGuard: "block",
   };
   const c = buildConfig(inputs, EMPTY);
   assert.equal(c.company.id, "example");

@@ -17,14 +17,10 @@ export function generateScope(cwd: string, config: Config): WriteResult[] {
   const block = ignoreBody(header, config.scope.ignore);
 
   if (config.targets.includes("claude")) {
-    results.push(
-      writeManaged(resolve(cwd, ".claudeignore"), "hash", [{ id: "ignore", content: block }]),
-    );
+    results.push(writeManaged(resolve(cwd, ".claudeignore"), "hash", [{ id: "ignore", content: block }]));
   }
   if (config.targets.includes("copilot")) {
-    results.push(
-      writeManaged(resolve(cwd, ".copilotignore"), "hash", [{ id: "ignore", content: block }]),
-    );
+    results.push(writeManaged(resolve(cwd, ".copilotignore"), "hash", [{ id: "ignore", content: block }]));
   }
 
   const gitignoreBlock = [`# ${header}`, ...config.scope.gitignoreManaged].join("\n");

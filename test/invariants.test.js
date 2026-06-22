@@ -2,8 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { fileURLToPath } from "node:url";
-import { dirname, join, resolve } from "node:path";
+import { join, resolve } from "node:path";
 import { ConfigSchema } from "../dist/config/schema.js";
 import { generate } from "../dist/generate/index.js";
 import { loadPacks, hasStackBinding } from "../dist/generate/stackPacks.js";
@@ -13,8 +12,6 @@ import { loadPacks, hasStackBinding } from "../dist/generate/stackPacks.js";
 // "binary skill assets ship byte-for-byte"). They are guard-rails: if a refactor
 // silently breaks one of these, CI goes red here — the contract is enforced, not
 // just documented. See docs/project/decisions/0002-extension-contracts.md.
-
-const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
 function tmpRepo() {
   return mkdtempSync(join(tmpdir(), "aiws-inv-"));
@@ -85,18 +82,41 @@ test("invariant · tech-selection block is greenfield-gated (new + empty stack o
   // Greenfield with no stack ⇒ present, immediately after skill-routing.
   const green = make({ project: { name: "g", mode: "new" } });
   assert.ok(green.includes("aiws:tech-selection"), "greenfield empty-stack should include tech-selection");
-  assert.equal(green[green.indexOf("aiws:skill-routing") + 1], "aiws:tech-selection", "tech-selection must follow skill-routing");
+  assert.equal(
+    green[green.indexOf("aiws:skill-routing") + 1],
+    "aiws:tech-selection",
+    "tech-selection must follow skill-routing",
+  );
   // Existing project ⇒ absent.
-  assert.ok(!make({ project: { name: "e", mode: "existing" } }).includes("aiws:tech-selection"), "existing repo must not get tech-selection");
+  assert.ok(
+    !make({ project: { name: "e", mode: "existing" } }).includes("aiws:tech-selection"),
+    "existing repo must not get tech-selection",
+  );
   // New project that already chose a stack ⇒ absent (no nagging).
-  const configured = make({ project: { name: "c", mode: "new" }, stack: { languages: [{ id: "typescript", version: "latest" }] } });
-  assert.ok(!configured.includes("aiws:tech-selection"), "a configured greenfield repo must not get tech-selection");
+  const configured = make({
+    project: { name: "c", mode: "new" },
+    stack: { languages: [{ id: "typescript", version: "latest" }] },
+  });
+  assert.ok(
+    !configured.includes("aiws:tech-selection"),
+    "a configured greenfield repo must not get tech-selection",
+  );
 });
 
 test("invariant · the Layer-0 core prefix is fixed and config-independent", () => {
   // Whatever the stack/company/features, the first eight blocks never move:
   // they are the governance spine every downstream repo relies on.
-  const prefix = ["aiws:header", "aiws:core", "aiws:profile", "aiws:versioning", "aiws:safety", "aiws:workflow", "aiws:harness-engineering", "aiws:routing", "aiws:skill-routing"];
+  const prefix = [
+    "aiws:header",
+    "aiws:core",
+    "aiws:profile",
+    "aiws:versioning",
+    "aiws:safety",
+    "aiws:workflow",
+    "aiws:harness-engineering",
+    "aiws:routing",
+    "aiws:skill-routing",
+  ];
   const configs = [
     { project: { name: "a" } },
     { project: { name: "b", purpose: "learn" } },
@@ -137,8 +157,17 @@ test("invariant · second generate is idempotent across representative configs",
   const matrix = [
     { project: { name: "min" } },
     { project: { name: "learn", purpose: "learn" } },
-    { project: { name: "ex", mode: "new" }, company: "example", sdd: { schema: "reasons" }, stack: { environments: [{ id: "odoo", version: "latest" }] } },
-    { project: { name: "ex2" }, company: "example", profile: { userType: "business", experience: "beginner" } },
+    {
+      project: { name: "ex", mode: "new" },
+      company: "example",
+      sdd: { schema: "reasons" },
+      stack: { environments: [{ id: "odoo", version: "latest" }] },
+    },
+    {
+      project: { name: "ex2" },
+      company: "example",
+      profile: { userType: "business", experience: "beginner" },
+    },
     { project: { name: "claude-only" }, targets: ["claude"] },
     { project: { name: "copilot-only" }, targets: ["copilot"] },
   ];
@@ -148,7 +177,11 @@ test("invariant · second generate is idempotent across representative configs",
       generate(cwd, ConfigSchema.parse(raw));
       const second = generate(cwd, ConfigSchema.parse(raw));
       const changed = second.artifacts.filter((a) => a.status !== "unchanged");
-      assert.equal(changed.length, 0, `${raw.project.name}: unexpected changes → ${changed.map((a) => `${a.path}:${a.status}`).join(", ")}`);
+      assert.equal(
+        changed.length,
+        0,
+        `${raw.project.name}: unexpected changes → ${changed.map((a) => `${a.path}:${a.status}`).join(", ")}`,
+      );
     } finally {
       rmSync(cwd, { recursive: true, force: true });
     }

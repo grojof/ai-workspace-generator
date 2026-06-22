@@ -34,21 +34,48 @@ test("unionStack merges + de-dupes every resolved repo's stack", () => {
     project: { name: "t" },
     stack: { languages: [{ id: "typescript", version: "latest" }] },
     repos: [
-      { path: "a", stack: { languages: [{ id: "python", version: "3" }], environments: [{ id: "odoo", version: "latest" }] } },
-      { path: "b", stack: { languages: [{ id: "python", version: "3" }], frameworks: [{ id: "react", version: "latest" }] } },
+      {
+        path: "a",
+        stack: {
+          languages: [{ id: "python", version: "3" }],
+          environments: [{ id: "odoo", version: "latest" }],
+        },
+      },
+      {
+        path: "b",
+        stack: {
+          languages: [{ id: "python", version: "3" }],
+          frameworks: [{ id: "react", version: "latest" }],
+        },
+      },
     ],
   });
   const u = unionStack(config).stack;
-  assert.deepEqual(u.languages.map((l) => l.id), ["python"]); // de-duped; root stack only used when repos[] empty
-  assert.deepEqual(u.frameworks.map((f) => f.id), ["react"]);
-  assert.deepEqual(u.environments.map((e) => e.id), ["odoo"]);
+  assert.deepEqual(
+    u.languages.map((l) => l.id),
+    ["python"],
+  ); // de-duped; root stack only used when repos[] empty
+  assert.deepEqual(
+    u.frameworks.map((f) => f.id),
+    ["react"],
+  );
+  assert.deepEqual(
+    u.environments.map((e) => e.id),
+    ["odoo"],
+  );
 });
 
 test("resolveRepos: empty repos[] is single-repo at '.'; populated lists children only", () => {
   const single = resolveRepos(ConfigSchema.parse({ project: { name: "t" } }));
-  assert.deepEqual(single.map((r) => r.path), ["."]);
+  assert.deepEqual(
+    single.map((r) => r.path),
+    ["."],
+  );
   const multi = resolveRepos(ConfigSchema.parse(MULTI));
-  assert.deepEqual(multi.map((r) => r.path), ["app-a", "app-b"]);
+  assert.deepEqual(
+    multi.map((r) => r.path),
+    ["app-a", "app-b"],
+  );
 });
 
 test("multi-repo: root is canonical, each child gets its adapter + stack packs", () => {
@@ -104,7 +131,13 @@ test("multi-repo (0005): each child gets a Copilot path-scoped applyTo instructi
     assert.match(a, /app-a/);
     assert.ok(readFileSync(resolve(multi, ".github/instructions/app-b.instructions.md"), "utf8"));
     // Single-repo: no per-repo instruction (only the TS one when typescript is present).
-    generate(single, ConfigSchema.parse({ project: { name: "t" }, stack: { languages: [{ id: "typescript", version: "latest" }] } }));
+    generate(
+      single,
+      ConfigSchema.parse({
+        project: { name: "t" },
+        stack: { languages: [{ id: "typescript", version: "latest" }] },
+      }),
+    );
     assert.ok(readFileSync(resolve(single, ".github/instructions/typescript.instructions.md"), "utf8"));
     assert.equal(existsSync(resolve(single, ".github/instructions/app-a.instructions.md")), false);
   } finally {

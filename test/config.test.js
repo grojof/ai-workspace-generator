@@ -30,7 +30,10 @@ test("multi-repo: repos[] is additive — a single-repo config validates and has
 
 test("multi-repo: resolveRepos normalizes single- and multi-repo to one shape", () => {
   // Single-repo → the workspace dir itself, inheriting the root stack.
-  const single = ConfigSchema.parse({ project: { name: "solo" }, stack: { languages: [{ id: "typescript", version: "latest" }] } });
+  const single = ConfigSchema.parse({
+    project: { name: "solo" },
+    stack: { languages: [{ id: "typescript", version: "latest" }] },
+  });
   const rs = resolveRepos(single);
   assert.equal(rs.length, 1);
   assert.equal(rs[0].path, ".");
@@ -41,10 +44,7 @@ test("multi-repo: resolveRepos normalizes single- and multi-repo to one shape", 
   const multi = ConfigSchema.parse({
     project: { name: "ws" },
     stack: { languages: [{ id: "typescript", version: "latest" }] },
-    repos: [
-      { path: "./api", stack: { languages: [{ id: "go", version: "latest" }] } },
-      { path: "./web" },
-    ],
+    repos: [{ path: "./api", stack: { languages: [{ id: "go", version: "latest" }] } }, { path: "./web" }],
   });
   const rm = resolveRepos(multi);
   assert.equal(rm.length, 2);

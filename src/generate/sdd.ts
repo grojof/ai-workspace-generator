@@ -44,12 +44,14 @@ function commandFile(p: Phase, config: Config): string {
     backend === "hybrid"
       ? "> If engram is available, also persist a summary to cross-session memory; the in-repo files remain canonical."
       : "",
-  ].filter((l) => l !== "").join("\n");
+  ]
+    .filter((l) => l !== "")
+    .join("\n");
 }
 
 // Copilot has no skill to launch, so the prompt stays SUBSTANTIVE — but derived from the same Phase data
 // (purpose + produce template + quality), not a thin near-duplicate of the command.
-function copilotPrompt(p: Phase, config: Config): string {
+function copilotPrompt(p: Phase): string {
   const lines = ["---", "mode: agent", `description: ${p.summary}`, "---", "", p.description ?? p.does, ""];
   if (p.produces) {
     lines.push(`## Produce — \`${p.produces.file}\``, ...p.produces.sections.map((s) => `- ${s}`), "");
@@ -173,7 +175,7 @@ export function generateSdd(cwd: string, config: Config): WriteResult[] {
   }
   if (config.targets.includes("copilot")) {
     for (const p of phases) {
-      results.push(writeFile(resolve(cwd, `.github/prompts/${aiwsId(p.name)}.prompt.md`), copilotPrompt(p, config)));
+      results.push(writeFile(resolve(cwd, `.github/prompts/${aiwsId(p.name)}.prompt.md`), copilotPrompt(p)));
     }
   }
 

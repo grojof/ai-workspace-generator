@@ -7,9 +7,14 @@ export function runList(cwd: string): void {
   const config = configExists(cwd) ? loadConfig(cwd) : null;
 
   if (config) {
-    console.log(pc.bold(`\n${config.project.name}`) + pc.dim(`  (${config.project.mode}, ${config.language}, targets: ${config.targets.join("+")})`));
+    console.log(
+      pc.bold(`\n${config.project.name}`) +
+        pc.dim(`  (${config.project.mode}, ${config.language}, targets: ${config.targets.join("+")})`),
+    );
   } else {
-    console.log(pc.dim("\nNo workspace.config.yaml yet — showing the available catalog. Run `ai-workspace init`."));
+    console.log(
+      pc.dim("\nNo workspace.config.yaml yet — showing the available catalog. Run `ai-workspace init`."),
+    );
   }
 
   const enabledLang = new Set(config?.stack.languages.map((l) => l.id));

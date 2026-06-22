@@ -17,7 +17,8 @@ function tmpRepo() {
   return mkdtempSync(join(tmpdir(), "aiws-cp-"));
 }
 
-const git = (cwd, ...args) => execFileSync("git", ["-C", cwd, ...args], { stdio: ["ignore", "ignore", "ignore"] });
+const git = (cwd, ...args) =>
+  execFileSync("git", ["-C", cwd, ...args], { stdio: ["ignore", "ignore", "ignore"] });
 
 /** Build a local git repo that holds a company pack at tag `v1`, and return its path + the pack id. */
 function makeCompanyPackRepo(id = "corp-acme-greeting") {
@@ -27,7 +28,10 @@ function makeCompanyPackRepo(id = "corp-acme-greeting") {
   git(repo, "config", "user.name", "Test");
   const dir = join(repo, "skill-packs", id);
   mkdirSync(dir, { recursive: true });
-  writeFileSync(join(dir, "pack.yaml"), `id: ${id}\nprofile:\n  userType: [technical]\nloadMode: on-demand\nrelation: new\ntrigger:\n  en: company greeting policy\n  es: politica de saludo\n`);
+  writeFileSync(
+    join(dir, "pack.yaml"),
+    `id: ${id}\nprofile:\n  userType: [technical]\nloadMode: on-demand\nrelation: new\ntrigger:\n  en: company greeting policy\n  es: politica de saludo\n`,
+  );
   writeFileSync(join(dir, "SKILL.md"), `---\nname: ${id}\n---\n\n## ${id}\n\nCompany greeting rules.\n`);
   git(repo, "add", "-A");
   git(repo, "commit", "-q", "-m", "pack");
@@ -42,9 +46,15 @@ test("company packs · parsePackSource requires a pinned ref", () => {
 });
 
 test("company config · a bare string normalises to { id, packs: [] }", () => {
-  assert.deepEqual(ConfigSchema.parse({ project: { name: "t" }, company: "example" }).company, { id: "example", packs: [] });
+  assert.deepEqual(ConfigSchema.parse({ project: { name: "t" }, company: "example" }).company, {
+    id: "example",
+    packs: [],
+  });
   assert.equal(ConfigSchema.parse({ project: { name: "t" } }).company.id, "none");
-  const obj = ConfigSchema.parse({ project: { name: "t" }, company: { id: "corp-acme", packs: ["git+u#v1"] } }).company;
+  const obj = ConfigSchema.parse({
+    project: { name: "t" },
+    company: { id: "corp-acme", packs: ["git+u#v1"] },
+  }).company;
   assert.deepEqual(obj, { id: "corp-acme", packs: ["git+u#v1"] });
 });
 
@@ -52,7 +62,10 @@ test("company packs · packs sync vendors a git pack (pinned); generate emits it
   const { repo, id } = makeCompanyPackRepo();
   const cwd = tmpRepo();
   try {
-    const config = ConfigSchema.parse({ project: { name: "t" }, company: { id: "corp-acme", packs: [`git+${repo}#v1`] } });
+    const config = ConfigSchema.parse({
+      project: { name: "t" },
+      company: { id: "corp-acme", packs: [`git+${repo}#v1`] },
+    });
     saveConfig(cwd, config);
     runPacksSync(cwd);
     // Vendored + pinned in the lock.

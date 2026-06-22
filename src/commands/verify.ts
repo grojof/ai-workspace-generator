@@ -24,12 +24,20 @@ function checkEntry(cwd: string, entry: ManifestEntry): VerifyFinding[] {
   const out: VerifyFinding[] = [];
   const abs = resolve(cwd, entry.path);
   if (!existsSync(abs)) {
-    out.push({ level: "error", path: entry.path, message: "deleted (base artifact is missing — run `ai-workspace sync`)" });
+    out.push({
+      level: "error",
+      path: entry.path,
+      message: "deleted (base artifact is missing — run `ai-workspace sync`)",
+    });
     return out;
   }
   const now = fingerprint(cwd, entry.path);
   if (!now) {
-    out.push({ level: "error", path: entry.path, message: "no longer a recognizable base artifact (managed markers removed?)" });
+    out.push({
+      level: "error",
+      path: entry.path,
+      message: "no longer a recognizable base artifact (managed markers removed?)",
+    });
     return out;
   }
   if (entry.kind === "managed") {
@@ -37,8 +45,18 @@ function checkEntry(cwd: string, entry: ManifestEntry): VerifyFinding[] {
     const after = now.blocks ?? [];
     const missing = before.filter((b) => !after.includes(b));
     const added = after.filter((b) => !before.includes(b));
-    if (missing.length) out.push({ level: "error", path: entry.path, message: `managed block(s) removed/renamed: ${missing.join(", ")}` });
-    if (added.length) out.push({ level: "error", path: entry.path, message: `unexpected managed block(s): ${added.join(", ")}` });
+    if (missing.length)
+      out.push({
+        level: "error",
+        path: entry.path,
+        message: `managed block(s) removed/renamed: ${missing.join(", ")}`,
+      });
+    if (added.length)
+      out.push({
+        level: "error",
+        path: entry.path,
+        message: `unexpected managed block(s): ${added.join(", ")}`,
+      });
     if (!missing.length && !added.length && before.join("|") !== after.join("|")) {
       out.push({ level: "error", path: entry.path, message: "managed block order changed" });
     }
@@ -48,7 +66,11 @@ function checkEntry(cwd: string, entry: ManifestEntry): VerifyFinding[] {
     out.push({ level: "error", path: entry.path, message: what });
   }
   if (entry.source !== `${AIWS}@${TEMPLATES_VERSION}`) {
-    out.push({ level: "warn", path: entry.path, message: `built by ${entry.source}, current is ${AIWS}@${TEMPLATES_VERSION} — run \`ai-workspace upgrade\`` });
+    out.push({
+      level: "warn",
+      path: entry.path,
+      message: `built by ${entry.source}, current is ${AIWS}@${TEMPLATES_VERSION} — run \`ai-workspace upgrade\``,
+    });
   }
   return out;
 }
@@ -63,7 +85,12 @@ export function verify(cwd: string): VerifyResult {
   try {
     manifest = JSON.parse(readFileSync(manifestPath, "utf8")) as Manifest;
   } catch {
-    return { ok: false, findings: [{ level: "error", path: MANIFEST_PATH, message: "manifest is not valid JSON (tampered or corrupt)" }] };
+    return {
+      ok: false,
+      findings: [
+        { level: "error", path: MANIFEST_PATH, message: "manifest is not valid JSON (tampered or corrupt)" },
+      ],
+    };
   }
   const findings: VerifyFinding[] = [];
   for (const entry of manifest.entries) findings.push(...checkEntry(cwd, entry));

@@ -66,7 +66,10 @@ export interface GenerateResult {
  * resolves imports relative to the importing file).
  */
 export function agentsImportPath(repoPath: string): string {
-  const norm = repoPath.replace(/\\/g, "/").replace(/^\.?\/+/, "").replace(/\/+$/, "");
+  const norm = repoPath
+    .replace(/\\/g, "/")
+    .replace(/^\.?\/+/, "")
+    .replace(/\/+$/, "");
   if (!norm || norm === ".") return "AGENTS.md";
   const depth = norm.split("/").length;
   return `${"../".repeat(depth)}AGENTS.md`;
@@ -74,16 +77,24 @@ export function agentsImportPath(repoPath: string): string {
 
 /** kebab-case slug for a repo path, used as the Copilot per-repo instruction filename. */
 function repoSlug(repoPath: string): string {
-  return repoPath.replace(/\\/g, "/").replace(/^\.?\/+/, "").replace(/\/+$/, "").replace(/[^\w.-]+/g, "-").toLowerCase() || "repo";
+  return (
+    repoPath
+      .replace(/\\/g, "/")
+      .replace(/^\.?\/+/, "")
+      .replace(/\/+$/, "")
+      .replace(/[^\w.-]+/g, "-")
+      .toLowerCase() || "repo"
+  );
 }
 
 /** A Copilot path-scoped instruction (`applyTo` glob) for one child repo — Copilot's native per-path hook. */
 function repoInstruction(repo: ResolvedRepo, es: boolean): string {
-  const stack = [
-    ...repo.stack.languages.map((l) => l.id),
-    ...repo.stack.frameworks.map((f) => f.id),
-    ...repo.stack.environments.map((e) => e.id),
-  ].join(", ") || (es ? "(sin stack específico)" : "(no specific stack)");
+  const stack =
+    [
+      ...repo.stack.languages.map((l) => l.id),
+      ...repo.stack.frameworks.map((f) => f.id),
+      ...repo.stack.environments.map((e) => e.id),
+    ].join(", ") || (es ? "(sin stack específico)" : "(no specific stack)");
   const body = es
     ? [
         `Estás trabajando en el repo **${repo.name}** (\`${repo.path}/\`) de este workspace multi-repo.`,
@@ -119,7 +130,13 @@ export function generate(cwd: string, config: Config): GenerateResult {
     if (repo.path !== "." && config.targets.includes("claude")) {
       add(
         writeManaged(resolve(repoDir, "CLAUDE.md"), "html", [
-          { id: aiwsBlockId("claude"), content: renderTemplate("targets/claude/CLAUDE.md.eta", { ...repoConfig, agentsImport: agentsImportPath(repo.path) }) },
+          {
+            id: aiwsBlockId("claude"),
+            content: renderTemplate("targets/claude/CLAUDE.md.eta", {
+              ...repoConfig,
+              agentsImport: agentsImportPath(repo.path),
+            }),
+          },
         ]),
         t.desc.claudeAdapter,
       );
@@ -128,12 +145,19 @@ export function generate(cwd: string, config: Config): GenerateResult {
   }
 
   // Onboarding — rendered last so it can list every artifact across all repos.
-  const onboarding = renderTemplate("shared/ai-workspace.md.eta", { ...config, paths: docsPaths(config), artifacts });
+  const onboarding = renderTemplate("shared/ai-workspace.md.eta", {
+    ...config,
+    paths: docsPaths(config),
+    artifacts,
+  });
   add(writeFile(resolve(cwd, "AI-WORKSPACE.md"), onboarding), t.desc.onboarding);
 
   // Integrity manifest — the LAST step: fingerprints every base-owned artifact now on disk (ADR 0003 Part E).
   // Skipped in dry-run. Listed in `artifacts` after this point only if written.
-  const manifest = writeManifest(cwd, artifacts.map((a) => a.path));
+  const manifest = writeManifest(
+    cwd,
+    artifacts.map((a) => a.path),
+  );
   if (manifest) add(manifest, t.desc.manifest);
 
   return { artifacts };
@@ -195,7 +219,10 @@ function generateWorkspace(cwd: string, config: Config, add: (r: WriteResult, de
             "Apply the TypeScript rules from AGENTS.md (Layer 1). Strict mode, no implicit any,",
             "named exports, validate external data with a schema at the boundary.",
           ].join("\n");
-      add(writeFile(resolve(cwd, ".github/instructions/typescript.instructions.md"), tsInstr), t.desc.tsInstructions);
+      add(
+        writeFile(resolve(cwd, ".github/instructions/typescript.instructions.md"), tsInstr),
+        t.desc.tsInstructions,
+      );
     }
 
     // Per-repo Copilot guidance: Copilot has no nested discovery, so each child repo gets a path-scoped
@@ -203,7 +230,10 @@ function generateWorkspace(cwd: string, config: Config, add: (r: WriteResult, de
     for (const repo of resolveRepos(config)) {
       if (repo.path === ".") continue;
       add(
-        writeFile(resolve(cwd, ".github/instructions", `${repoSlug(repo.path)}.instructions.md`), repoInstruction(repo, es)),
+        writeFile(
+          resolve(cwd, ".github/instructions", `${repoSlug(repo.path)}.instructions.md`),
+          repoInstruction(repo, es),
+        ),
         t.desc.tsInstructions,
       );
     }
@@ -217,11 +247,17 @@ function generateWorkspace(cwd: string, config: Config, add: (r: WriteResult, de
   // 3c. OpenCode adapter — AGENTS.md is read natively (so are skills from .claude/skills/). Only MCP needs a
   // tool-native file; it deep-merges with the user's own config. Skip it when no MCP is configured.
   if (config.targets.includes("opencode") && config.mcp.length) {
-    add(writeFile(resolve(cwd, ".opencode/opencode.json"), buildOpencodeMcp(config.mcp)), t.desc.opencodeConfig);
+    add(
+      writeFile(resolve(cwd, ".opencode/opencode.json"), buildOpencodeMcp(config.mcp)),
+      t.desc.opencodeConfig,
+    );
   }
 
   // 4. Shared format/encoding files.
-  add(writeIfMissing(resolve(cwd, ".editorconfig"), renderTemplate("shared/editorconfig.eta", { ...config })), t.desc.editorconfig);
+  add(
+    writeIfMissing(resolve(cwd, ".editorconfig"), renderTemplate("shared/editorconfig.eta", { ...config })),
+    t.desc.editorconfig,
+  );
   add(
     writeManaged(resolve(cwd, ".gitattributes"), "hash", [
       {
@@ -246,11 +282,15 @@ function generateWorkspace(cwd: string, config: Config, add: (r: WriteResult, de
 
   // 7. Living docs + docs/ structure index.
   for (const r of generateLivingDocs(cwd, config)) add(r, t.desc.livingDocs);
-  const docsIndexDesc = es ? "Índice de docs/: explica la estructura de la documentación." : "docs/ index: explains the documentation layout.";
+  const docsIndexDesc = es
+    ? "Índice de docs/: explica la estructura de la documentación."
+    : "docs/ index: explains the documentation layout.";
   for (const r of generateDocsIndex(cwd, config)) add(r, docsIndexDesc);
 
   // 7b. Governance: version/security/commit policy enforcement.
-  const govDesc = es ? "Gobernanza: versiones, seguridad, commits." : "Governance: versions, security, commits.";
+  const govDesc = es
+    ? "Gobernanza: versiones, seguridad, commits."
+    : "Governance: versions, security, commits.";
   for (const r of generateGovernance(cwd, config)) add(r, govDesc);
 
   // 8. Learner guides + VS Code setup + learning mode (tutor).
@@ -267,7 +307,12 @@ function buildVscodeMcpFile(cwd: string, config: Config): WriteResult {
 function generateClaudeSettings(cwd: string, config: Config): WriteResult {
   const path = resolve(cwd, ".claude/settings.json");
   const hookCmd = `echo "${strings(config.language).docSyncReminder}"`;
-  let settings: any = { permissions: { allow: [], deny: [] } };
+  type ClaudeSettings = {
+    permissions?: { allow?: string[]; deny?: string[] };
+    hooks?: Record<string, unknown>;
+    [key: string]: unknown;
+  };
+  let settings: ClaudeSettings = { permissions: { allow: [], deny: [] } };
   if (existsSync(path)) {
     try {
       settings = JSON.parse(readFileSync(path, "utf8"));

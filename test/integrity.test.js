@@ -32,13 +32,18 @@ test("integrity · generate writes a committed manifest; a fresh repo verifies c
     assert.ok(existsSync(mPath), "manifest written");
     const m = JSON.parse(readFileSync(mPath, "utf8"));
     assert.equal(m.version, 1);
-    assert.ok(m.entries.some((e) => e.path === "AGENTS.md" && e.kind === "managed" && e.blocks.includes("aiws:core")));
+    assert.ok(
+      m.entries.some((e) => e.path === "AGENTS.md" && e.kind === "managed" && e.blocks.includes("aiws:core")),
+    );
     assert.ok(m.entries.some((e) => e.path.startsWith(".claude/skills/aiws-") && e.kind === "file"));
     // The manifest never lists itself.
     assert.ok(!m.entries.some((e) => e.path.includes("manifest.json")));
 
     const { artifacts } = generate(cwd, CONFIG); // second run
-    assert.equal(artifacts.filter((a) => a.path === ".ai-workspace/manifest.json" && a.status !== "unchanged").length, 0);
+    assert.equal(
+      artifacts.filter((a) => a.path === ".ai-workspace/manifest.json" && a.status !== "unchanged").length,
+      0,
+    );
     assert.equal(verify(cwd).ok, true);
   } finally {
     rmSync(cwd, { recursive: true, force: true });
@@ -52,7 +57,10 @@ test("integrity · editing a MANAGED region (inside aiws: markers) is flagged as
     const txt = readFileSync(p, "utf8").replace("Conventional Commits", "TAMPERED Commits");
     writeFileSync(p, txt);
     const e = errs(cwd);
-    assert.ok(e.some((f) => f.path === "AGENTS.md" && /in-band/.test(f.message)), `expected in-band drift, got ${JSON.stringify(e)}`);
+    assert.ok(
+      e.some((f) => f.path === "AGENTS.md" && /in-band/.test(f.message)),
+      `expected in-band drift, got ${JSON.stringify(e)}`,
+    );
   } finally {
     rmSync(cwd, { recursive: true, force: true });
   }
@@ -89,10 +97,16 @@ test("integrity · editing an owned skill file, and deleting a base artifact, ar
   try {
     const skill = resolve(cwd, ".claude/skills/aiws-secure-commit/SKILL.md");
     writeFileSync(skill, readFileSync(skill, "utf8") + "\nTAMPER\n");
-    assert.ok(errs(cwd).some((f) => f.path.endsWith("aiws-secure-commit/SKILL.md") && /file content edited/.test(f.message)));
+    assert.ok(
+      errs(cwd).some(
+        (f) => f.path.endsWith("aiws-secure-commit/SKILL.md") && /file content edited/.test(f.message),
+      ),
+    );
 
     rmSync(skill, { force: true });
-    assert.ok(errs(cwd).some((f) => f.path.endsWith("aiws-secure-commit/SKILL.md") && /deleted/.test(f.message)));
+    assert.ok(
+      errs(cwd).some((f) => f.path.endsWith("aiws-secure-commit/SKILL.md") && /deleted/.test(f.message)),
+    );
   } finally {
     rmSync(cwd, { recursive: true, force: true });
   }

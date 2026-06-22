@@ -1,6 +1,6 @@
 import { resolve } from "node:path";
 import type { Config } from "../config/schema.js";
-import { writeFile, writeIfMissing, type WriteResult } from "../render/writer.js";
+import { writeFile, type WriteResult } from "../render/writer.js";
 import { docsPaths } from "./paths.js";
 import { skillFrontmatter as frontmatter } from "./naming.js";
 
@@ -95,17 +95,25 @@ function commitMsgHook(config: Config): string {
 # Managed by ai-workspace. Activate once: git config core.hooksPath .githooks
 msg_file="$1"
 subject="$(head -n1 "$msg_file")"
-${blockCoAuthor ? `if grep -qiE '^Co-Authored-By:' "$msg_file"; then
+${
+  blockCoAuthor
+    ? `if grep -qiE '^Co-Authored-By:' "$msg_file"; then
   echo "x Commit policy: Co-Authored-By / AI attribution trailers are not allowed." >&2
   exit 1
-fi` : "# co-author check disabled"}
-${conventional ? `case "$subject" in
+fi`
+    : "# co-author check disabled"
+}
+${
+  conventional
+    ? `case "$subject" in
   feat:*|fix:*|refactor:*|docs:*|test:*|chore:*|build:*|ci:*|perf:*|style:*|revert:*|feat\\(*|fix\\(*|refactor\\(*|docs\\(*|test\\(*|chore\\(*|build\\(*|ci\\(*|perf\\(*|style\\(*|revert\\(*) ;;
   Merge*|Revert*) ;;
   *)
     echo "x Commit policy: use Conventional Commits (e.g. 'feat: ...'). Got: $subject" >&2
     exit 1 ;;
-esac` : "# conventional check disabled"}
+esac`
+    : "# conventional check disabled"
+}
 exit 0
 `;
 }
@@ -113,9 +121,10 @@ exit 0
 export function generateGovernance(cwd: string, config: Config): WriteResult[] {
   const results: WriteResult[] = [];
   const p = docsPaths(config);
-  const depUpgradeBody = DEP_UPGRADE
-    .replaceAll("openspec/changes", p.changes)
-    .replaceAll("docs/ai/", `${p.status}/`);
+  const depUpgradeBody = DEP_UPGRADE.replaceAll("openspec/changes", p.changes).replaceAll(
+    "docs/ai/",
+    `${p.status}/`,
+  );
 
   if (config.targets.includes("claude")) {
     results.push(
@@ -141,8 +150,18 @@ export function generateGovernance(cwd: string, config: Config): WriteResult[] {
   }
 
   if (config.targets.includes("copilot")) {
-    results.push(writeFile(resolve(cwd, ".github/prompts/aiws-commit.prompt.md"), commandPrompt(commitCommand(config).split("---\n").pop() ?? "")));
-    results.push(writeFile(resolve(cwd, ".github/prompts/aiws-upgrade-deps.prompt.md"), commandPrompt(upgradeDepsCommand().split("---\n").pop() ?? "")));
+    results.push(
+      writeFile(
+        resolve(cwd, ".github/prompts/aiws-commit.prompt.md"),
+        commandPrompt(commitCommand(config).split("---\n").pop() ?? ""),
+      ),
+    );
+    results.push(
+      writeFile(
+        resolve(cwd, ".github/prompts/aiws-upgrade-deps.prompt.md"),
+        commandPrompt(upgradeDepsCommand().split("---\n").pop() ?? ""),
+      ),
+    );
   }
 
   if (config.workflow.commits.gitHook) {

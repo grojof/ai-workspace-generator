@@ -25,9 +25,7 @@ export function runUpgrade(cwd: string, options: UpgradeOptions = {}): void {
   const config = loadConfig(cwd);
   const from = config.templatesVersion;
 
-  console.log(
-    pc.bold(`\nUpgrade — templates ${pc.cyan(from)} → ${pc.cyan(TEMPLATES_VERSION)}\n`),
-  );
+  console.log(pc.bold(`\nUpgrade — templates ${pc.cyan(from)} → ${pc.cyan(TEMPLATES_VERSION)}\n`));
 
   // One-shot namespace migration (ADR 0003 F1b): rewrite legacy bare spine markers to `aiws:*` BEFORE
   // rendering, so generate updates the existing regions in place instead of appending duplicates next to
@@ -36,7 +34,8 @@ export function runUpgrade(cwd: string, options: UpgradeOptions = {}): void {
     const migrated = migrateBlockIds(cwd, config);
     if (migrated.length) {
       console.log(pc.dim("  Namespaced legacy managed blocks:"));
-      for (const m of migrated) console.log(pc.dim(`    ${m.file} (${m.count} marker${m.count === 1 ? "" : "s"})`));
+      for (const m of migrated)
+        console.log(pc.dim(`    ${m.file} (${m.count} marker${m.count === 1 ? "" : "s"})`));
       console.log();
     }
   }
@@ -76,7 +75,10 @@ export function runUpgrade(cwd: string, options: UpgradeOptions = {}): void {
 
   // Prune skill folders / command + prompt files orphaned by the `aiws-` rename (F1a), guarded by the
   // freshly-written artifact set so nothing the generator still emits is ever removed.
-  const removed = pruneRenamedOrphans(cwd, artifacts.map((a) => a.path));
+  const removed = pruneRenamedOrphans(
+    cwd,
+    artifacts.map((a) => a.path),
+  );
   if (removed.length) {
     console.log(pc.dim(`\n  Removed ${removed.length} renamed orphan(s):`));
     for (const r of removed) console.log(pc.dim(`    ${r}`));
