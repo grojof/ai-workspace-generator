@@ -10,9 +10,16 @@
 - [x] Dogfood synced; `doctor`/`verify` green; AGENTS.md 5903 → **5645** tokens; documented in `ARCHITECTURE.md`.
 
 ## 0017b — Task detail de-duplicated against skills
-- [ ] `sdd` block → lifecycle diagram + short orchestrator + pointer to `aiws-sdd-*` skills / `references/sdd.md`.
-- [ ] `harness-engineering`, `living-docs` → 2-line stance + pointer; detail to `references/`.
+> Revised by [research.md](research.md): Agent Skills is now a **cross-tool open standard** (Claude/Codex/
+> Copilot/Cursor/opencode all read `SKILL.md`), so the skills carry task detail for **every** target — no
+> separate plain-markdown reference needed. Lower risk than the original proposal.
+- [ ] `sdd` block → lifecycle diagram + short orchestrator + pointer to the `aiws-sdd-*` **skills** (cross-tool).
+- [ ] `harness-engineering`, `living-docs` → 2-line stance + pointer to the skill.
+- [ ] Deep detail (if any) → the **skill's own `references/`** dir (Agent Skills spec), not repo-root.
+- [ ] **Prune, don't just move:** drop lines that merely restate what a linter/CI or the skill already enforces.
+- [ ] Align generated skills to the Agent Skills spec (name = dir, lowercase-hyphen; description ≤ 1024, what+when).
 - [ ] Tests + byte fixtures; `TEMPLATES_VERSION` bump.
+- [ ] Reconsider `skill-routing` (skills self-advertise via `description` cross-tool now) — slim or keep (clarify).
 
 ## Verify & archive
 - [ ] `/aiws-audit` + verify against the spec; living docs; then archive 0017.
