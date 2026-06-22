@@ -319,7 +319,7 @@ flowchart LR
 **Commands** (Claude: `/aiws-sdd-*`; Copilot: prompt files in `.github/prompts/`)
 - `/aiws-sdd-constitution` — define the project's principles (once).
 - `/aiws-sdd-explore <topic>` — investigate before committing.
-- `/aiws-sdd-propose` → `/aiws-sdd-clarify` → `/aiws-sdd-spec` + `/aiws-sdd-design` → `/aiws-sdd-tasks` → `/aiws-sdd-apply` → `/aiws-sdd-verify` → `/aiws-sdd-archive`.
+- `/aiws-sdd-propose` → `/aiws-sdd-clarify` → `/aiws-sdd-spec` + `/aiws-sdd-design` → `/aiws-sdd-tasks` → `/aiws-sdd-apply` → `/aiws-sdd-verify` → `/aiws-sdd-archive`. Each phase's **`aiws-sdd-*` skill** carries its inputs, output template and quality bar — loaded on demand (cross-tool Agent Skills).
 
 **Artifacts** live in `docs/development/changes/<change-name>/` and are **versioned in git** (reviewable in PRs, readable by any AI tool). The store follows OpenSpec's *layout* (specs + changes + archive) as a convention — it is **not** the OpenSpec CLI.
 
@@ -328,10 +328,7 @@ flowchart LR
 - `clarify` resolves ambiguity *before* the spec is finalized. Specs are the source of truth for *what*;
   design for *how*; tasks track progress.
 - New specs and designs must honor `docs/development/constitution.md`.
-- **Schema: REASONS Canvas** (enterprise mode). Specs use the closed 8-section schema + frontmatter. Pick the app profile (A/B) first with the **sdd-onboarding** skill. Load the **sdd-spec-schema** skill when authoring/validating; full schema, examples and the controls catalogue load on demand.
-- **Builder workflow (author side).** Go idea → app with the on-demand skills: **sdd-init** (scaffold) → **sdd-spec-capture** (interview → spec) → **sdd-spec-review** (sign-off → `user-reviewed`) → **sdd-code-generation** → **sdd-test-generation** → **sdd-self-review** → **sdd-handoff**; **sdd-code-maintenance** propagates later spec edits. **sdd-reverse-engineering** recovers a spec from code that lacks one.
-- **Spec lifecycle (`status`).** REASONS specs carry a `status`: `draft → user-reviewed → it-approved → implemented → retired`. **sdd-spec-review** drives the transitions — owner sign-off promotes `draft → user-reviewed` (code/tests generate from there); all four **sdd-audit-\*** green is the gate for `it-approved`.
-- **Audits (reviewer side).** Before approving a spec, run the **sdd-audit-security / -style / -stack / -architecture** skills against the control catalogue (loaded on demand). All green is the precondition for sign-off.
+- **REASONS mode (enterprise).** Specs use the closed 8-section **REASONS Canvas** schema. The **`aiws-sdd-*`** skills carry the schema + controls catalogue, the builder workflow (init → spec-capture → review → code/test → handoff), the `status` lifecycle (`draft → user-reviewed → it-approved → implemented`) and the four **audits** — each loaded on demand (cross-tool, `description`-triggered). Start with **aiws-sdd-onboarding**.
 - After implementing, run `/aiws-sdd-verify` against the spec, then `/aiws-sdd-archive` (folds the delta into `docs/development/specs/`).
 <!-- ai-workspace:end:aiws:sdd -->
 

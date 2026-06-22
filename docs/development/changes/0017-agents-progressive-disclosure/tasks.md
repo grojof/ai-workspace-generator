@@ -13,13 +13,11 @@
 > Revised by [research.md](research.md): Agent Skills is now a **cross-tool open standard** (Claude/Codex/
 > Copilot/Cursor/opencode all read `SKILL.md`), so the skills carry task detail for **every** target — no
 > separate plain-markdown reference needed. Lower risk than the original proposal.
-- [ ] `sdd` block → lifecycle diagram + short orchestrator + pointer to the `aiws-sdd-*` **skills** (cross-tool).
-- [ ] `harness-engineering`, `living-docs` → 2-line stance + pointer to the skill.
-- [ ] Deep detail (if any) → the **skill's own `references/`** dir (Agent Skills spec), not repo-root.
-- [ ] **Prune, don't just move:** drop lines that merely restate what a linter/CI or the skill already enforces.
-- [ ] Align generated skills to the Agent Skills spec (name = dir, lowercase-hyphen; description ≤ 1024, what+when).
-- [ ] Tests + byte fixtures; `TEMPLATES_VERSION` bump.
-- [ ] Reconsider `skill-routing` (skills self-advertise via `description` cross-tool now) — slim or keep (clarify).
+- [x] `sdd` block: **pruned** the verbose REASONS detail (schema/builder/lifecycle/audits — all backed by the cross-tool `aiws-sdd-*` skills) to one concise pointer; added a one-clause cross-tool skill note to the flow line.
+- [x] Honest measurement (`estimateTokens`): **REASONS mode −~170 tok** (where the duplication lived); **sdd mode +~20** (the cross-tool pointer) — sdd-mode wasn't bloated, so it isn't padded; this repo 5645 → 5678.
+- [x] **`harness-engineering` stays inline** — it's Layer-0 *stance* (how the harness evolves), has no skill home, and is already lean. **`living-docs` stays** — already a pointer to `/aiws-doc-sync` (its skill); ~lean.
+- [x] Tests green (124/124); byte fixtures regenerated; `TEMPLATES_VERSION` → 0.52.0; dogfood synced; doctor 0/0.
+- [ ] Deferred polish: align skill frontmatter to the Agent Skills spec (validate via `skills-ref`); reconsider `skill-routing` — small follow-ups, not blocking.
 
 ## Verify & archive
 - [ ] `/aiws-audit` + verify against the spec; living docs; then archive 0017.
