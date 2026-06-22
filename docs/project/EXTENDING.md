@@ -139,8 +139,14 @@ profile:
 loadMode: on-demand
 templated: false              # true → resolves {{paths.*}} when copied
 routing: true                 # false → routing is handled by the catalog (src/modules/skills.ts)
+relation: new                 # how this pack relates to the base — see below (company packs)
 ```
 
+- **Relation to the base** (`relation:`, ADR 0003 — the auditable primitive `aiws-reconcile` reads):
+  `new` (default) = an independent skill; `extends` = augments the base catalog; `overrides:<aiws-id>` =
+  replaces/augments a named base skill. An `overrides:` target must be a reserved `aiws-*` id **and** name a
+  real base skill (checked at load — a dangling override throws). Bundled base packs are all `new`; the field
+  earns its keep for **company packs** that intentionally layer on or replace base content.
 - **Feature/company gating** (no stack): use `gating:` (`gating.sdd.schema: reasons`, `gating.company: any|[example]`).
 - **Vendor from a permissive source** (MIT/Apache-2.0/BSD/CC-BY — e.g. `agent-skills`, `anthropics/skills`):
   place the base in `vendor/<repo>/…`, point `base:` at it and maintain it with `ai-workspace skills sync` (see
