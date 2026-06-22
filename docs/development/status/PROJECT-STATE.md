@@ -35,8 +35,11 @@ mantenimiento mínimo. **Sin datos de negocio reales.**
   workflow + packs no-stack, sobre la unión de stacks) de **repo-level** (cada hijo: `CLAUDE.md` que importa
   `@../AGENTS.md` + packs de su stack). `repos[]` vacío ⇒ idéntico a single-repo (cambio 0003). Cada hijo
   recibe además una instrucción Copilot path-scoped (`applyTo`) en el root (cambio 0005).
-- **SDD** — una metodología con modos `lean`/`reasons`; skills `sdd-*` (schema, onboarding, audits,
-  builder, migrate, spec-sync) on-demand. Eje `sdd.methodology: sdd | spdd` (`spdd ⇒ reasons`).
+- **SDD** — una metodología con modos `lean`/`reasons`; skills `aiws-sdd-*` (schema, onboarding, audits,
+  builder, migrate, spec-sync) on-demand. Eje `sdd.methodology: sdd | spdd` (`spdd ⇒ reasons`). Las skills de
+  fase son **ricas** (0012a/b): descripción intencional + plantilla de salida + quality bar; el comando es un
+  lanzador fino que apunta a la skill; el `spec.md` usa el **formato delta de OpenSpec** (ADDED/MODIFIED/REMOVED
+  + RFC 2119 + GIVEN/WHEN/THEN + `[NEEDS CLARIFICATION]` + Success Criteria).
 - **Skill-packs de stack** — base vendorizada (MIT/Apache, `vendor/`) + `pack.yaml` con routing/gating;
   `ai-workspace skills sync` actualiza la base preservando overlays.
 - **Empaquetado** — `ai-workspace package` → plugin paraguas + marketplace privado + zips de skill. En
