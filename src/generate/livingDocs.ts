@@ -18,7 +18,9 @@ Update the project's living documentation so any agent gets accurate context che
 2. Update \`${p.status}/PROJECT-STATE.md\`: overview, module map, decisions log, current status.
    - If SDD is active, summarize the state of each folder under \`${p.changes}/*\`.
 3. Update \`${p.status}/ARCHITECTURE.md\`: keep Mermaid diagrams current (architecture, data flow, module deps).
-4. Only rewrite content inside \`ai-workspace:begin/end\` markers; preserve manual notes outside them.
+4. Review the project docs under \`${p.project}/\` (the docs declared in the \`docs.contract\` config): keep them
+   accurate and free of dangling references / orphans (\`ai-workspace doctor\` flags these).
+5. Only rewrite content inside \`ai-workspace:begin/end\` markers; preserve manual notes outside them.
 
 Keep it concise — this file is read often; favor a compact, scannable snapshot over prose.
 `;
@@ -32,7 +34,8 @@ description: Refresh the living docs (project state + architecture).
 ---
 
 Update \`${p.status}/PROJECT-STATE.md\` and \`${p.status}/ARCHITECTURE.md\` to reflect the current state of the
-repo. Keep Mermaid diagrams current. Preserve content outside ai-workspace markers. Keep it concise.
+repo, and review the project docs under \`${p.project}/\` (the \`docs.contract\` config) — keep them accurate and
+free of dangling references. Keep Mermaid diagrams current. Preserve content outside ai-workspace markers.
 `;
 }
 

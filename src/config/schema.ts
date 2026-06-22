@@ -91,11 +91,28 @@ export const SddSchema = z.object({
  * the *content* follows `config.language`. `development/` holds the SDD store + AI living status;
  * `project/` holds human project docs. Both are overridable; all generated references resolve from here.
  */
+/** Who owns a contracted doc: we author it, we generate it, or it ships byte-for-byte. */
+export const DocOwnerSchema = z.enum(["authored", "generated", "byte-for-byte"]);
+
+/** One declared entry in the documentation contract (R1, change 0016a). */
+export const DocEntrySchema = z.object({
+  /** Workspace-relative, `/`-separated path the doc must live at. */
+  path: z.string(),
+  owner: DocOwnerSchema,
+  description: z.string().optional(),
+});
+
 export const DocsSchema = z.object({
   /** Human project documentation root. Default `docs/project`. */
   project: z.string().optional(),
   /** Development process root (SDD specs/changes + AI status). Default `docs/development`. */
   development: z.string().optional(),
+  /**
+   * The documentation contract: which docs must exist, where, and who owns them. When omitted, a built-in
+   * default (the docs the generator emits) is used — so `doctor` can flag dangling references and orphan
+   * docs without any config change. See `resolveDocContract`.
+   */
+  contract: z.array(DocEntrySchema).optional(),
 });
 
 /**
@@ -302,6 +319,7 @@ export function unionStack(config: Config): Config {
 
 export type Profile = z.infer<typeof ProfileSchema>;
 export type Docs = z.infer<typeof DocsSchema>;
+export type DocEntry = z.infer<typeof DocEntrySchema>;
 export type Distribution = z.infer<typeof DistributionSchema>;
 export type Language = z.infer<typeof LanguageSchema>;
 export type Framework = z.infer<typeof FrameworkSchema>;
