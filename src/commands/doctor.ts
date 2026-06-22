@@ -5,6 +5,7 @@ import { loadConfig } from "../config/loader.js";
 import { resolveRepos, unionStack } from "../config/schema.js";
 import { estimateTokens } from "../util/tokens.js";
 import { composeBlocks } from "../generate/agents.js";
+import { checkDocCoherence } from "../generate/docCoherence.js";
 import { setLocale } from "../render/engine.js";
 import { MCPS, find } from "../modules/registry.js";
 
@@ -96,6 +97,29 @@ export function runDoctor(cwd: string): void {
     });
   } else {
     findings.push({ level: "ok", message: "All stack modules are known to the registry." });
+  }
+
+  // --- Documentation coherence: dangling references + orphan docs (0016a) ---
+  const { dangling, orphans } = checkDocCoherence(cwd, config);
+  if (dangling.length) {
+    const sample = dangling
+      .slice(0, 3)
+      .map((d) => `${d.file} → ${d.target}`)
+      .join("; ");
+    findings.push({
+      level: "warn",
+      message: `Dangling doc reference(s): ${dangling.length} (${sample}${dangling.length > 3 ? "; …" : ""}).`,
+    });
+  } else {
+    findings.push({ level: "ok", message: "No dangling doc references." });
+  }
+  if (orphans.length) {
+    findings.push({
+      level: "warn",
+      message: `Orphan doc(s) — not in the contract and unlinked: ${orphans.slice(0, 5).join(", ")}${orphans.length > 5 ? ", …" : ""}.`,
+    });
+  } else {
+    findings.push({ level: "ok", message: "No orphan docs." });
   }
 
   // --- SDD backend coherence ---

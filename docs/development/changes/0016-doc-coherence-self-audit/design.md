@@ -18,12 +18,14 @@ const DocEntry = z.object({
 (`PROJECT-STATE.md`, `ARCHITECTURE.md` → `generated`), the project docs the generator seeds, and the index
 itself. Users extend it in `workspace.config.yaml`; the default keeps existing configs working (R1).
 
-## Generation: `docs/INDEX.md`
+## No separate index file (revised)
 
-New small generator (`src/generate/docsIndex.ts` already exists for the human index — extend it, don't add a
-parallel one) emits `docs/INDEX.md` from the resolved contract: a table `path · owner · description`. Written
-via the normal idempotent `writeFile` so re-runs are `unchanged` (R2). It is itself a `generated` contract
-entry.
+Originally this slice generated `docs/INDEX.md` mirroring the contract. Dropped after maintainer feedback: a
+file literally named `index` competes with the root `README.md`, which is the conventional repo index. The
+contract therefore lives **only in config** (`docs.contract`, with a built-in default in `docContract.ts`);
+`doctor` reads it from config. The default contract declares the root `README.md` as the `authored` index so
+it is a recognized link source. The existing `docs/README.md` (generated, `writeIfMissing`) remains the
+docs-folder overview.
 
 ## Doctor checks (pure functions over fs + contract)
 

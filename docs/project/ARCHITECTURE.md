@@ -41,16 +41,20 @@ flowchart LR
 Instructions are composed in six layers, so the common base doesn't clash with company/business rules. Layers
 map to template folders and config sections:
 
+Block ids carry the reserved `aiws:` namespace (applied centrally in `composeFromManifest`; see
+[ADR 0003](decisions/0003-foundations-tenancy-provenance-reconciliation.md) F1b). Manifest entries are bare in
+source — the namespace is added at compose time.
+
 | Layer | Template folder | Config source | Block id in AGENTS.md |
 |-------|-----------------|---------------|------------------------|
-| 0 · Core | [`templates/core/`](../../templates/core/) | always active | `header`, `core` |
-| 0 · Profile | [`templates/profile/`](../../templates/profile/) | `profile` | `profile` |
-| 1 · Language | [`templates/languages/<id>/`](../../templates/languages/) | `stack.languages` | `lang-<id>` |
-| 2 · Framework | [`templates/frameworks/<id>/`](../../templates/frameworks/) | `stack.frameworks` | `fw-<id>` |
-| 3 · Environments | [`templates/environments/<id>/`](../../templates/environments/) | `stack.environments` | `env-<id>` |
-| 4 · Company (overlay) | [`templates/company/<org>/`](../../templates/company/) | `company` (`example`, or your own org) | `company-overlay` |
-| 4 · Company (conventions) | [`templates/company/`](../../templates/company/) | `conventions` | `company` |
-| 5 · Business | [`templates/business/`](../../templates/business/) | `business` | `business` |
+| 0 · Core | [`templates/core/`](../../templates/core/) | always active | `aiws:header`, `aiws:core` |
+| 0 · Profile | [`templates/profile/`](../../templates/profile/) | `profile` | `aiws:profile` |
+| 1 · Language | [`templates/languages/<id>/`](../../templates/languages/) | `stack.languages` | `aiws:lang-<id>` |
+| 2 · Framework | [`templates/frameworks/<id>/`](../../templates/frameworks/) | `stack.frameworks` | `aiws:fw-<id>` |
+| 3 · Environments | [`templates/environments/<id>/`](../../templates/environments/) | `stack.environments` | `aiws:env-<id>` |
+| 4 · Company (overlay) | [`templates/company/<org>/`](../../templates/company/) | `company` (`example`, or your own org) | `aiws:company-overlay` |
+| 4 · Company (conventions) | [`templates/company/`](../../templates/company/) | `conventions` | `aiws:company` |
+| 5 · Business | [`templates/business/`](../../templates/business/) | `business` | `aiws:business` |
 
 More feature blocks: `aiws:sdd` (if `sdd.enabled`), `aiws:living-docs` (if `livingDocs`), and `imported` (added by
 `ai-workspace import`).

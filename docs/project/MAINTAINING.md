@@ -49,7 +49,7 @@ Therefore:
 - Treat block ids as permanent public API. Prefer changing *content* over changing *ids*.
 - If you must rename/remove, publish a **migration** and mark it as a major change in the changelog.
 
-### The `aiws:` block-id namespace (ADR 0003 F1b)
+### The `aiws:` block-id namespace ([ADR 0003](decisions/0003-foundations-tenancy-provenance-reconciliation.md) F1b)
 
 Governance-spine blocks composed into `AGENTS.md` / `CLAUDE.md` / Copilot carry the reserved `aiws:`
 namespace (`header` → `aiws:header`, `lang-*` → `aiws:lang-*`). The prefix is applied **centrally** in
@@ -90,6 +90,24 @@ Files written with `writeIfMissing` (`.editorconfig`, `.claude/settings.json`, t
 `docs.development` (default `docs/development/`), `docs/development/status/*` seeds, `.vscode/extensions.json`,
 imported copies) have the opposite trait: editing their template **does not** reach users who already have the
 file. They are the user's by design.
+
+## Documentation coherence (the doc contract + `doctor`)
+
+`doctor` keeps the docs from drifting (change 0016a). The **doc contract** — `docs.contract` in
+`workspace.config.yaml`, or a built-in default in [`src/generate/docContract.ts`](../../src/generate/docContract.ts)
+— declares which docs must exist and who owns them (`authored` / `generated` / `byte-for-byte`). The root
+`README.md` is the declared `authored` **index**; there is intentionally no separate `index` file competing
+with it.
+
+Two `warn`-level checks ([`src/generate/docCoherence.ts`](../../src/generate/docCoherence.ts), pure +
+unit-tested) read it:
+- **Dangling references** — a maintained doc links a workspace-relative path that doesn't exist.
+- **Orphan docs** — a doc under `docs/project/` (or top-level `docs/*.md`) the contract doesn't declare and
+  nothing links to.
+
+Both are conservative: scoped to the maintained docs (the SDD store under `docs/development/{changes,specs}/`
+is self-managed and out of scope), root-doc basenames are whitelisted, and they never error. They caught the
+orphaned ADR 0003 link and a dead reference during the v0.2.0 audit. Run `ai-workspace doctor`.
 
 ## Local development and testing
 

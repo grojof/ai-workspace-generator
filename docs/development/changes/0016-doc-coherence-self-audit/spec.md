@@ -13,12 +13,15 @@ sensible built-in contract (the docs the generator itself produces) so existing 
 - **Given** a `docs.contract` entry whose `owner` is invalid, **when** the config is parsed, **then**
   validation fails with a clear zod error at the boundary.
 
-## R2 — Generated docs index mirrors the contract
-`generate` MUST emit a `docs/INDEX.md` that lists every contract entry (path · owner · description), so the
-contract is human- and agent-readable. It MUST be idempotent (a second run reports `unchanged`).
+## R2 — The root README is the declared index (no competing `index` file)
+The contract lives in **config** (`docs.contract`); the generator MUST NOT emit a separate `docs/INDEX.md`
+that competes with the root `README.md` (the conventional repo index/landing page). The default contract MUST
+declare the root `README.md` as the `authored` documentation index, so it is recognized as a link source and
+never flagged as an orphan.
 
-- **Given** a default config, **when** generated twice, **then** `docs/INDEX.md` exists and the second run
-  reports 0 created / 0 updated for it.
+- **Given** a default config, **then** the resolved contract contains `README.md` with owner `authored`.
+- **Rationale:** the root README is the index a reader expects; the contract is machine-readable config that
+  `doctor` consumes — it does not need its own generated page (revised after maintainer feedback).
 
 ## R3 — `doctor` detects dangling references
 `doctor` MUST report (level `warn`) any workspace-relative link in a tracked doc/skill that points to a path
