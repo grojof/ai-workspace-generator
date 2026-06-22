@@ -194,6 +194,11 @@ export function loadCompanyPacks(cwd: string): LoadedPack[] {
   return readPacksFrom(companyPacksDir(cwd), { external: true });
 }
 
+/** The reserved-namespace base catalog ids (registry skills + bundled pack ids) a company overlay may target. */
+export function baseCatalogIds(): Set<string> {
+  return baseSkillIds(readPacksFrom(skillPacksDir(), { external: false }));
+}
+
 /** Bundled base packs + the repo's vendored company packs, with overlay relations validated across the union. */
 export function loadAllPacks(cwd: string): LoadedPack[] {
   const packs = [...readPacksFrom(skillPacksDir(), { external: false }), ...loadCompanyPacks(cwd)];

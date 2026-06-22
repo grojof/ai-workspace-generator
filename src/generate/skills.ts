@@ -131,6 +131,44 @@ Invoke via the \`/aiws-doc-sync\` command (Claude) or the \`aiws-doc-sync\` prom
 `;
 }
 
+// AI skill → English only. The reconcile skill is propose-and-review: it reads the deterministic report and
+// proposes changes for the user's approval — it never auto-edits (Safety gate, ADR 0003 Part F).
+function reconcileSkillBody(): string {
+  return `## aiws-reconcile
+
+Audit the company overlay (its \`corp-<handle>-*\` packs) against the current base catalog after a base
+upgrade, and **propose** how to reconcile — never auto-apply.
+
+## How to work
+1. Run \`ai-workspace reconcile\` to get the classification (read-only):
+   - 🔵 **unique** — an independent company skill (\`relation: new\`/\`extends\`): keep.
+   - 🟢 **redundant** — \`overrides:<aiws-id>\` whose target is no longer in the base: the override is stale → propose review/removal.
+   - 🟡 **conflict** — \`overrides:<aiws-id>\` of a live base skill: the base may have moved → diff the two and let the user decide.
+   - ⚠️ **drift** — a base artifact edited out of band (from \`ai-workspace verify\`): propose restoring with \`ai-workspace sync\`.
+2. For each 🟡/🟢/⚠️, present a concrete proposal (what changes, why) and **wait for approval**.
+3. Apply only what the user approves: edit the company pack repo + re-run \`ai-workspace packs sync\`, or restore base files with \`sync\`.
+
+## Quality bar
+- [ ] Every 🟡 conflict shows the base-vs-overlay difference, not just a label
+- [ ] Nothing is edited without explicit approval (propose-and-review)
+- [ ] Drift is healed via \`sync\`, never by hand-editing managed regions
+`;
+}
+
+function reconcileCommand(): string {
+  return [
+    "---",
+    "description: Reconcile company overlays against the base (propose-and-review).",
+    "---",
+    "",
+    "# /aiws-reconcile",
+    "",
+    "Run the **`aiws-reconcile`** skill — it runs `ai-workspace reconcile`, classifies each company overlay",
+    "(🔵 unique · 🟢 redundant · 🟡 conflict · ⚠️ drift) and **proposes** changes for your approval. Nothing is",
+    "auto-applied.",
+  ].join("\n");
+}
+
 /** Generate vendored skills into the repo (`.claude/skills/`). Claude target only. */
 export function generateSkills(cwd: string, config: Config): WriteResult[] {
   const results: WriteResult[] = [];
@@ -162,6 +200,15 @@ export function generateSkills(cwd: string, config: Config): WriteResult[] {
         frontmatter("aiws-living-docs", desc) + livingDocsSkillBody(config),
       ),
     );
+  }
+
+  // Reconcile skill + command — only when an org overlay is in play (a company to reconcile). Propose-and-review.
+  if (config.company.id !== "none") {
+    const desc = "Audit the company overlay against the base catalog after an upgrade and propose how to reconcile (unique/redundant/conflict/drift). Use after a base upgrade or `ai-workspace packs sync`, when company packs may overlap or clash with new base content. Propose-and-review — never auto-applies.";
+    results.push(
+      writeFile(resolve(cwd, ".claude/skills/aiws-reconcile/SKILL.md"), frontmatter("aiws-reconcile", desc) + reconcileSkillBody()),
+    );
+    results.push(writeFile(resolve(cwd, ".claude/commands/aiws-reconcile.md"), reconcileCommand()));
   }
 
   return results;

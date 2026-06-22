@@ -7,6 +7,7 @@ import { runSync } from "./commands/sync.js";
 import { runDoctor } from "./commands/doctor.js";
 import { runVerify } from "./commands/verify.js";
 import { runPacksSync } from "./commands/packsSync.js";
+import { runReconcile } from "./commands/reconcile.js";
 import { runAdd } from "./commands/add.js";
 import { runRemove } from "./commands/remove.js";
 import { runList } from "./commands/list.js";
@@ -193,6 +194,18 @@ packs
   .action(() => {
     try {
       runPacksSync(process.cwd());
+    } catch (err) {
+      console.error(pc.red(`\n${(err as Error).message}\n`));
+      process.exit(1);
+    }
+  });
+
+program
+  .command("reconcile")
+  .description("Classify company overlays vs the base (unique / redundant / conflict / drift). Read-only.")
+  .action(() => {
+    try {
+      runReconcile(process.cwd());
     } catch (err) {
       console.error(pc.red(`\n${(err as Error).message}\n`));
       process.exit(1);

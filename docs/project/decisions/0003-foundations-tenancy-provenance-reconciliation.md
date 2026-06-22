@@ -107,11 +107,18 @@ A first-class, **propose-and-review** skill that generalises today's `/sdd-upstr
 removal) · 🟡 **conflict** (clashes with new base → user decides) · 🔵 **unique** (keep) · ⚠️ **drift** (out-of-band
 base edit). Never auto-edits (Safety gate).
 
-## Boundary (what this ADR does NOT do)
+## Status
 
-- It does **not** implement the manifest, `aiws-verify`, `aiws-reconcile`, the git pack source, the relation lint,
-  or the `aiws-`/`corp-<handle>` rename. Those are scoped SDD changes after this ADR.
-- It does **not** change any generated artifact yet → `TEMPLATES_VERSION` unchanged.
+**Implemented** across changes 0013 (F1 namespacing + provenance + migration), 0014 (F2a–c: pack namespace +
+`relation` + git company packs + reserved-namespace guard), and 0015 (F3 integrity manifest + `verify` + self-heal
++ confine). Part F (`aiws-reconcile`) ships as a CLI (`ai-workspace reconcile`) + a propose-and-review skill.
+`TEMPLATES_VERSION` reached 0.46.0. Remaining: dogfooding the foundations onto this repo + a release (end-of-line).
+
+## Boundary (what this ADR did NOT do at authoring time)
+
+- It did **not** itself implement the manifest, `aiws-verify`, `aiws-reconcile`, the git pack source, the relation
+  lint, or the `aiws-`/`corp-<handle>` rename — those landed as the scoped changes above.
+- It did **not** change any generated artifact at authoring time → `TEMPLATES_VERSION` unchanged then.
 - The `aiws-`/`aiws:` **rename is a deliberate id migration** of a stable contract (ADR 0002 Part A): it ships with
   an updated golden + a migration map + a note in [MAINTAINING](../MAINTAINING.md), in one change.
 

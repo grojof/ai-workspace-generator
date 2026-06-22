@@ -196,6 +196,19 @@ export const SKILLS: SkillEntry[] = [
     },
   },
   {
+    id: "aiws-reconcile",
+    domain: "core",
+    level: "advanced",
+    userType: "technical",
+    loadMode: "on-demand",
+    risk: "medium",
+    enabled: (c) => c.company.id !== "none" && claude(c),
+    trigger: {
+      en: "after a base upgrade / `packs sync`, to audit company overlays vs the base",
+      es: "tras un upgrade de base / `packs sync`, para auditar overlays de empresa vs base",
+    },
+  },
+  {
     id: "aiws-workspace-guide",
     domain: "onboarding",
     level: "beginner",
