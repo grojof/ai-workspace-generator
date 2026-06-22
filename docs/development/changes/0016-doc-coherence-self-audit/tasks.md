@@ -20,9 +20,9 @@
 - [x] Archive changes 0012–0015 → `changes/archive/` (precedent: move folders, no per-change specs/ duplication); fixed 0013 stale checkbox (reserved-ns guard landed in F2c) + relative-link depth; `doctor` caught + we fixed the ADR 0003 → 0012 link broken by the move.
 
 ## 0016b — `aiws-audit` self-audit skill + command (read-only)
-- [ ] Generated `aiws-audit` skill + `/aiws-audit` command → read-only, dated report under `docs/development/`.
-- [ ] Registry row + skill routing; reuse `extractLocalLinks` + doctor/verify/reconcile signals.
-- [ ] Tests + byte fixtures; `TEMPLATES_VERSION` bump.
+- [x] Generated `aiws-audit` skill + `/aiws-audit` command → read-only, dated report under `docs/development/audits/`.
+- [x] Registry row (`core`, on-demand) + skill routing; composes `doctor`/`verify`/`reconcile` signals.
+- [x] Tests (`audit-skill.test.js`) + regenerated AGENTS.md byte fixtures; `TEMPLATES_VERSION` → 0.50.0; dogfood synced; doctor/verify green.
 
 ## 0016c — AGENTS.md split
 - [ ] **Deferred** (clarify Q2): revisit only when a new block actually breaches the token budget.

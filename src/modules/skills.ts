@@ -241,6 +241,19 @@ export const SKILLS: SkillEntry[] = [
     },
   },
   {
+    id: "aiws-audit",
+    domain: "core",
+    level: "all",
+    userType: "both",
+    loadMode: "on-demand",
+    risk: "low",
+    enabled: claude,
+    trigger: {
+      en: "periodically or after big changes — audit workspace health & coherence (read-only)",
+      es: "periódicamente o tras cambios grandes — auditar salud y coherencia (read-only)",
+    },
+  },
+  {
     id: "aiws-workspace-guide",
     domain: "onboarding",
     level: "beginner",
