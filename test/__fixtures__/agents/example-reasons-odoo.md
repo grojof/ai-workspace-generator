@@ -235,15 +235,8 @@ to mind, and do not start coding before it is decided.
 <!-- ai-workspace:end:aiws:tech-selection -->
 
 <!-- ai-workspace:begin:aiws:env-odoo -->
-## Odoo (Layer 3 — environment)
-
-- Run Odoo from a pinned source/version with its own virtualenv; keep custom addons in a separate `addons` path, never inside core.
-- Use a per-version config file (`odoo.conf`) and env vars for secrets; never commit credentials or the master password.
-- Apply schema/data changes via module **migrations** (`migrations/<version>/pre|post`) and upgrade with `-u <module>`; never hand-edit the DB.
-- Prefer the ORM over raw SQL; respect access rules (ACL/record rules) and don't bypass them with `sudo()` without justification.
-- Reuse OCA modules before writing custom; follow Odoo's official guidelines for the target version.
-
-> For version/feature specifics, query **context7** (or the Odoo docs).
+## odoo (Layer 3 — environment) · latest
+Rules → [references/stack/odoo.md](references/stack/odoo.md).
 <!-- ai-workspace:end:aiws:env-odoo -->
 
 <!-- ai-workspace:begin:aiws:company-overlay -->

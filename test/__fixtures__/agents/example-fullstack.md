@@ -197,68 +197,28 @@ Load skills by their *trigger*, not preemptively. Selection for the **technical*
 <!-- ai-workspace:end:aiws:skill-routing -->
 
 <!-- ai-workspace:begin:aiws:lang-typescript -->
-## TypeScript (Layer 1 — language) · target vlatest
-
-- **Strict mode on.** `strict: true`, `noUncheckedIndexedAccess`, no implicit `any`.
-- Prefer `type`/`interface` over `any`. Use `unknown` at boundaries, narrow before use.
-- No `// @ts-ignore` without a one-line reason comment. Fix the type instead.
-- Format with **Prettier**, lint with **ESLint** (`@typescript-eslint`). CI fails on lint errors.
-- `import type { … }` for type-only imports. No default exports for shared modules — named exports.
-- Async: `async/await`, never floating promises. Handle rejections explicitly.
-- Validate external data with a schema (e.g. `zod`) at the edge; trust types only after parsing.
-- Tests colocated or in `__tests__`; use the project's runner (vitest/jest). Name: `*.test.ts`.
-
-> For current API/best-practice details, query **context7** for `typescript@latest`.
+## typescript (Layer 1 — language) · target vlatest
+Rules → [references/stack/typescript.md](references/stack/typescript.md) (applies to `**/*.ts, **/*.tsx`).
 <!-- ai-workspace:end:aiws:lang-typescript -->
 
 <!-- ai-workspace:begin:aiws:lang-go -->
-## Go (Layer 1 — language) · target vlatest
-
-- Format with `gofmt`/`goimports`; lint with `go vet` (and `golangci-lint` if present). CI fails on diffs.
-- Errors are values: wrap with `%w`, never ignore them; no `panic` across package boundaries.
-- Accept interfaces, return structs. Keep packages small and cohesive; avoid cyclic deps.
-- Concurrency: pass `context.Context` first; never leak goroutines; protect shared state.
-- Table-driven tests with the standard `testing` package; name files `*_test.go`.
-- Versions: respect the module's `go` directive and `go.mod` pins; follow the versioning policy above and
-  upgrade only via `dependency-upgrade`. Confirm specifics in **context7** for `go@latest`.
+## go (Layer 1 — language) · target vlatest
+Rules → [references/stack/go.md](references/stack/go.md) (applies to `**/*.go`).
 <!-- ai-workspace:end:aiws:lang-go -->
 
 <!-- ai-workspace:begin:aiws:fw-react -->
-## React (Layer 2 — framework) · target vlatest
-
-- **Function components + hooks only.** No class components.
-- One component per file; component file name matches the export.
-- Co-locate component, styles, and test. Keep components small; extract hooks for logic.
-- Rules of Hooks: never call hooks conditionally. Exhaustive deps on `useEffect`.
-- Prefer derived state over duplicated state. Lift state only as far as needed.
-- Side effects belong in effects/event handlers, not in render.
-- Accessibility is not optional: semantic elements, labels, keyboard support.
-- Data fetching: use the project's chosen library (e.g. TanStack Query / RSC) — do not hand-roll caches.
-
-> For current API/best-practice details, query **context7** for `react@latest`.
+## react (Layer 2 — framework) · target vlatest
+Rules → [references/stack/react.md](references/stack/react.md) (applies to `**/*.tsx, **/*.jsx`).
 <!-- ai-workspace:end:aiws:fw-react -->
 
 <!-- ai-workspace:begin:aiws:env-wsl -->
-## WSL (Layer 3 — environment) · Windows + Linux
-
-- Keep the project **inside the Linux filesystem** (`~/...`), not under `/mnt/c` — it's far faster and
-  avoids permission/line-ending issues.
-- Line endings are **LF** (already enforced by `.gitattributes`/`.editorconfig`). Configure git `core.autocrlf=input`.
-- Install toolchains (Node via nvm, Python, etc.) **inside WSL**, not on Windows.
-- Use the VS Code "WSL" extension; open the folder with `code .` from the WSL shell.
-
-> For distro-specific setup, query **context7** (or the WSL docs).
+## wsl (Layer 3 — environment) · latest
+Rules → [references/stack/wsl.md](references/stack/wsl.md).
 <!-- ai-workspace:end:aiws:env-wsl -->
 
 <!-- ai-workspace:begin:aiws:env-docker -->
-## Docker (Layer 3 — environment) · containers
-
-- Reproducible envs via `Dockerfile` + `docker-compose.yml`. Pin base image tags (no bare `latest`).
-- Multi-stage builds; small final images. Use `.dockerignore` (node_modules, .git, build output).
-- Never bake secrets into images; pass them via env/secrets at runtime.
-- One concern per container; use compose for local DB/services.
-
-> For image/setup specifics, query **context7** (or the Docker docs).
+## docker (Layer 3 — environment) · latest
+Rules → [references/stack/docker.md](references/stack/docker.md).
 <!-- ai-workspace:end:aiws:env-docker -->
 
 <!-- ai-workspace:begin:aiws:company-overlay -->

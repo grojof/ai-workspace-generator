@@ -1,6 +1,7 @@
 import type { Config } from "../config/schema.js";
-import { renderTemplate, templateExists } from "../render/engine.js";
+import { templateExists } from "../render/engine.js";
 import { renderSkillRouting } from "./skillRouting.js";
+import { stackPointer } from "./references.js";
 
 /** A managed block of AGENTS.md (and the Copilot mirror body): a stable id + its rendered content. */
 export interface Block {
@@ -29,49 +30,6 @@ export function resolveTemplate(template: string, config: Config): string {
   return template.replace("{company}", config.company.id);
 }
 
-function renderLanguage(config: Config, entry: { id: string; version: string }): string {
-  const path = `languages/${entry.id}/layer.md.eta`;
-  if (templateExists(path)) {
-    return renderTemplate(path, { ...config, entry });
-  }
-  return [
-    `## ${entry.id} (Layer 1 — language) · target v${entry.version}`,
-    "",
-    "- Follow the ecosystem's standard formatter and linter; fail CI on violations.",
-    "- Match existing code style and naming. Validate inputs at boundaries.",
-    "",
-    `> No bundled module yet — query **context7** for \`${entry.id}@${entry.version}\` best practices.`,
-  ].join("\n");
-}
-
-function renderFramework(config: Config, entry: { id: string; version: string }): string {
-  const path = `frameworks/${entry.id}/layer.md.eta`;
-  if (templateExists(path)) {
-    return renderTemplate(path, { ...config, entry });
-  }
-  return [
-    `## ${entry.id} (Layer 2 — framework) · target v${entry.version}`,
-    "",
-    "- Follow the framework's idiomatic project structure and patterns.",
-    "",
-    `> No bundled module yet — query **context7** for \`${entry.id}@${entry.version}\` best practices.`,
-  ].join("\n");
-}
-
-function renderEnvironment(config: Config, entry: { id: string; version: string }): string {
-  const path = `environments/${entry.id}/layer.md.eta`;
-  if (templateExists(path)) {
-    return renderTemplate(path, { ...config, entry });
-  }
-  return [
-    `## ${entry.id} (Layer 3 — environment) · ${entry.version}`,
-    "",
-    "- Document the setup steps and gotchas for this environment in this block.",
-    "",
-    `> No bundled module yet — query **context7** for \`${entry.id}\` setup and best practices.`,
-  ].join("\n");
-}
-
 export const BLOCK_MANIFEST: readonly BlockEntry[] = [
   { kind: "template", id: "header", template: "core/header.md.eta" },
   { kind: "template", id: "core", template: "core/conventions.md.eta" },
@@ -95,21 +53,23 @@ export const BLOCK_MANIFEST: readonly BlockEntry[] = [
     when: (c) =>
       c.project.mode === "new" && c.stack.languages.length === 0 && c.stack.frameworks.length === 0,
   },
-  // Layers 1-3: one block per stack entry; the render helpers fall back to a generic block + context7.
+  // Layers 1-3: one block per stack entry. The body lives in `references/stack/<id>.md` (0017a); the block
+  // keeps only a resolving pointer. Block ids are unchanged (no migration); `generateStackReferences` writes
+  // the referenced bodies + the Copilot `applyTo` projection.
   {
     kind: "expand",
     expand: (config) =>
-      config.stack.languages.map((l) => ({ id: `lang-${l.id}`, content: renderLanguage(config, l) })),
+      config.stack.languages.map((l) => ({ id: `lang-${l.id}`, content: stackPointer("language", l) })),
   },
   {
     kind: "expand",
     expand: (config) =>
-      config.stack.frameworks.map((f) => ({ id: `fw-${f.id}`, content: renderFramework(config, f) })),
+      config.stack.frameworks.map((f) => ({ id: `fw-${f.id}`, content: stackPointer("framework", f) })),
   },
   {
     kind: "expand",
     expand: (config) =>
-      config.stack.environments.map((e) => ({ id: `env-${e.id}`, content: renderEnvironment(config, e) })),
+      config.stack.environments.map((e) => ({ id: `env-${e.id}`, content: stackPointer("environment", e) })),
   },
   {
     kind: "template",
