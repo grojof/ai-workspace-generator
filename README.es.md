@@ -52,7 +52,7 @@ ai-workspace sync     # 3) tras editar AGENTS.md o la config, regenera (idempote
 ```
 
 Tras `init`, lee **`AI-WORKSPACE.md`**: el índice de todo lo generado. ¿Proyecto existente? Deja que la IA lo
-configure: ejecuta la skill **`/configure`** y propone tu `workspace.config.yaml` analizando el repo.
+configure: ejecuta la skill **`/aiws-configure`** y propone tu `workspace.config.yaml` analizando el repo.
 
 <details>
 <summary><b>⚙️ Targets y opciones</b> — qué herramientas, <code>.vscode</code>, multi-repo</summary>

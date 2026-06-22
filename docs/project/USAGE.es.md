@@ -69,14 +69,14 @@ Detecta el stack, escribe `workspace.config.yaml` y renderiza los artefactos.
 | `--from <paths...>` | Material de empresa existente a ingestar (se registra para `import`). |
 
 Resolución del modo: `--advanced` → avanzado; `--simple`/`--yes` → simple; si no, pregunta (Simple
-preseleccionado). La opción más rica es la skill guiada `/configure` (AI-first) dentro del editor.
+preseleccionado). La opción más rica es la skill guiada `/aiws-configure` (AI-first) dentro del editor.
 
 ### `detect` — detectar el stack (solo lectura)
 Lee manifiestos (`package.json`, `pyproject.toml`, …) y **no escribe nada**.
 
 ```bash
 ai-workspace detect          # resumen legible
-ai-workspace detect --json   # JSON determinista (semilla para la skill configure-workspace / tooling)
+ai-workspace detect --json   # JSON determinista (semilla para la skill aiws-configure-workspace / tooling)
 ```
 
 ### `sync` — regenerar
@@ -223,7 +223,7 @@ genera esta herramienta funciona ahí **sin ficheros extra**:
 - Lleva solo `$schema` y `mcp` a propósito — OpenCode da `ConfigInvalidError` ante claves de primer nivel
   desconocidas.
 - Si no usas MCP, **no se escribe `.opencode/opencode.json`** — basta con `AGENTS.md`.
-- Los slash commands (`/sdd-*`, `/commit`, …) **no** se proyectan (todavía) al formato de comandos de OpenCode.
+- Los slash commands (`/aiws-sdd-*`, `/aiws-commit`, …) **no** se proyectan (todavía) al formato de comandos de OpenCode.
   Puedes lanzar esos flujos en lenguaje natural, o definir los tuyos en `.opencode/command/`.
 
 ## Multi-repo
@@ -247,7 +247,7 @@ repos:
 
 - **El root es coordinador.** Genera la **fuente única** y todo lo de workspace, compuesto sobre la **unión**
   de los stacks de todos los repos: `AGENTS.md`, un `CLAUDE.md` puente (`@AGENTS.md`), instrucciones de
-  Copilot, `.mcp.json`/settings, módulo SDD, skills de **workflow** (sdd/secure-commit…), packs **no-stack**,
+  Copilot, `.mcp.json`/settings, módulo SDD, skills de **workflow** (aiws-sdd-*/aiws-secure-commit…), packs **no-stack**,
   docs vivas y gobernanza.
 - **Cada repo hijo** recibe su adaptador de Claude: un `CLAUDE.md` que **importa** el del root
   (`@../AGENTS.md`) y los **skill-packs de su stack** (descubiertos de forma nativa por Claude Code al
