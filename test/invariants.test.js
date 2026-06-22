@@ -22,7 +22,7 @@ function tmpRepo() {
 /** Ordered list of managed block ids as they appear in a generated file. */
 function blockOrder(content) {
   const ids = [];
-  const re = /<!-- ai-workspace:begin:([a-zA-Z0-9-]+) -->/g;
+  const re = /<!-- ai-workspace:begin:([a-zA-Z0-9:-]+) -->/g;
   let m;
   while ((m = re.exec(content))) ids.push(m[1]);
   return ids;
@@ -48,23 +48,23 @@ test("invariant · AGENTS.md block order is a stable contract (golden)", () => {
     generate(cwd, config);
     const agents = readFileSync(resolve(cwd, "AGENTS.md"), "utf8");
     assert.deepEqual(blockOrder(agents), [
-      "header",
-      "core",
-      "profile",
-      "versioning",
-      "safety",
-      "workflow",
-      "harness-engineering",
-      "routing",
-      "skill-routing",
-      "lang-typescript",
-      "fw-react",
-      "env-wsl",
-      "company-overlay",
-      "company",
-      "business",
-      "sdd",
-      "living-docs",
+      "aiws:header",
+      "aiws:core",
+      "aiws:profile",
+      "aiws:versioning",
+      "aiws:safety",
+      "aiws:workflow",
+      "aiws:harness-engineering",
+      "aiws:routing",
+      "aiws:skill-routing",
+      "aiws:lang-typescript",
+      "aiws:fw-react",
+      "aiws:env-wsl",
+      "aiws:company-overlay",
+      "aiws:company",
+      "aiws:business",
+      "aiws:sdd",
+      "aiws:living-docs",
     ]);
   } finally {
     rmSync(cwd, { recursive: true, force: true });
@@ -83,19 +83,19 @@ test("invariant · tech-selection block is greenfield-gated (new + empty stack o
   };
   // Greenfield with no stack ⇒ present, immediately after skill-routing.
   const green = make({ project: { name: "g", mode: "new" } });
-  assert.ok(green.includes("tech-selection"), "greenfield empty-stack should include tech-selection");
-  assert.equal(green[green.indexOf("skill-routing") + 1], "tech-selection", "tech-selection must follow skill-routing");
+  assert.ok(green.includes("aiws:tech-selection"), "greenfield empty-stack should include tech-selection");
+  assert.equal(green[green.indexOf("aiws:skill-routing") + 1], "aiws:tech-selection", "tech-selection must follow skill-routing");
   // Existing project ⇒ absent.
-  assert.ok(!make({ project: { name: "e", mode: "existing" } }).includes("tech-selection"), "existing repo must not get tech-selection");
+  assert.ok(!make({ project: { name: "e", mode: "existing" } }).includes("aiws:tech-selection"), "existing repo must not get tech-selection");
   // New project that already chose a stack ⇒ absent (no nagging).
   const configured = make({ project: { name: "c", mode: "new" }, stack: { languages: [{ id: "typescript", version: "latest" }] } });
-  assert.ok(!configured.includes("tech-selection"), "a configured greenfield repo must not get tech-selection");
+  assert.ok(!configured.includes("aiws:tech-selection"), "a configured greenfield repo must not get tech-selection");
 });
 
 test("invariant · the Layer-0 core prefix is fixed and config-independent", () => {
   // Whatever the stack/company/features, the first eight blocks never move:
   // they are the governance spine every downstream repo relies on.
-  const prefix = ["header", "core", "profile", "versioning", "safety", "workflow", "harness-engineering", "routing", "skill-routing"];
+  const prefix = ["aiws:header", "aiws:core", "aiws:profile", "aiws:versioning", "aiws:safety", "aiws:workflow", "aiws:harness-engineering", "aiws:routing", "aiws:skill-routing"];
   const configs = [
     { project: { name: "a" } },
     { project: { name: "b", purpose: "learn" } },
@@ -162,7 +162,7 @@ test("invariant · user text outside managed markers survives regeneration", () 
     const path = resolve(cwd, "AGENTS.md");
     const original = readFileSync(path, "utf8");
     // Inject prose at the very top, between two blocks, and at EOF.
-    const marker = "<!-- ai-workspace:end:core -->";
+    const marker = "<!-- ai-workspace:end:aiws:core -->";
     const tampered =
       "MANUAL-TOP-NOTE\n\n" +
       original.replace(marker, `${marker}\n\nMANUAL-MIDDLE-NOTE\n`) +
@@ -174,7 +174,7 @@ test("invariant · user text outside managed markers survives regeneration", () 
       assert.match(after, new RegExp(note), `lost out-of-band note: ${note}`);
     }
     // Blocks still intact after the round-trip.
-    assert.match(after, /ai-workspace:begin:core/);
+    assert.match(after, /ai-workspace:begin:aiws:core/);
   } finally {
     rmSync(cwd, { recursive: true, force: true });
   }

@@ -12,6 +12,15 @@ export function aiwsId(id: string): string {
   return id.startsWith(`${AIWS}-`) ? id : `${AIWS}-${id}`;
 }
 
+/**
+ * Namespace a managed-region block id: `header` → `aiws:header` (ADR 0003 F1b). Applied to the
+ * governance-spine blocks composed into AGENTS.md / CLAUDE.md / Copilot so `upgrade`/`aiws-reconcile`
+ * regenerate only `aiws:*` regions and user prose / non-spine markers stay untouched.
+ */
+export function aiwsBlockId(id: string): string {
+  return id.startsWith(`${AIWS}:`) ? id : `${AIWS}:${id}`;
+}
+
 /** Whether an id sits in the reserved base namespace (used to reject impersonating external packs/blocks). */
 export function isReservedNamespace(id: string): boolean {
   return id === AIWS || id.startsWith(`${AIWS}-`) || id.startsWith(`${AIWS}:`);

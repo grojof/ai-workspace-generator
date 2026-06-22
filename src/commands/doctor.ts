@@ -36,7 +36,7 @@ export function runDoctor(cwd: string): void {
     });
 
     const expected = new Set(composeBlocks(unionStack(config)).map((b) => b.id));
-    const present = [...agents.matchAll(/ai-workspace:begin:([\w-]+)/g)].map((m) => m[1]);
+    const present = [...agents.matchAll(/ai-workspace:begin:([\w:-]+)/g)].map((m) => m[1]);
     const orphaned = present.filter((id) => !expected.has(id) && !EXTRA_KNOWN_BLOCKS.has(id));
     if (orphaned.length) {
       findings.push({

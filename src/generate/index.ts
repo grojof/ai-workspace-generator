@@ -4,6 +4,7 @@ import { resolveRepos, unionStack, type Config, type ResolvedRepo } from "../con
 import { renderTemplate, setLocale } from "../render/engine.js";
 import { writeFile, writeIfMissing, writeManaged, type WriteResult } from "../render/writer.js";
 import { composeBlocks } from "./agents.js";
+import { aiwsBlockId } from "./naming.js";
 import { buildClaudeMcp, buildVscodeMcp, buildCodexMcp, buildOpencodeMcp } from "./mcp.js";
 import { generateScope } from "./scope.js";
 import { generateSdd } from "./sdd.js";
@@ -102,7 +103,7 @@ export function generate(cwd: string, config: Config): GenerateResult {
     if (repo.path !== "." && config.targets.includes("claude")) {
       add(
         writeManaged(resolve(repoDir, "CLAUDE.md"), "html", [
-          { id: "claude", content: renderTemplate("targets/claude/CLAUDE.md.eta", { ...repoConfig, agentsImport: agentsImportPath(repo.path) }) },
+          { id: aiwsBlockId("claude"), content: renderTemplate("targets/claude/CLAUDE.md.eta", { ...repoConfig, agentsImport: agentsImportPath(repo.path) }) },
         ]),
         t.desc.claudeAdapter,
       );
@@ -137,7 +138,7 @@ function generateWorkspace(cwd: string, config: Config, add: (r: WriteResult, de
   if (config.targets.includes("claude")) {
     add(
       writeManaged(resolve(cwd, "CLAUDE.md"), "html", [
-        { id: "claude", content: renderTemplate("targets/claude/CLAUDE.md.eta", { ...config }) },
+        { id: aiwsBlockId("claude"), content: renderTemplate("targets/claude/CLAUDE.md.eta", { ...config }) },
       ]),
       t.desc.claudeAdapter,
     );
@@ -150,8 +151,8 @@ function generateWorkspace(cwd: string, config: Config, add: (r: WriteResult, de
   //    (no nested discovery), so it stays workspace-level and covers every repo's stack.
   if (config.targets.includes("copilot")) {
     const copilotBlocks = [
-      { id: "copilot-header", content: copilotHeader(es) },
-      ...blocks.filter((b) => b.id !== "header"),
+      { id: aiwsBlockId("copilot-header"), content: copilotHeader(es) },
+      ...blocks.filter((b) => b.id !== aiwsBlockId("header")),
     ];
     add(writeManaged(resolve(cwd, ".github/copilot-instructions.md"), "html", copilotBlocks), t.desc.copilot);
     if (config.vscode) add(buildVscodeMcpFile(cwd, config), t.desc.vscodeMcp);

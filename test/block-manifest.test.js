@@ -8,6 +8,7 @@ import { ConfigSchema } from "../dist/config/schema.js";
 import { generate } from "../dist/generate/index.js";
 import { composeFromManifest } from "../dist/generate/agents.js";
 import { BLOCK_MANIFEST } from "../dist/generate/blockManifest.js";
+import { aiwsBlockId } from "../dist/generate/naming.js";
 
 // PR1 (0008): composeBlocks now walks a declarative BLOCK_MANIFEST. These tests pin the two guarantees
 // the refactor must hold: (1) byte-equivalence — the generated AGENTS.md is identical to the baseline
@@ -50,12 +51,13 @@ test("manifest · block order is a pure function of the manifest (R1/R3)", () =>
     company: "example",
     stack: { languages: [{ id: "typescript", version: "latest" }], frameworks: [{ id: "react", version: "latest" }] },
   });
+  // composeFromManifest namespaces every id to `aiws:*` (ADR 0003 F1b); mirror that here.
   const expected = [];
   for (const entry of BLOCK_MANIFEST) {
     if (entry.kind === "expand") {
-      expected.push(...entry.expand(config).map((b) => b.id));
+      expected.push(...entry.expand(config).map((b) => aiwsBlockId(b.id)));
     } else if (!entry.when || entry.when(config)) {
-      expected.push(entry.id);
+      expected.push(aiwsBlockId(entry.id));
     }
   }
   const got = composeFromManifest(config, BLOCK_MANIFEST).map((b) => b.id);
@@ -72,7 +74,7 @@ test("manifest · adding one entry yields a block in the declared position (R8/E
     if (entry.kind === "template" && entry.id === "core") derived.push(probe);
   }
   const ids = composeFromManifest(config, derived).map((b) => b.id);
-  assert.equal(ids[ids.indexOf("core") + 1], "probe-block");
-  const block = composeFromManifest(config, derived).find((b) => b.id === "probe-block");
+  assert.equal(ids[ids.indexOf(aiwsBlockId("core")) + 1], aiwsBlockId("probe-block"));
+  const block = composeFromManifest(config, derived).find((b) => b.id === aiwsBlockId("probe-block"));
   assert.equal(block.content, "PROBE-CONTENT");
 });
