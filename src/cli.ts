@@ -82,7 +82,9 @@ program
 
 program
   .command("verify")
-  .description("Verify base integrity against .ai-workspace/manifest.json (CI gate; non-zero exit on tampering).")
+  .description(
+    "Verify base integrity against .ai-workspace/manifest.json (CI gate; non-zero exit on tampering).",
+  )
   .action(() => {
     try {
       runVerify(process.cwd());
@@ -161,7 +163,9 @@ program
 
 program
   .command("package")
-  .description("Package the workspace as a Claude Code plugin + private marketplace, and stage org-skill zips for claude.ai.")
+  .description(
+    "Package the workspace as a Claude Code plugin + private marketplace, and stage org-skill zips for claude.ai.",
+  )
   .action(() => {
     try {
       runPackage(process.cwd());
@@ -174,7 +178,9 @@ program
 const skills = program.command("skills").description("Maintain the vendored skill-packs library.");
 skills
   .command("sync")
-  .description("Pull the upstream skill source (agent-skills) at a pinned ref; diff vs vendored base. Dry-run unless --apply.")
+  .description(
+    "Pull the upstream skill source (agent-skills) at a pinned ref; diff vs vendored base. Dry-run unless --apply.",
+  )
   .option("--ref <ref>", "target tag/sha (with --source; default: latest upstream tag)")
   .option("--source <name>", "limit to one vendored source (e.g. agent-skills, microsoft-skills)")
   .option("--apply", "apply: update vendor/ + skill-packs/ and re-seal the pin")
@@ -190,7 +196,9 @@ skills
 const packs = program.command("packs").description("Manage vendored company packs (git, pinned by ref).");
 packs
   .command("sync")
-  .description("Vendor the git company packs from `company.packs` into .ai-workspace/packs/ (committed, pinned).")
+  .description(
+    "Vendor the git company packs from `company.packs` into .ai-workspace/packs/ (committed, pinned).",
+  )
   .action(() => {
     try {
       runPacksSync(process.cwd());

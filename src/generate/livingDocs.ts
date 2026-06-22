@@ -81,8 +81,12 @@ _Run \`/aiws-doc-sync\` to populate._
 function architectureSeed(config: Config): string {
   const name = config.project.name;
   const es = config.language === "es";
-  const placeholder = es ? "_Reemplázalo con la arquitectura real vía `/aiws-doc-sync`._" : "_Replace with the real architecture via `/aiws-doc-sync`._";
-  const heading = es ? "Maintenido con `/aiws-doc-sync`. Usa Mermaid para los diagramas." : "Maintained via `/aiws-doc-sync`. Use Mermaid for diagrams.";
+  const placeholder = es
+    ? "_Reemplázalo con la arquitectura real vía `/aiws-doc-sync`._"
+    : "_Replace with the real architecture via `/aiws-doc-sync`._";
+  const heading = es
+    ? "Maintenido con `/aiws-doc-sync`. Usa Mermaid para los diagramas."
+    : "Maintained via `/aiws-doc-sync`. Use Mermaid for diagrams.";
   return `# ${es ? "Arquitectura" : "Architecture"} — ${name}
 
 > ${heading}

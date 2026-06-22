@@ -16,7 +16,5 @@ export function printArtifacts(artifacts: Artifact[]): void {
   const created = artifacts.filter((a) => a.status === "created").length;
   const updated = artifacts.filter((a) => a.status === "updated").length;
   const unchanged = artifacts.filter((a) => a.status === "unchanged").length;
-  console.log(
-    pc.dim(`\n  ${created} created, ${updated} updated, ${unchanged} unchanged`),
-  );
+  console.log(pc.dim(`\n  ${created} created, ${updated} updated, ${unchanged} unchanged`));
 }

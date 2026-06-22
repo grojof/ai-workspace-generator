@@ -88,14 +88,42 @@ export const BLOCK_MANIFEST: readonly BlockEntry[] = [
   // Greenfield only: how to choose the stack + production target before any per-stack layers exist. Gated to
   // new projects with no language/framework yet, so configured/existing repos aren't nagged. Sits after
   // skill-routing (keeps the fixed Layer-0 prefix) and where the stack layers would otherwise begin.
-  { kind: "template", id: "tech-selection", template: "core/tech-selection.md.eta", when: (c) => c.project.mode === "new" && c.stack.languages.length === 0 && c.stack.frameworks.length === 0 },
+  {
+    kind: "template",
+    id: "tech-selection",
+    template: "core/tech-selection.md.eta",
+    when: (c) =>
+      c.project.mode === "new" && c.stack.languages.length === 0 && c.stack.frameworks.length === 0,
+  },
   // Layers 1-3: one block per stack entry; the render helpers fall back to a generic block + context7.
-  { kind: "expand", expand: (config) => config.stack.languages.map((l) => ({ id: `lang-${l.id}`, content: renderLanguage(config, l) })) },
-  { kind: "expand", expand: (config) => config.stack.frameworks.map((f) => ({ id: `fw-${f.id}`, content: renderFramework(config, f) })) },
-  { kind: "expand", expand: (config) => config.stack.environments.map((e) => ({ id: `env-${e.id}`, content: renderEnvironment(config, e) })) },
-  { kind: "template", id: "learning", template: "core/learning.md.eta", when: (c) => c.project.purpose === "learn" },
+  {
+    kind: "expand",
+    expand: (config) =>
+      config.stack.languages.map((l) => ({ id: `lang-${l.id}`, content: renderLanguage(config, l) })),
+  },
+  {
+    kind: "expand",
+    expand: (config) =>
+      config.stack.frameworks.map((f) => ({ id: `fw-${f.id}`, content: renderFramework(config, f) })),
+  },
+  {
+    kind: "expand",
+    expand: (config) =>
+      config.stack.environments.map((e) => ({ id: `env-${e.id}`, content: renderEnvironment(config, e) })),
+  },
+  {
+    kind: "template",
+    id: "learning",
+    template: "core/learning.md.eta",
+    when: (c) => c.project.purpose === "learn",
+  },
   // Organization overlay (culture + working rules), English-only (AI-facing); only when a company is set.
-  { kind: "template", id: "company-overlay", template: "company/{company}/overlay.md.eta", when: (c) => c.company.id !== "none" && templateExists(`company/${c.company.id}/overlay.md.eta`) },
+  {
+    kind: "template",
+    id: "company-overlay",
+    template: "company/{company}/overlay.md.eta",
+    when: (c) => c.company.id !== "none" && templateExists(`company/${c.company.id}/overlay.md.eta`),
+  },
   { kind: "template", id: "company", template: "company/overlay.md.eta" },
   { kind: "template", id: "business", template: "business/domain.md.eta" },
   { kind: "template", id: "sdd", template: "sdd/orchestrator.md.eta", when: (c) => c.sdd.enabled },

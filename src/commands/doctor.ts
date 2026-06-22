@@ -57,7 +57,10 @@ export function runDoctor(cwd: string): void {
     for (const repo of resolveRepos(config)) {
       if (repo.path === ".") continue;
       if (!existsSync(resolve(cwd, repo.path, "CLAUDE.md"))) {
-        findings.push({ level: "warn", message: `CLAUDE.md missing for repo '${repo.name}' (${repo.path}).` });
+        findings.push({
+          level: "warn",
+          message: `CLAUDE.md missing for repo '${repo.name}' (${repo.path}).`,
+        });
       }
     }
   }
@@ -99,7 +102,8 @@ export function runDoctor(cwd: string): void {
   if (config.sdd.backend === "hybrid") {
     findings.push({
       level: "warn",
-      message: "SDD backend 'hybrid' relies on engram if installed; the in-repo spec store remains canonical.",
+      message:
+        "SDD backend 'hybrid' relies on engram if installed; the in-repo spec store remains canonical.",
     });
   }
 
@@ -114,8 +118,7 @@ export function runDoctor(cwd: string): void {
   // --- Report ---
   console.log(pc.bold(`\nDoctor — ${config.project.name}\n`));
   for (const f of findings) {
-    const tag =
-      f.level === "ok" ? pc.green("ok  ") : f.level === "warn" ? pc.yellow("warn") : pc.red("err ");
+    const tag = f.level === "ok" ? pc.green("ok  ") : f.level === "warn" ? pc.yellow("warn") : pc.red("err ");
     console.log(`  ${tag} ${f.message}`);
   }
   const errors = findings.filter((f) => f.level === "error").length;

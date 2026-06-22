@@ -25,8 +25,27 @@ function tmpRepo() {
 const CASES = {
   minimal: { project: { name: "t" } },
   learn: { project: { name: "t", purpose: "learn" } },
-  "example-reasons-odoo": { project: { name: "t", mode: "new" }, company: "example", sdd: { schema: "reasons" }, stack: { environments: [{ id: "odoo", version: "latest" }] } },
-  "example-fullstack": { project: { name: "t" }, company: "example", stack: { languages: [{ id: "typescript", version: "latest" }, { id: "go", version: "latest" }], frameworks: [{ id: "react", version: "latest" }], environments: [{ id: "wsl", version: "latest" }, { id: "docker", version: "latest" }] } },
+  "example-reasons-odoo": {
+    project: { name: "t", mode: "new" },
+    company: "example",
+    sdd: { schema: "reasons" },
+    stack: { environments: [{ id: "odoo", version: "latest" }] },
+  },
+  "example-fullstack": {
+    project: { name: "t" },
+    company: "example",
+    stack: {
+      languages: [
+        { id: "typescript", version: "latest" },
+        { id: "go", version: "latest" },
+      ],
+      frameworks: [{ id: "react", version: "latest" }],
+      environments: [
+        { id: "wsl", version: "latest" },
+        { id: "docker", version: "latest" },
+      ],
+    },
+  },
   "no-features": { project: { name: "t" }, sdd: { enabled: false }, livingDocs: false },
 };
 
@@ -49,7 +68,10 @@ test("manifest · block order is a pure function of the manifest (R1/R3)", () =>
   const config = ConfigSchema.parse({
     project: { name: "t" },
     company: "example",
-    stack: { languages: [{ id: "typescript", version: "latest" }], frameworks: [{ id: "react", version: "latest" }] },
+    stack: {
+      languages: [{ id: "typescript", version: "latest" }],
+      frameworks: [{ id: "react", version: "latest" }],
+    },
   });
   // composeFromManifest namespaces every id to `aiws:*` (ADR 0003 F1b); mirror that here.
   const expected = [];

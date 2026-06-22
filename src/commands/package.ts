@@ -6,7 +6,15 @@ import { loadConfig } from "../config/loader.js";
 import { resolveRepos, type Config } from "../config/schema.js";
 import { generate, type Artifact } from "../generate/index.js";
 import { printArtifacts } from "../util/report.js";
-import { names, pluginManifest, marketplaceManifest, marketplaceManifestMulti, repoPluginName, repoPluginManifest, installDoc } from "../generate/packaging.js";
+import {
+  names,
+  pluginManifest,
+  marketplaceManifest,
+  marketplaceManifestMulti,
+  repoPluginName,
+  repoPluginManifest,
+  installDoc,
+} from "../generate/packaging.js";
 import { zipSync, type ZipEntry } from "../util/zip.js";
 
 /** Binary skill assets (templates, logos) — copied byte-for-byte into the plugin, never utf8-normalized. */
@@ -30,7 +38,12 @@ function listFiles(dir: string): string[] {
  * per-repo `.claude/` outputs that 0003 places under each child.
  */
 function sourceRoots(cwd: string, config: Config): string[] {
-  return [cwd, ...resolveRepos(config).filter((r) => r.path !== ".").map((r) => resolve(cwd, r.path))];
+  return [
+    cwd,
+    ...resolveRepos(config)
+      .filter((r) => r.path !== ".")
+      .map((r) => resolve(cwd, r.path)),
+  ];
 }
 
 /**
@@ -56,7 +69,14 @@ function collectEntries(roots: string[], subdir: string): Array<{ name: string; 
  * Project a de-duplicated top-level tree (`<root>/<subdir>` across source roots) into `destBase`, preserving
  * each entry's relative layout. Binary assets are copied byte-for-byte; everything else as text.
  */
-function projectTree(cwd: string, roots: string[], subdir: string, destBase: string, desc: string, out: Artifact[]): void {
+function projectTree(
+  cwd: string,
+  roots: string[],
+  subdir: string,
+  destBase: string,
+  desc: string,
+  out: Artifact[],
+): void {
   for (const { name, path } of collectEntries(roots, subdir)) {
     const files = lstatSync(path).isDirectory() ? listFiles(path) : [path];
     for (const f of files) {
@@ -130,21 +150,53 @@ export function runPackage(cwd: string): void {
       const id = repoPluginName(config, repo.name);
       const dir = resolve(cwd, "plugins", id);
       const repoRoots = [cwd, resolve(cwd, repo.path)];
-      out.push(writeText(cwd, resolve(dir, ".claude-plugin/plugin.json"), JSON.stringify(repoPluginManifest(config, repo.name), null, 2), "plugin manifest"));
+      out.push(
+        writeText(
+          cwd,
+          resolve(dir, ".claude-plugin/plugin.json"),
+          JSON.stringify(repoPluginManifest(config, repo.name), null, 2),
+          "plugin manifest",
+        ),
+      );
       projectTree(cwd, repoRoots, ".claude/skills", resolve(dir, "skills"), "plugin skill", out);
       projectTree(cwd, repoRoots, ".claude/commands", resolve(dir, "commands"), "plugin command", out);
       projectTree(cwd, repoRoots, ".claude/agents", resolve(dir, "agents"), "plugin agent", out);
-      listed.push({ name: id, source: id, description: `AI workspace for ${config.project.name} · repo ${repo.name}.` });
+      listed.push({
+        name: id,
+        source: id,
+        description: `AI workspace for ${config.project.name} · repo ${repo.name}.`,
+      });
     }
-    out.push(writeText(cwd, resolve(cwd, ".claude-plugin/marketplace.json"), JSON.stringify(marketplaceManifestMulti(config, listed), null, 2), "marketplace catalog"));
+    out.push(
+      writeText(
+        cwd,
+        resolve(cwd, ".claude-plugin/marketplace.json"),
+        JSON.stringify(marketplaceManifestMulti(config, listed), null, 2),
+        "marketplace catalog",
+      ),
+    );
   } else {
     // Umbrella plugin (default): one plugin aggregating root + every child.
     const pluginDir = resolve(cwd, "plugins", plugin);
-    out.push(writeText(cwd, resolve(pluginDir, ".claude-plugin/plugin.json"), JSON.stringify(pluginManifest(config), null, 2), "plugin manifest"));
+    out.push(
+      writeText(
+        cwd,
+        resolve(pluginDir, ".claude-plugin/plugin.json"),
+        JSON.stringify(pluginManifest(config), null, 2),
+        "plugin manifest",
+      ),
+    );
     projectTree(cwd, roots, ".claude/skills", resolve(pluginDir, "skills"), "plugin skill", out);
     projectTree(cwd, roots, ".claude/commands", resolve(pluginDir, "commands"), "plugin command", out);
     projectTree(cwd, roots, ".claude/agents", resolve(pluginDir, "agents"), "plugin agent", out);
-    out.push(writeText(cwd, resolve(cwd, ".claude-plugin/marketplace.json"), JSON.stringify(marketplaceManifest(config), null, 2), "marketplace catalog"));
+    out.push(
+      writeText(
+        cwd,
+        resolve(cwd, ".claude-plugin/marketplace.json"),
+        JSON.stringify(marketplaceManifest(config), null, 2),
+        "marketplace catalog",
+      ),
+    );
   }
 
   // 4. Per-skill org zips (claude.ai Organization → Skills upload), from the aggregated skill set. SKILL.md
@@ -158,13 +210,26 @@ export function runPackage(cwd: string): void {
       data: readFileSync(f),
     }));
     // claude.ai requires SKILL.md at the zip root and reads it first; keep the rest deterministic for idempotency.
-    entries.sort((a, b) => (a.name === "SKILL.md" ? -1 : b.name === "SKILL.md" ? 1 : a.name.localeCompare(b.name)));
-    out.push(writeBytes(cwd, resolve(cwd, "dist/org-skills", `${name}.zip`), zipSync(entries), "org skill zip"));
+    entries.sort((a, b) =>
+      a.name === "SKILL.md" ? -1 : b.name === "SKILL.md" ? 1 : a.name.localeCompare(b.name),
+    );
+    out.push(
+      writeBytes(cwd, resolve(cwd, "dist/org-skills", `${name}.zip`), zipSync(entries), "org skill zip"),
+    );
   }
 
   // 5. Install guide (three surfaces).
-  out.push(writeText(cwd, resolve(cwd, "dist/INSTALL.md"), installDoc(config, gitRemote(cwd), skillIds), "install guide"));
+  out.push(
+    writeText(
+      cwd,
+      resolve(cwd, "dist/INSTALL.md"),
+      installDoc(config, gitRemote(cwd), skillIds),
+      "install guide",
+    ),
+  );
 
   printArtifacts(out);
-  console.log(pc.green(`\n✔ Packaged ${skillIds.length} skills. See dist/INSTALL.md for the three install surfaces.\n`));
+  console.log(
+    pc.green(`\n✔ Packaged ${skillIds.length} skills. See dist/INSTALL.md for the three install surfaces.\n`),
+  );
 }

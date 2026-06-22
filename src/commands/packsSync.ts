@@ -1,7 +1,16 @@
 import { execFileSync } from "node:child_process";
-import { existsSync, mkdtempSync, rmSync, readdirSync, cpSync, mkdirSync, writeFileSync, readFileSync } from "node:fs";
+import {
+  existsSync,
+  mkdtempSync,
+  rmSync,
+  readdirSync,
+  cpSync,
+  mkdirSync,
+  writeFileSync,
+  readFileSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
-import { join, resolve } from "node:path";
+import { join } from "node:path";
 import { parse } from "yaml";
 import pc from "picocolors";
 import { loadConfig } from "../config/loader.js";
@@ -19,7 +28,9 @@ export function parsePackSource(spec: string): PackSource {
   const s = spec.replace(/^git\+/, "");
   const hash = s.lastIndexOf("#");
   if (hash < 0) {
-    throw new Error(`company pack "${spec}" is not pinned — append \`#<tag|sha|branch>\` (e.g. \`#v1.2.0\`).`);
+    throw new Error(
+      `company pack "${spec}" is not pinned — append \`#<tag|sha|branch>\` (e.g. \`#v1.2.0\`).`,
+    );
   }
   const url = s.slice(0, hash);
   const ref = s.slice(hash + 1);
@@ -50,7 +61,9 @@ export function runPacksSync(cwd: string): void {
     return;
   }
 
-  console.log(pc.bold(`\nSyncing ${sources.length} company pack source(s) → ${pc.cyan(".ai-workspace/packs/")}\n`));
+  console.log(
+    pc.bold(`\nSyncing ${sources.length} company pack source(s) → ${pc.cyan(".ai-workspace/packs/")}\n`),
+  );
 
   // Rebuild the vendored set from scratch so removed sources don't linger.
   rmSync(dest, { recursive: true, force: true });
@@ -61,18 +74,30 @@ export function runPacksSync(cwd: string): void {
     const { url, ref } = parsePackSource(spec);
     const tmp = mkdtempSync(join(tmpdir(), "aiws-pack-"));
     try {
-      execFileSync("git", ["clone", "--depth", "1", "--branch", ref, "--quiet", url, tmp], { stdio: ["ignore", "ignore", "pipe"] });
+      execFileSync("git", ["clone", "--depth", "1", "--branch", ref, "--quiet", url, tmp], {
+        stdio: ["ignore", "ignore", "pipe"],
+      });
       const sha = execFileSync("git", ["-C", tmp, "rev-parse", "HEAD"], { encoding: "utf8" }).trim();
       const ids = vendorPacksFromClone(tmp, dest, spec);
       lock.push({ source: spec, url, ref, sha, ids });
-      console.log(`  ${pc.green("✔")} ${spec} ${pc.dim(`(${sha.slice(0, 10)})`)} → ${ids.join(", ") || pc.dim("no packs found")}`);
+      console.log(
+        `  ${pc.green("✔")} ${spec} ${pc.dim(`(${sha.slice(0, 10)})`)} → ${ids.join(", ") || pc.dim("no packs found")}`,
+      );
     } finally {
       rmSync(tmp, { recursive: true, force: true });
     }
   }
 
-  writeFileSync(join(dest, "packs-lock.json"), JSON.stringify({ version: 1, packs: lock }, null, 2) + "\n", "utf8");
-  console.log(pc.green(`\n✔ Vendored ${lock.reduce((n, l) => n + l.ids.length, 0)} pack(s). Commit \`.ai-workspace/packs/\`.\n`));
+  writeFileSync(
+    join(dest, "packs-lock.json"),
+    JSON.stringify({ version: 1, packs: lock }, null, 2) + "\n",
+    "utf8",
+  );
+  console.log(
+    pc.green(
+      `\n✔ Vendored ${lock.reduce((n, l) => n + l.ids.length, 0)} pack(s). Commit \`.ai-workspace/packs/\`.\n`,
+    ),
+  );
 }
 
 /** Copy each `skill-packs/<id>/` from a cloned repo into `dest/<id>/`, guarding the reserved namespace. */
@@ -88,7 +113,9 @@ function vendorPacksFromClone(clone: string, dest: string, spec: string): string
     if (!existsSync(manifestPath)) continue;
     const manifest = parsePackManifest(parse(readFileSync(manifestPath, "utf8")));
     if (isReservedNamespace(manifest.id)) {
-      throw new Error(`company pack "${manifest.id}" (from ${spec}) uses the reserved \`aiws\` namespace — only the base may. Use a \`corp-<handle>-\` id.`);
+      throw new Error(
+        `company pack "${manifest.id}" (from ${spec}) uses the reserved \`aiws\` namespace — only the base may. Use a \`corp-<handle>-\` id.`,
+      );
     }
     cpSync(join(src, entry.name), join(dest, manifest.id), { recursive: true });
     ids.push(manifest.id);

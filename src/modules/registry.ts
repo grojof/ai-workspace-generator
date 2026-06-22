@@ -15,10 +15,25 @@ export interface ModuleEntry {
 }
 
 export const LANGUAGES: ModuleEntry[] = [
-  { id: "typescript", label: "TypeScript", bundled: true, vscodeExtensions: ["dbaeumer.vscode-eslint", "esbenp.prettier-vscode"] },
-  { id: "javascript", label: "JavaScript", vscodeExtensions: ["dbaeumer.vscode-eslint", "esbenp.prettier-vscode"] },
+  {
+    id: "typescript",
+    label: "TypeScript",
+    bundled: true,
+    vscodeExtensions: ["dbaeumer.vscode-eslint", "esbenp.prettier-vscode"],
+  },
+  {
+    id: "javascript",
+    label: "JavaScript",
+    vscodeExtensions: ["dbaeumer.vscode-eslint", "esbenp.prettier-vscode"],
+  },
   { id: "go", label: "Go", bundled: true, vscodeExtensions: ["golang.go"], vscodeFormatter: "golang.go" },
-  { id: "python", label: "Python", bundled: true, vscodeExtensions: ["ms-python.python"], vscodeFormatter: "charliermarsh.ruff" },
+  {
+    id: "python",
+    label: "Python",
+    bundled: true,
+    vscodeExtensions: ["ms-python.python"],
+    vscodeFormatter: "charliermarsh.ruff",
+  },
   { id: "java", label: "Java" },
   { id: "csharp", label: "C#" },
 ];

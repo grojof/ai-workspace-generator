@@ -1,0 +1,12 @@
+dist
+node_modules
+coverage
+vendor
+templates
+skill-packs
+test/__fixtures__
+*.tgz
+
+# Markdown is hand-authored (bilingual docs, Mermaid, quoted-label tables) — not Prettier's to reflow.
+**/*.md
+package-lock.json

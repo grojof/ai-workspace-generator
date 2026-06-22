@@ -11,7 +11,14 @@ export interface DetectedStack {
   notes: string[];
 }
 
-function readJson(path: string): any | null {
+/** A parsed `package.json` shape — only the fields stack detection reads, all optional. */
+interface PackageJson {
+  dependencies?: Record<string, string>;
+  devDependencies?: Record<string, string>;
+  engines?: { node?: string };
+}
+
+function readJson(path: string): unknown {
   try {
     return JSON.parse(readFileSync(path, "utf8"));
   } catch {
@@ -19,8 +26,13 @@ function readJson(path: string): any | null {
   }
 }
 
-function depVersion(pkg: any, name: string): string | undefined {
-  const all = { ...(pkg?.dependencies ?? {}), ...(pkg?.devDependencies ?? {}) };
+/** Narrow untrusted parsed JSON to the subset of `package.json` we consume. */
+function asPackageJson(value: unknown): PackageJson | null {
+  return typeof value === "object" && value !== null ? (value as PackageJson) : null;
+}
+
+function depVersion(pkg: PackageJson, name: string): string | undefined {
+  const all = { ...(pkg.dependencies ?? {}), ...(pkg.devDependencies ?? {}) };
   const raw = all[name];
   if (!raw) return undefined;
   const m = String(raw).match(/(\d+)(?:\.\d+)?/);
@@ -40,7 +52,7 @@ export function detectStack(cwd: string): DetectedStack {
   let runtime: string | undefined;
 
   const pkgPath = resolve(cwd, "package.json");
-  const pkg = existsSync(pkgPath) ? readJson(pkgPath) : null;
+  const pkg = existsSync(pkgPath) ? asPackageJson(readJson(pkgPath)) : null;
 
   if (pkg) {
     notes.push("Found package.json (Node project).");
@@ -74,7 +86,8 @@ export function detectStack(cwd: string): DetectedStack {
     }
   }
 
-  const hasPython = existsSync(resolve(cwd, "pyproject.toml")) || existsSync(resolve(cwd, "requirements.txt"));
+  const hasPython =
+    existsSync(resolve(cwd, "pyproject.toml")) || existsSync(resolve(cwd, "requirements.txt"));
   if (existsSync(resolve(cwd, "go.mod"))) {
     languages.push({ id: "go", version: "latest" });
     notes.push("Found go.mod (Go project).");
@@ -89,7 +102,11 @@ export function detectStack(cwd: string): DetectedStack {
     environments.push({ id: "node-runtime", version: "latest" });
     notes.push("Found .nvmrc (Node version manager).");
   }
-  if (existsSync(resolve(cwd, "Dockerfile")) || existsSync(resolve(cwd, "docker-compose.yml")) || existsSync(resolve(cwd, "compose.yaml"))) {
+  if (
+    existsSync(resolve(cwd, "Dockerfile")) ||
+    existsSync(resolve(cwd, "docker-compose.yml")) ||
+    existsSync(resolve(cwd, "compose.yaml"))
+  ) {
     environments.push({ id: "docker", version: "latest" });
     notes.push("Found Docker setup.");
   }

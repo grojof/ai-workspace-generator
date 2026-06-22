@@ -30,9 +30,7 @@ export const StackSchema = z.object({
 
 export const ConventionsSchema = z.object({
   prefixes: z.record(z.string(), z.string()).default({}),
-  fileNaming: z
-    .enum(["kebab-case", "camelCase", "PascalCase", "snake_case"])
-    .default("kebab-case"),
+  fileNaming: z.enum(["kebab-case", "camelCase", "PascalCase", "snake_case"]).default("kebab-case"),
   banned: z.array(z.string()).default([]),
   notes: z.array(z.string()).default([]),
 });
@@ -282,7 +280,11 @@ export function unionStack(config: Config): Config {
   const languages: Config["stack"]["languages"] = [];
   const frameworks: Config["stack"]["frameworks"] = [];
   const environments: Config["stack"]["environments"] = [];
-  const seen = { languages: new Set<string>(), frameworks: new Set<string>(), environments: new Set<string>() };
+  const seen = {
+    languages: new Set<string>(),
+    frameworks: new Set<string>(),
+    environments: new Set<string>(),
+  };
   const push = <T extends { id: string }>(into: T[], set: Set<string>, items: readonly T[]) => {
     for (const item of items) {
       if (set.has(item.id)) continue;

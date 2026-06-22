@@ -28,7 +28,9 @@ export function runSync(cwd: string, options: SyncOptions = {}): void {
     generate(cwd, config);
     const planned = [...getPlanned()];
     setDryRun(false);
-    const changes = planned.filter(([abs, content]) => (existsSync(abs) ? readFileSync(abs, "utf8") : "") !== content);
+    const changes = planned.filter(
+      ([abs, content]) => (existsSync(abs) ? readFileSync(abs, "utf8") : "") !== content,
+    );
     if (changes.length === 0) {
       console.log(pc.green("  ✔ Everything matches. Nothing to restore.\n"));
       return;
@@ -39,7 +41,9 @@ export function runSync(cwd: string, options: SyncOptions = {}): void {
       console.log(lineDiff(before, content));
       console.log();
     }
-    console.log(pc.yellow(`  ${changes.length} file(s) would be restored. Run \`ai-workspace sync\` to apply.\n`));
+    console.log(
+      pc.yellow(`  ${changes.length} file(s) would be restored. Run \`ai-workspace sync\` to apply.\n`),
+    );
     return;
   }
 

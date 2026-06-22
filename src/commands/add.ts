@@ -14,7 +14,9 @@ export function runAdd(cwd: string, typeArg: string, id: string, version = "late
   }
   const entry = find(type, id);
   if (!entry) {
-    throw new Error(`Unknown ${type} "${id}". Run \`ai-workspace add ${type}\` choices are limited to the registry.`);
+    throw new Error(
+      `Unknown ${type} "${id}". Run \`ai-workspace add ${type}\` choices are limited to the registry.`,
+    );
   }
 
   const config = loadConfig(cwd);

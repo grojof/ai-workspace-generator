@@ -73,7 +73,10 @@ test("methodology · spdd wires the sync loop; sdd does not (0009 E1-E4)", () =>
     assert.equal(has(reasons, ".claude/skills/aiws-sdd-spec-sync/SKILL.md"), false);
 
     // E2: orchestrator documents the loop under spdd only.
-    assert.match(readFileSync(resolve(spdd, "AGENTS.md"), "utf8"), /\/aiws-sdd-sync.*aiws-sdd-spec-sync|aiws-sdd-spec-sync.*\/aiws-sdd-sync/s);
+    assert.match(
+      readFileSync(resolve(spdd, "AGENTS.md"), "utf8"),
+      /\/aiws-sdd-sync.*aiws-sdd-spec-sync|aiws-sdd-spec-sync.*\/aiws-sdd-sync/s,
+    );
     assert.doesNotMatch(readFileSync(resolve(sdd, "AGENTS.md"), "utf8"), /aiws-sdd-spec-sync/);
 
     // E3: prompt→code half reused (aiws-sdd-code-maintenance present under spdd), no /spdd-* commands.

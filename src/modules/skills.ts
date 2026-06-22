@@ -108,7 +108,12 @@ export const SKILLS: SkillEntry[] = [
       es: "redactar/validar una spec en modo REASONS",
     },
   },
-  ...(["aiws-sdd-audit-security", "aiws-sdd-audit-style", "aiws-sdd-audit-stack", "aiws-sdd-audit-architecture"].map((id) => ({
+  ...[
+    "aiws-sdd-audit-security",
+    "aiws-sdd-audit-style",
+    "aiws-sdd-audit-stack",
+    "aiws-sdd-audit-architecture",
+  ].map((id) => ({
     id,
     domain: (id.endsWith("security") ? "security" : "technical") as SkillDomain,
     level: "advanced" as SkillLevel,
@@ -116,18 +121,45 @@ export const SKILLS: SkillEntry[] = [
     loadMode: "advanced-only" as SkillLoadMode,
     risk: "low" as SkillRisk,
     enabled: (c: Config) => c.sdd.enabled && c.sdd.schema === "reasons" && claude(c),
-    trigger: { en: `${id.replace("aiws-sdd-audit-", "")} audit of a REASONS spec/app`, es: `auditoría de ${id.replace("aiws-sdd-audit-", "")} de una spec/app REASONS` },
-  }))),
+    trigger: {
+      en: `${id.replace("aiws-sdd-audit-", "")} audit of a REASONS spec/app`,
+      es: `auditoría de ${id.replace("aiws-sdd-audit-", "")} de una spec/app REASONS`,
+    },
+  })),
   // Builder workflow (author side) — idea → spec → code → tests → handoff. REASONS mode only.
-  ...([
+  ...[
     { id: "aiws-sdd-init", en: "scaffolding a new app's layout", es: "crear el layout de una app nueva" },
-    { id: "aiws-sdd-spec-capture", en: "capturing requirements as a REASONS spec", es: "capturar requisitos como spec REASONS" },
-    { id: "aiws-sdd-spec-review", en: "revising a spec / signing it off (status lifecycle)", es: "revisar una spec / firmarla (ciclo de estado)" },
-    { id: "aiws-sdd-code-generation", en: "generating code from a signed-off spec", es: "generar código desde una spec aprobada" },
-    { id: "aiws-sdd-code-maintenance", en: "propagating a spec change into code", es: "propagar un cambio de spec al código" },
-    { id: "aiws-sdd-test-generation", en: "generating tests from the spec's §5", es: "generar tests desde la §5 de la spec" },
+    {
+      id: "aiws-sdd-spec-capture",
+      en: "capturing requirements as a REASONS spec",
+      es: "capturar requisitos como spec REASONS",
+    },
+    {
+      id: "aiws-sdd-spec-review",
+      en: "revising a spec / signing it off (status lifecycle)",
+      es: "revisar una spec / firmarla (ciclo de estado)",
+    },
+    {
+      id: "aiws-sdd-code-generation",
+      en: "generating code from a signed-off spec",
+      es: "generar código desde una spec aprobada",
+    },
+    {
+      id: "aiws-sdd-code-maintenance",
+      en: "propagating a spec change into code",
+      es: "propagar un cambio de spec al código",
+    },
+    {
+      id: "aiws-sdd-test-generation",
+      en: "generating tests from the spec's §5",
+      es: "generar tests desde la §5 de la spec",
+    },
     { id: "aiws-sdd-self-review", en: "validating before IT handoff", es: "validar antes del handoff a IT" },
-    { id: "aiws-sdd-handoff", en: "packaging the app for IT review", es: "empaquetar la app para revisión de IT" },
+    {
+      id: "aiws-sdd-handoff",
+      en: "packaging the app for IT review",
+      es: "empaquetar la app para revisión de IT",
+    },
   ].map(({ id, en, es }) => ({
     id,
     domain: "development" as SkillDomain,
@@ -137,7 +169,7 @@ export const SKILLS: SkillEntry[] = [
     risk: "low" as SkillRisk,
     enabled: (c: Config) => c.sdd.enabled && c.sdd.schema === "reasons" && claude(c),
     trigger: { en, es },
-  }))),
+  })),
   {
     // SPDD closed loop (code→prompt) — fold non-behavioural code changes back into the Canvas. SPDD only.
     id: "aiws-sdd-spec-sync",
@@ -265,7 +297,12 @@ export const SKILLS: SkillEntry[] = [
  */
 export function selectSkills(config: Config): SkillEntry[] {
   const { userType } = config.profile;
-  const order: Record<SkillLoadMode, number> = { always: 0, suggested: 1, "on-demand": 2, "advanced-only": 3 };
+  const order: Record<SkillLoadMode, number> = {
+    always: 0,
+    suggested: 1,
+    "on-demand": 2,
+    "advanced-only": 3,
+  };
   return SKILLS.filter((s) => {
     if (!s.enabled(config)) return false;
     if (s.userType !== "both" && s.userType !== userType) return false;

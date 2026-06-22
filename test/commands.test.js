@@ -62,7 +62,14 @@ test("upgrade --check does not write changes", () => {
 });
 
 test("remove strips the module's block from AGENTS.md", () => {
-  const { cwd } = setup({ stack: { languages: [{ id: "typescript", version: "5" }, { id: "go", version: "1" }] } });
+  const { cwd } = setup({
+    stack: {
+      languages: [
+        { id: "typescript", version: "5" },
+        { id: "go", version: "1" },
+      ],
+    },
+  });
   try {
     let agents = readFileSync(resolve(cwd, "AGENTS.md"), "utf8");
     assert.match(agents, /ai-workspace:begin:aiws:lang-go/);

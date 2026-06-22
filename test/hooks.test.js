@@ -29,7 +29,10 @@ test("hooks · warn/block generate the script + PreToolUse Bash wiring (E2)", ()
   for (const mode of ["warn", "block"]) {
     const cwd = tmpRepo();
     try {
-      generate(cwd, ConfigSchema.parse({ project: { name: "t" }, workflow: { hooks: { safetyGuard: mode } } }));
+      generate(
+        cwd,
+        ConfigSchema.parse({ project: { name: "t" }, workflow: { hooks: { safetyGuard: mode } } }),
+      );
       assert.ok(readFileSync(resolve(cwd, ".claude/hooks/safety-guard.mjs"), "utf8"));
       const pre = settings(cwd).hooks.PreToolUse;
       assert.equal(pre[0].matcher, "Bash");
@@ -43,10 +46,16 @@ test("hooks · warn/block generate the script + PreToolUse Bash wiring (E2)", ()
 test("hooks · the guard decides: deny/ask on risky, allow on safe (E3)", () => {
   const cwd = tmpRepo();
   try {
-    generate(cwd, ConfigSchema.parse({ project: { name: "t" }, workflow: { hooks: { safetyGuard: "block" } } }));
+    generate(
+      cwd,
+      ConfigSchema.parse({ project: { name: "t" }, workflow: { hooks: { safetyGuard: "block" } } }),
+    );
     const script = resolve(cwd, ".claude/hooks/safety-guard.mjs");
     const run = (cmd, mode) =>
-      spawnSync("node", [script, mode], { input: JSON.stringify({ tool_name: "Bash", tool_input: { command: cmd } }), encoding: "utf8" });
+      spawnSync("node", [script, mode], {
+        input: JSON.stringify({ tool_name: "Bash", tool_input: { command: cmd } }),
+        encoding: "utf8",
+      });
 
     // risky → block emits deny.
     const deny = run("git push --force origin main", "block");
@@ -55,7 +64,10 @@ test("hooks · the guard decides: deny/ask on risky, allow on safe (E3)", () => 
     // risky → warn emits ask.
     assert.equal(JSON.parse(run("rm -rf build", "warn").stdout).hookSpecificOutput.permissionDecision, "ask");
     // a migration is flagged.
-    assert.equal(JSON.parse(run("npx prisma migrate deploy", "block").stdout).hookSpecificOutput.permissionDecision, "deny");
+    assert.equal(
+      JSON.parse(run("npx prisma migrate deploy", "block").stdout).hookSpecificOutput.permissionDecision,
+      "deny",
+    );
     // safe → no decision (allow), exit 0.
     const safe = run("npm test", "block");
     assert.equal(safe.status, 0);
@@ -72,11 +84,18 @@ test("hooks · the guard decides: deny/ask on risky, allow on safe (E3)", () => 
 test("hooks · the guard warns on hand-edits to generated base files; ignores user files (F3c)", () => {
   const cwd = tmpRepo();
   try {
-    generate(cwd, ConfigSchema.parse({ project: { name: "t" }, workflow: { hooks: { safetyGuard: "warn" } } }));
+    generate(
+      cwd,
+      ConfigSchema.parse({ project: { name: "t" }, workflow: { hooks: { safetyGuard: "warn" } } }),
+    );
     const script = resolve(cwd, ".claude/hooks/safety-guard.mjs");
     // The hook reads .ai-workspace/manifest.json relative to cwd → run it from the generated repo.
     const edit = (file_path) =>
-      spawnSync("node", [script, "warn"], { cwd, input: JSON.stringify({ tool_name: "Edit", tool_input: { file_path } }), encoding: "utf8" });
+      spawnSync("node", [script, "warn"], {
+        cwd,
+        input: JSON.stringify({ tool_name: "Edit", tool_input: { file_path } }),
+        encoding: "utf8",
+      });
 
     // An owned base artifact (manifest `file` entry) → ask.
     const owned = edit(".claude/skills/aiws-secure-commit/SKILL.md");
@@ -98,7 +117,14 @@ test("hooks · the guard warns on hand-edits to generated base files; ignores us
 test("hooks · copilot-only target gets no safety hook (E4)", () => {
   const cwd = tmpRepo();
   try {
-    generate(cwd, ConfigSchema.parse({ project: { name: "t" }, targets: ["copilot"], workflow: { hooks: { safetyGuard: "warn" } } }));
+    generate(
+      cwd,
+      ConfigSchema.parse({
+        project: { name: "t" },
+        targets: ["copilot"],
+        workflow: { hooks: { safetyGuard: "warn" } },
+      }),
+    );
     assert.equal(existsSync(resolve(cwd, ".claude/hooks/safety-guard.mjs")), false);
   } finally {
     rmSync(cwd, { recursive: true, force: true });
@@ -108,7 +134,11 @@ test("hooks · copilot-only target gets no safety hook (E4)", () => {
 test("hooks · coexists with the doc-sync Stop hook; idempotent (E5)", () => {
   const cwd = tmpRepo();
   try {
-    const config = ConfigSchema.parse({ project: { name: "t" }, livingDocsHook: true, workflow: { hooks: { safetyGuard: "warn" } } });
+    const config = ConfigSchema.parse({
+      project: { name: "t" },
+      livingDocsHook: true,
+      workflow: { hooks: { safetyGuard: "warn" } },
+    });
     generate(cwd, config);
     const s = settings(cwd);
     assert.ok(s.hooks.Stop);

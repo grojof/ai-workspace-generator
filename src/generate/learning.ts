@@ -45,12 +45,18 @@ function learnPrompt(): string {
 export function generateLearning(cwd: string, config: Config): WriteResult[] {
   const results: WriteResult[] = [];
   if (config.project.purpose !== "learn") return results;
-  const desc = "Tutor to learn languages, frameworks, environments or concepts with exercises and cases. Trigger: when the user wants to learn, practice, or prepare a topic.";
+  const desc =
+    "Tutor to learn languages, frameworks, environments or concepts with exercises and cases. Trigger: when the user wants to learn, practice, or prepare a topic.";
 
   const learnBody = LEARN_SKILL_EN.replaceAll("docs/ai/", `${docsPaths(config).status}/`);
 
   if (config.targets.includes("claude")) {
-    results.push(writeFile(resolve(cwd, ".claude/skills/aiws-learn/SKILL.md"), frontmatter("aiws-learn", desc) + learnBody));
+    results.push(
+      writeFile(
+        resolve(cwd, ".claude/skills/aiws-learn/SKILL.md"),
+        frontmatter("aiws-learn", desc) + learnBody,
+      ),
+    );
     results.push(writeFile(resolve(cwd, ".claude/commands/aiws-learn.md"), learnCommand()));
   }
   if (config.targets.includes("copilot")) {

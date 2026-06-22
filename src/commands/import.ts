@@ -142,7 +142,9 @@ export function runImport(cwd: string, sources: string[]): void {
   console.log(pc.bold(`\nIngested ${assets.length} asset(s) from: ${sources.join(", ")}\n`));
   console.log(`  ${pc.green("•")} ${byKind("instructions").length} instruction file(s)`);
   console.log(`  ${pc.green("•")} ${byKind("company").length} style/convention doc(s)`);
-  console.log(`  ${pc.green("•")} ${byKind("lint").length + byKind("format").length + byKind("tsconfig").length} config file(s)`);
+  console.log(
+    `  ${pc.green("•")} ${byKind("lint").length + byKind("format").length + byKind("tsconfig").length} config file(s)`,
+  );
   console.log(
     pc.dim(
       `\n  Wrote AGENTS.md \`imported\` block, ${status}/imported/*, and ${reconcilePath}.\n` +
