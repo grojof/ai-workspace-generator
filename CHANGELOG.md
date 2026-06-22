@@ -6,6 +6,29 @@ All notable changes to this project are documented here. The format is based on
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-06-23
+
+Quality & self-coherence release (post-v0.2.0 audit). Existing repos upgrade with `ai-workspace upgrade`.
+
+### Added
+- **Documentation contract + coherence checks** — `docs.contract` (config, defaulted; the root `README` is the
+  declared index) and `doctor` flags **dangling references** and **orphan docs** (`warn`, conservative).
+- **`aiws-audit` skill + `/aiws-audit`** — a read-only, dated self-audit report under `docs/development/audits/`
+  composing `doctor`/`verify`/`reconcile` + the contract. The workspace audits itself.
+- **AGENTS.md progressive disclosure** — per-stack rules move to `references/stack/<id>.md`; AGENTS.md keeps
+  resolving **pointers**; Copilot gets an `applyTo` projection where a file glob exists. One source, projected
+  to each target's native loader.
+
+### Changed
+- **Adopted ESLint + Prettier**, enforced in CI; added `.nvmrc`; `any` → `unknown` at the detection boundary.
+- **Pruned the duplicated REASONS detail** from the SDD orchestrator — it lives in the now cross-tool
+  `aiws-sdd-*` skills (Agent Skills open standard).
+- `doc-sync` now covers `docs/project/`; generated skills validated against the Agent Skills frontmatter spec.
+
+### Removed
+- The redundant hand-rolled **self-plugin** (`.claude-plugin/`, top-level `commands/`) — this project ships as
+  the `ai-workspace` npm CLI; plugin packaging stays a feature for consumer repos.
+
 ## [0.2.0] - 2026-06-22
 
 Foundations release (ADR 0003 A–F + generated-harness quality). Existing repos upgrade with
@@ -51,7 +74,8 @@ First tagged release with a prebuilt tarball (`npm i -g …/ai-workspace-generat
   programming) and contains **no business data**. Applying the generator to a company is an optional
   extension point (`company`, `templates/company/`).
 
-[Unreleased]: https://github.com/grojof/ai-workspace-generator/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/grojof/ai-workspace-generator/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/grojof/ai-workspace-generator/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/grojof/ai-workspace-generator/compare/v0.1.1...v0.2.0
 [0.1.1]: https://github.com/grojof/ai-workspace-generator/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/grojof/ai-workspace-generator/releases/tag/v0.1.0
