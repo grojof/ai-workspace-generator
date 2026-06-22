@@ -28,29 +28,29 @@ El workspace de IA de este proyecto fue creado y adaptado por **ai-workspace**. 
 - `.gitattributes` — Normalización de fin de línea en Git.
 - `.claudeignore` — Exclusiones de contexto IA / git (gestionadas).
 - `.gitignore` — Exclusiones de contexto IA / git (gestionadas).
-- `.claude/commands/sdd-explore.md` — Metodología SDD: comandos + almacén de specs (Markdown en el repo, sin CLI externo).
-- `.claude/commands/sdd-propose.md` — Metodología SDD: comandos + almacén de specs (Markdown en el repo, sin CLI externo).
-- `.claude/commands/sdd-clarify.md` — Metodología SDD: comandos + almacén de specs (Markdown en el repo, sin CLI externo).
-- `.claude/commands/sdd-spec.md` — Metodología SDD: comandos + almacén de specs (Markdown en el repo, sin CLI externo).
-- `.claude/commands/sdd-design.md` — Metodología SDD: comandos + almacén de specs (Markdown en el repo, sin CLI externo).
-- `.claude/commands/sdd-tasks.md` — Metodología SDD: comandos + almacén de specs (Markdown en el repo, sin CLI externo).
-- `.claude/commands/sdd-apply.md` — Metodología SDD: comandos + almacén de specs (Markdown en el repo, sin CLI externo).
-- `.claude/commands/sdd-verify.md` — Metodología SDD: comandos + almacén de specs (Markdown en el repo, sin CLI externo).
-- `.claude/commands/sdd-archive.md` — Metodología SDD: comandos + almacén de specs (Markdown en el repo, sin CLI externo).
+- `.claude/commands/aiws-sdd-explore.md` — Metodología SDD: comandos + almacén de specs (Markdown en el repo, sin CLI externo).
+- `.claude/commands/aiws-sdd-propose.md` — Metodología SDD: comandos + almacén de specs (Markdown en el repo, sin CLI externo).
+- `.claude/commands/aiws-sdd-clarify.md` — Metodología SDD: comandos + almacén de specs (Markdown en el repo, sin CLI externo).
+- `.claude/commands/aiws-sdd-spec.md` — Metodología SDD: comandos + almacén de specs (Markdown en el repo, sin CLI externo).
+- `.claude/commands/aiws-sdd-design.md` — Metodología SDD: comandos + almacén de specs (Markdown en el repo, sin CLI externo).
+- `.claude/commands/aiws-sdd-tasks.md` — Metodología SDD: comandos + almacén de specs (Markdown en el repo, sin CLI externo).
+- `.claude/commands/aiws-sdd-apply.md` — Metodología SDD: comandos + almacén de specs (Markdown en el repo, sin CLI externo).
+- `.claude/commands/aiws-sdd-verify.md` — Metodología SDD: comandos + almacén de specs (Markdown en el repo, sin CLI externo).
+- `.claude/commands/aiws-sdd-archive.md` — Metodología SDD: comandos + almacén de specs (Markdown en el repo, sin CLI externo).
 - `docs/development/README.md` — Metodología SDD: comandos + almacén de specs (Markdown en el repo, sin CLI externo).
 - `docs/development/specs/.gitkeep` — Metodología SDD: comandos + almacén de specs (Markdown en el repo, sin CLI externo).
 - `docs/development/changes/.gitkeep` — Metodología SDD: comandos + almacén de specs (Markdown en el repo, sin CLI externo).
-- `.claude/skills/sdd-explore/SKILL.md` — Skill vendorizada (.claude/skills/).
-- `.claude/skills/sdd-propose/SKILL.md` — Skill vendorizada (.claude/skills/).
-- `.claude/skills/sdd-clarify/SKILL.md` — Skill vendorizada (.claude/skills/).
-- `.claude/skills/sdd-spec/SKILL.md` — Skill vendorizada (.claude/skills/).
-- `.claude/skills/sdd-design/SKILL.md` — Skill vendorizada (.claude/skills/).
-- `.claude/skills/sdd-tasks/SKILL.md` — Skill vendorizada (.claude/skills/).
-- `.claude/skills/sdd-apply/SKILL.md` — Skill vendorizada (.claude/skills/).
-- `.claude/skills/sdd-verify/SKILL.md` — Skill vendorizada (.claude/skills/).
-- `.claude/skills/sdd-archive/SKILL.md` — Skill vendorizada (.claude/skills/).
+- `.claude/skills/aiws-sdd-explore/SKILL.md` — Skill vendorizada (.claude/skills/).
+- `.claude/skills/aiws-sdd-propose/SKILL.md` — Skill vendorizada (.claude/skills/).
+- `.claude/skills/aiws-sdd-clarify/SKILL.md` — Skill vendorizada (.claude/skills/).
+- `.claude/skills/aiws-sdd-spec/SKILL.md` — Skill vendorizada (.claude/skills/).
+- `.claude/skills/aiws-sdd-design/SKILL.md` — Skill vendorizada (.claude/skills/).
+- `.claude/skills/aiws-sdd-tasks/SKILL.md` — Skill vendorizada (.claude/skills/).
+- `.claude/skills/aiws-sdd-apply/SKILL.md` — Skill vendorizada (.claude/skills/).
+- `.claude/skills/aiws-sdd-verify/SKILL.md` — Skill vendorizada (.claude/skills/).
+- `.claude/skills/aiws-sdd-archive/SKILL.md` — Skill vendorizada (.claude/skills/).
 - `.claude/skills/_shared/sdd-convention.md` — Skill vendorizada (.claude/skills/).
-- `.claude/skills/living-docs/SKILL.md` — Skill vendorizada (.claude/skills/).
+- `.claude/skills/aiws-living-docs/SKILL.md` — Skill vendorizada (.claude/skills/).
 - `.claude/skills/find-skills/LICENSE.txt` — Skill vendorizada (.claude/skills/).
 - `.claude/skills/find-skills/SKILL.md` — Skill vendorizada (.claude/skills/).
 - `.claude/skills/mcp-builder/LICENSE.txt` — Skill vendorizada (.claude/skills/).
@@ -81,22 +81,22 @@ El workspace de IA de este proyecto fue creado y adaptado por **ai-workspace**. 
 - `.claude/skills/skill-creator/scripts/utils.py` — Skill vendorizada (.claude/skills/).
 - `.claude/skills/skill-creator/scripts/__init__.py` — Skill vendorizada (.claude/skills/).
 - `.claude/skills/skill-creator/SKILL.md` — Skill vendorizada (.claude/skills/).
-- `.claude/commands/doc-sync.md` — Docs vivas: /doc-sync + estado del proyecto.
-- `docs/development/status/PROJECT-STATE.md` — Docs vivas: /doc-sync + estado del proyecto.
-- `docs/development/status/ARCHITECTURE.md` — Docs vivas: /doc-sync + estado del proyecto.
+- `.claude/commands/aiws-doc-sync.md` — Docs vivas: /aiws-doc-sync + estado del proyecto.
+- `docs/development/status/PROJECT-STATE.md` — Docs vivas: /aiws-doc-sync + estado del proyecto.
+- `docs/development/status/ARCHITECTURE.md` — Docs vivas: /aiws-doc-sync + estado del proyecto.
 - `docs/README.md` — Índice de docs/: explica la estructura de la documentación.
-- `.claude/skills/dependency-upgrade/SKILL.md` — Gobernanza: versiones, seguridad, commits.
-- `.claude/skills/secure-commit/SKILL.md` — Gobernanza: versiones, seguridad, commits.
-- `.claude/commands/commit.md` — Gobernanza: versiones, seguridad, commits.
-- `.claude/commands/upgrade-deps.md` — Gobernanza: versiones, seguridad, commits.
+- `.claude/skills/aiws-dependency-upgrade/SKILL.md` — Gobernanza: versiones, seguridad, commits.
+- `.claude/skills/aiws-secure-commit/SKILL.md` — Gobernanza: versiones, seguridad, commits.
+- `.claude/commands/aiws-commit.md` — Gobernanza: versiones, seguridad, commits.
+- `.claude/commands/aiws-upgrade-deps.md` — Gobernanza: versiones, seguridad, commits.
 - `.githooks/commit-msg` — Gobernanza: versiones, seguridad, commits.
-- `.claude/skills/ai-workspace-guide/SKILL.md` — Skill vendorizada (.claude/skills/).
+- `.claude/skills/aiws-workspace-guide/SKILL.md` — Skill vendorizada (.claude/skills/).
 - `.claude/commands/aiws-guide.md` — Skill vendorizada (.claude/skills/).
-- `.claude/skills/configure-workspace/SKILL.md` — Skill vendorizada (.claude/skills/).
-- `.claude/commands/configure.md` — Skill vendorizada (.claude/skills/).
+- `.claude/skills/aiws-configure-workspace/SKILL.md` — Skill vendorizada (.claude/skills/).
+- `.claude/commands/aiws-configure.md` — Skill vendorizada (.claude/skills/).
 - `.vscode/extensions.json` — Extensiones recomendadas de VS Code.
 - `.vscode/settings.json` — Extensiones recomendadas de VS Code.
-- `.claude/skills/vscode-setup/SKILL.md` — Extensiones recomendadas de VS Code.
+- `.claude/skills/aiws-vscode-setup/SKILL.md` — Extensiones recomendadas de VS Code.
 
 
 ## Cómo encaja todo
@@ -109,8 +109,8 @@ flowchart TD
   AG --> CO[".github/copilot-instructions.md<br/>espejo generado"]
   GEN --> MCP[".mcp.json / .vscode/mcp.json"]
   GEN --> IGN[".claudeignore / .copilotignore"]
-  GEN --> SDD["Metodología SDD: docs/development/ + comandos /sdd-* (sin CLI externo)"]
-  GEN --> DOCS["docs/development/status/*  ·  /doc-sync"]
+  GEN --> SDD["Metodología SDD: docs/development/ + comandos /aiws-sdd-* (sin CLI externo)"]
+  GEN --> DOCS["docs/development/status/*  ·  /aiws-doc-sync"]
 
 ```
 
@@ -124,13 +124,13 @@ flowchart TD
 - **Añade un módulo de stack:** `ai-workspace add <language|framework|mcp> <id>`.
 - **Actualiza plantillas:** `ai-workspace upgrade` (muestra un diff primero).
 - **Comprueba la salud:** `ai-workspace doctor` (presupuesto de tokens, referencias rotas).
-- **Planifica un cambio:** `/sdd-explore` → `/sdd-propose` → `/sdd-clarify` → … → `/sdd-archive` (es una metodología — los artefactos son Markdown en `docs/development/`, sin CLI externo).
-- **Refresca el estado del proyecto para la IA:** `/doc-sync`.
-- **¿Empiezas con IA?** Pregunta por la skill `ai-workspace-guide` o usa `/aiws-guide`.
+- **Planifica un cambio:** `/aiws-sdd-explore` → `/aiws-sdd-propose` → `/aiws-sdd-clarify` → … → `/aiws-sdd-archive` (es una metodología — los artefactos son Markdown en `docs/development/`, sin CLI externo).
+- **Refresca el estado del proyecto para la IA:** `/aiws-doc-sync`.
+- **¿Empiezas con IA?** Pregunta por la skill `aiws-workspace-guide` o usa `/aiws-guide`.
 
 ## Gobernanza y commits
 - **Modo de proyecto:** existing — versiones conservadoras; sube solo tras evaluación.
-- **Commits:** sin trailers de co-author; se commitea solo tras tu aprobación (usa /commit).
+- **Commits:** sin trailers de co-author; se commitea solo tras tu aprobación (usa /aiws-commit).
 - **Barrera de seguridad:** la IA debe parar y preguntar antes de subir versiones, migrar, resolver conflictos o cambios arriesgados.
 - **Refuerzo:** activa el hook de commit una vez → `git config core.hooksPath .githooks`
 

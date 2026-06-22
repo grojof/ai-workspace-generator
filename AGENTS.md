@@ -1,4 +1,4 @@
-<!-- ai-workspace:begin:header -->
+<!-- ai-workspace:begin:aiws:header -->
 # ai-workspace-generator — AI Agent Guide (AGENTS.md)
 
 Node/TypeScript CLI that scaffolds and adapts AI workspaces (Claude Code + Copilot) from one config.
@@ -9,9 +9,9 @@ mirror or import this content — **edit rules here**, then run `ai-workspace sy
 
 Sections between `ai-workspace:begin/end` markers are generated. Add your own notes **outside** them;
 they survive regeneration.
-<!-- ai-workspace:end:header -->
+<!-- ai-workspace:end:aiws:header -->
 
-<!-- ai-workspace:begin:core -->
+<!-- ai-workspace:begin:aiws:core -->
 ## Universal conventions (Layer 0)
 
 These apply to every contributor and every file, regardless of language.
@@ -45,11 +45,11 @@ These apply to every contributor and every file, regardless of language.
 
 ### Diagrams
 - Use **Mermaid** for architecture, data flow, module dependencies and the SDD lifecycle.
-- Keep diagrams in `docs/development/status/ARCHITECTURE.md`; regenerate with `/doc-sync`.
+- Keep diagrams in `docs/development/status/ARCHITECTURE.md`; regenerate with `/aiws-doc-sync`.
 - **Always quote node labels** that contain special characters (`/`, `.`, `:`, `+`, `@`, `·`, `*`, `()`, `&`, `<br/>`): write `A["src/index.ts<br/>entry"]`, never `A[src/index.ts<br/>entry]`. Unquoted special characters cause flaky rendering across Mermaid versions (e.g. GitHub's intermittent `translate(undefined, NaN)` error).
-<!-- ai-workspace:end:core -->
+<!-- ai-workspace:end:aiws:core -->
 
-<!-- ai-workspace:begin:profile -->
+<!-- ai-workspace:begin:aiws:profile -->
 ## User profile (Layer 0 — governance posture)
 
 Active profile: **technical** · **advanced**. Apply this posture by
@@ -65,9 +65,9 @@ default. It tunes guidance and verbosity — it never overrides the Safety gate,
 - Allow analytical flows: surface trade-offs, risks and architecture decisions; trim basic explanations.
 - Allow more personalization and explicit user decisions on architecture, testing, skills and governance.
 - Still enforce the critical safety, idempotency and governance rules.
-<!-- ai-workspace:end:profile -->
+<!-- ai-workspace:end:aiws:profile -->
 
-<!-- ai-workspace:begin:versioning -->
+<!-- ai-workspace:begin:aiws:versioning -->
 ## Versioning policy (Layer 0)
 
 This project is treated as **EXISTING (brownfield)**.
@@ -81,9 +81,9 @@ This project is treated as **EXISTING (brownfield)**.
   before proposing an upgrade.
 
 For exact, up-to-date version facts and compatibility, query **context7** for each library — do not guess.
-<!-- ai-workspace:end:versioning -->
+<!-- ai-workspace:end:aiws:versioning -->
 
-<!-- ai-workspace:begin:safety -->
+<!-- ai-workspace:begin:aiws:safety -->
 ## Safety gate (Layer 0)
 
 Hard rules so the AI stays reliable and never "goes rogue" on risky changes.
@@ -107,31 +107,50 @@ to resolve a conflict. Never commit secrets. Flag vulnerable or unmaintained dep
 
 > If a request would require breaking these rules, say so and propose a safe alternative instead of
 > complying silently.
-<!-- ai-workspace:end:safety -->
+<!-- ai-workspace:end:aiws:safety -->
 
-<!-- ai-workspace:begin:workflow -->
+<!-- ai-workspace:begin:aiws:workflow -->
 ## Development workflow (Layer 0) — **mandatory**
 
 A single, structured way of working. This flow is **not optional**: do not skip
 steps even if asked to "just do it quickly". If a shortcut is requested, explain the risk and follow the flow.
 
 **The flow for any change**
-1. **Non-trivial change** → use SDD: `/sdd-explore` → `/sdd-propose` → `/sdd-spec` + `/sdd-design` → `/sdd-tasks` → `/sdd-apply` → `/sdd-verify` → `/sdd-archive`.
-2. **Small change** → implement directly, then run `/doc-sync`.
+1. **Non-trivial change** → use SDD: `/aiws-sdd-explore` → `/aiws-sdd-propose` → `/aiws-sdd-clarify` → `/aiws-sdd-spec` + `/aiws-sdd-design` → `/aiws-sdd-tasks` → `/aiws-sdd-apply` → `/aiws-sdd-verify` → `/aiws-sdd-archive`.
+2. **Small change** → implement directly, then run `/aiws-doc-sync`.
 3. Honor the **Safety gate** above for anything risky.
 4. **Commit** following the policy below.
 
 **Commit policy**
 - **Conventional Commits**, imperative mood (`feat:`, `fix:`, `refactor:`, `docs:`, `test:`, `chore:`). One logical change per commit.
 - Commits are authored by the **user's own git identity**. Do **not** add `Co-Authored-By:` or any AI-attribution trailers.
-- **Automate with approval:** after a completed change (spec-driven or small), prepare the commit and ask for confirmation; commit **only** once the user approves. Use the `/commit` command.
+- **Automate with approval:** after a completed change (spec-driven or small), prepare the commit and ask for confirmation; commit **only** once the user approves. Use the `/aiws-commit` command.
 - Never use `--no-verify` or bypass hooks.
 
 > Enforcement: a `commit-msg` git hook in `.githooks/` blocks disallowed commits. Activate once with
 > `git config core.hooksPath .githooks`.
-<!-- ai-workspace:end:workflow -->
+<!-- ai-workspace:end:aiws:workflow -->
 
-<!-- ai-workspace:begin:routing -->
+<!-- ai-workspace:begin:aiws:harness-engineering -->
+## Harness engineering (Layer 0)
+
+This workspace **is the agent's harness** — the instructions, skills, tools and docs that shape the AI's
+work. *Agent = model + harness*; tune the harness, not the model.
+
+**Context is finite — spend it on the smallest set of high-signal tokens:**
+- **Progressive disclosure.** Load skills/`references/` by trigger, on demand — not preemptively.
+- **Just-in-time over preloaded.** Pull version-pinned facts via **context7**; don't guess or paste big docs.
+- **Memory over recall.** Keep durable state in the living docs (`docs/development/status/*`), not the chat.
+- **Clear, non-overlapping tools/skills.** If you can't tell which one applies, fix its description.
+
+**The ratchet principle (how this file grows).** Every standing rule should trace to a **real, observed
+failure**. When the agent slips, tighten the harness (a skill, a hook, a description) rather than appending
+prose — keeping guidance at the **right altitude**: specific enough to steer, lean enough to stay read.
+
+> Before adding to this file, ask: *what failure does this prevent?* If there isn't one, don't add it.
+<!-- ai-workspace:end:aiws:harness-engineering -->
+
+<!-- ai-workspace:begin:aiws:routing -->
 ## Intent routing (Layer 0)
 
 **The user should not need to remember commands.** From plain language, detect the intent and apply the
@@ -142,40 +161,40 @@ the work over telling the user to run a command (mention the command only as an 
 |---------------------------------|---------|
 | "let's build / add / implement <feature>", anything non-trivial | Run the **SDD flow** (explore → propose → **clarify** → spec → design → tasks → apply → verify → archive). It's a methodology, not a tool — artifacts are Markdown in `docs/development/`. |
 | A small, well-understood change | Implement directly, then refresh living docs. |
-| "update / upgrade / bump / migrate / install a newer version" | **Do NOT just do it.** Run the `dependency-upgrade` assessment first (feasibility + security), then await the decision. |
-| "commit / save / guarda los cambios", or you just finished a change | Use the **secure-commit** flow: prepare a conventional commit, no co-author, and ask for approval before committing. |
-| "I'm new / how does this work / explain SDD / how do I start" | Use the **ai-workspace-guide**. |
-| "set up the editor / which extensions / profiles" | Use the **vscode-setup** guidance. |
+| "update / upgrade / bump / migrate / install a newer version" | **Do NOT just do it.** Run the `aiws-dependency-upgrade` assessment first (feasibility + security), then await the decision. |
+| "commit / save / guarda los cambios", or you just finished a change | Use the **aiws-secure-commit** flow: prepare a conventional commit, no co-author, and ask for approval before committing. |
+| "I'm new / how does this work / explain SDD / how do I start" | Use the **aiws-workspace-guide**. |
+| "set up the editor / which extensions / profiles" | Use the **aiws-vscode-setup** guidance. |
 | Anything risky, a conflict, or version/migration change | Honor the **Safety gate**: stop, verify feasibility, recommend, await decision. |
 | You finished a task and project state changed | Refresh the living docs (`docs/development/status/*`). |
 
 When intent is ambiguous, ask one short clarifying question, then proceed. Never silently skip the
 Safety gate or the commit policy because the user phrased a request casually.
-<!-- ai-workspace:end:routing -->
+<!-- ai-workspace:end:aiws:routing -->
 
-<!-- ai-workspace:begin:skill-routing -->
+<!-- ai-workspace:begin:aiws:skill-routing -->
 ## Skill routing (Layer 0)
 
 Load skills by their *trigger*, not preemptively. Selection for the **technical** · **advanced** profile:
 
 | Skill | When | Load |
 |-------|------|------|
-| `secure-commit` | committing changes | always |
-| `sdd-*` | planning/implementing a non-trivial change | suggested |
-| `living-docs` | after finishing a task or when project state changed | suggested |
-| `ai-workspace-guide` | new here — how this workspace works | suggested |
-| `configure-workspace` | configuring or re-configuring the workspace (analyze an existing repo, or set up a new one) | suggested |
-| `dependency-upgrade` | before any version bump or migration (assess first) | on-demand · high risk |
-| `vscode-setup` | setting up VS Code / extensions | on-demand |
+| `aiws-secure-commit` | committing changes | always |
+| `aiws-sdd-*` | planning/implementing a non-trivial change | suggested |
+| `aiws-living-docs` | after finishing a task or when project state changed | suggested |
+| `aiws-workspace-guide` | new here — how this workspace works | suggested |
+| `aiws-configure-workspace` | configuring or re-configuring the workspace (analyze an existing repo, or set up a new one) | suggested |
+| `aiws-dependency-upgrade` | before any version bump or migration (assess first) | on-demand · high risk |
+| `aiws-vscode-setup` | setting up VS Code / extensions | on-demand |
 | `find-skills` | discovering/installing skills from the open ecosystem (npx skills) | on-demand |
 | `mcp-builder` | building or evaluating an MCP server (tools, resources, Node or Python, best practices) | on-demand |
 | `skill-creator` | authoring, structuring or evaluating a Claude skill (SKILL.md, references, packaging) | on-demand |
 
 > `always` skills are the baseline; `suggested` ones activate by context; `on-demand` only when asked.
 > Don't activate skills that don't apply to this profile.
-<!-- ai-workspace:end:skill-routing -->
+<!-- ai-workspace:end:aiws:skill-routing -->
 
-<!-- ai-workspace:begin:lang-typescript -->
+<!-- ai-workspace:begin:aiws:lang-typescript -->
 ## TypeScript (Layer 1 — language) · target vlatest
 
 - **Strict mode on.** `strict: true`, `noUncheckedIndexedAccess`, no implicit `any`.
@@ -188,9 +207,9 @@ Load skills by their *trigger*, not preemptively. Selection for the **technical*
 - Tests colocated or in `__tests__`; use the project's runner (vitest/jest). Name: `*.test.ts`.
 
 > For current API/best-practice details, query **context7** for `typescript@latest`.
-<!-- ai-workspace:end:lang-typescript -->
+<!-- ai-workspace:end:aiws:lang-typescript -->
 
-<!-- ai-workspace:begin:env-node-runtime -->
+<!-- ai-workspace:begin:aiws:env-node-runtime -->
 ## Node runtime (Layer 3 — environment)
 
 - Manage Node versions with **nvm** (or fnm/Volta). Pin the version in `.nvmrc`; run `nvm use`.
@@ -199,9 +218,9 @@ Load skills by their *trigger*, not preemptively. Selection for the **technical*
 - One Node major per project; document it. Match CI to the local version.
 
 > For setup specifics on your OS, query **context7** (or the nvm docs).
-<!-- ai-workspace:end:env-node-runtime -->
+<!-- ai-workspace:end:aiws:env-node-runtime -->
 
-<!-- ai-workspace:begin:company -->
+<!-- ai-workspace:begin:aiws:company -->
 ## Company conventions (Layer 4 — organization overlay)
 
 Reusable across projects of this organization. Fill in via `workspace.config.yaml` (`conventions:`).
@@ -211,9 +230,9 @@ Reusable across projects of this organization. Fill in via `workspace.config.yam
 
 > This layer holds organization-specific rules (prefixes, internal libraries, forbidden patterns).
 > Updating the base layers never overwrites it.
-<!-- ai-workspace:end:company -->
+<!-- ai-workspace:end:aiws:company -->
 
-<!-- ai-workspace:begin:business -->
+<!-- ai-workspace:begin:aiws:business -->
 ## Business / domain logic (Layer 5 — project)
 
 Project-specific domain knowledge. Keep this accurate — it is the AI's map of *what* you build.
@@ -222,10 +241,10 @@ Project-specific domain knowledge. Keep this accurate — it is the AI's map of 
 
 **Business invariants:** _(add rules under `business.invariants`)_
 
-> Keep this section and `docs/development/status/PROJECT-STATE.md` in sync via `/doc-sync`.
-<!-- ai-workspace:end:business -->
+> Keep this section and `docs/development/status/PROJECT-STATE.md` in sync via `/aiws-doc-sync`.
+<!-- ai-workspace:end:aiws:business -->
 
-<!-- ai-workspace:begin:sdd -->
+<!-- ai-workspace:begin:aiws:sdd -->
 ## Spec-Driven Development (SDD)
 
 A lightweight **methodology — not a tool dependency**. We adopt the best *ideas* from two SDD projects
@@ -253,9 +272,9 @@ flowchart LR
 - Project *mode* governs the one-time ramp; per-feature, the size/risk of the change decides whether the
   full flow is worth it.
 
-**Commands** (Claude: `/sdd-*`; Copilot: prompt files in `.github/prompts/`)
-- `/sdd-explore <topic>` — investigate before committing.
-- `/sdd-propose` → `/sdd-clarify` → `/sdd-spec` + `/sdd-design` → `/sdd-tasks` → `/sdd-apply` → `/sdd-verify` → `/sdd-archive`.
+**Commands** (Claude: `/aiws-sdd-*`; Copilot: prompt files in `.github/prompts/`)
+- `/aiws-sdd-explore <topic>` — investigate before committing.
+- `/aiws-sdd-propose` → `/aiws-sdd-clarify` → `/aiws-sdd-spec` + `/aiws-sdd-design` → `/aiws-sdd-tasks` → `/aiws-sdd-apply` → `/aiws-sdd-verify` → `/aiws-sdd-archive`.
 
 **Artifacts** live in `docs/development/changes/<change-name>/` and are **versioned in git** (reviewable in PRs, readable by any AI tool). The store follows OpenSpec's *layout* (specs + changes + archive) as a convention — it is **not** the OpenSpec CLI.
 
@@ -263,10 +282,10 @@ flowchart LR
 - For non-trivial features, create a proposal/spec before implementing.
 - `clarify` resolves ambiguity *before* the spec is finalized. Specs are the source of truth for *what*;
   design for *how*; tasks track progress.
-- After implementing, run `/sdd-verify` against the spec, then `/sdd-archive` (folds the delta into `docs/development/specs/`).
-<!-- ai-workspace:end:sdd -->
+- After implementing, run `/aiws-sdd-verify` against the spec, then `/aiws-sdd-archive` (folds the delta into `docs/development/specs/`).
+<!-- ai-workspace:end:aiws:sdd -->
 
-<!-- ai-workspace:begin:living-docs -->
+<!-- ai-workspace:begin:aiws:living-docs -->
 ## Living documentation
 
 The project keeps an always-current, token-cheap snapshot of its own state so agents get context
@@ -275,9 +294,9 @@ without re-scanning everything.
 - `docs/development/status/PROJECT-STATE.md` — overview, module map, **stack & production-target decision (what + why)**, lightweight decisions log, current status.
 - `docs/development/status/ARCHITECTURE.md` — architecture with **Mermaid** diagrams.
 
-**Keep it fresh:** run `/doc-sync` (Claude) or the `doc-sync` prompt (Copilot) when you finish a task.
+**Keep it fresh:** run `/aiws-doc-sync` (Claude) or the `doc-sync` prompt (Copilot) when you finish a task.
 It derives change status from `docs/development/changes/*`. Read these files first; they are cheaper than scanning the repo.
-<!-- ai-workspace:end:living-docs -->
+<!-- ai-workspace:end:aiws:living-docs -->
 
 <!-- Manual section (outside markers): meta-guidance for working on the generator. Survives `sync`. -->
 
@@ -342,22 +361,3 @@ Guard-rails that always apply when working on this generator:
 ### Diagrams (repo docs)
 - Repo docs use **Mermaid** (GitHub-native) — quote labels with special chars (`·`, `<br/>`); enforced by `test/docs-mermaid.test.js`. Corporate palette: dark `#143a80`, accent `#e4b632`.
 - Business/client deliverables use the corporate **draw.io** standard — not for code-repo docs.
-
-<!-- ai-workspace:begin:harness-engineering -->
-## Harness engineering (Layer 0)
-
-This workspace **is the agent's harness** — the instructions, skills, tools and docs that shape the AI's
-work. *Agent = model + harness*; tune the harness, not the model.
-
-**Context is finite — spend it on the smallest set of high-signal tokens:**
-- **Progressive disclosure.** Load skills/`references/` by trigger, on demand — not preemptively.
-- **Just-in-time over preloaded.** Pull version-pinned facts via **context7**; don't guess or paste big docs.
-- **Memory over recall.** Keep durable state in the living docs (`docs/development/status/*`), not the chat.
-- **Clear, non-overlapping tools/skills.** If you can't tell which one applies, fix its description.
-
-**The ratchet principle (how this file grows).** Every standing rule should trace to a **real, observed
-failure**. When the agent slips, tighten the harness (a skill, a hook, a description) rather than appending
-prose — keeping guidance at the **right altitude**: specific enough to steer, lean enough to stay read.
-
-> Before adding to this file, ask: *what failure does this prevent?* If there isn't one, don't add it.
-<!-- ai-workspace:end:harness-engineering -->

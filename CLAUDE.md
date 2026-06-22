@@ -1,4 +1,4 @@
-<!-- ai-workspace:begin:claude -->
+<!-- ai-workspace:begin:aiws:claude -->
 # ai-workspace-generator — Claude Code
 
 The canonical guidance for this repo lives in **AGENTS.md**. It is imported below; do not duplicate
@@ -9,7 +9,7 @@ rules here — edit `AGENTS.md` and run `ai-workspace sync`.
 ## Claude-specific notes
 
 - Skills live in `.claude/skills/`; load them by trigger, not preemptively.
-- Slash commands live in `.claude/commands/` (incl. `/doc-sync` and `/sdd-*`).
+- Slash commands live in `.claude/commands/` (incl. `/aiws-doc-sync` and `/aiws-sdd-*`).
 - MCP servers are configured in `.mcp.json` (includes **context7** for up-to-date library docs).
 - Local-only overrides go in `.claude/settings.local.json` (git-ignored).
-<!-- ai-workspace:end:claude -->
+<!-- ai-workspace:end:aiws:claude -->
