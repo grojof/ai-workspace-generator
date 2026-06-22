@@ -5,6 +5,7 @@ import { loadConfig, saveConfig } from "../config/loader.js";
 import { generate } from "../generate/index.js";
 import { printArtifacts } from "../util/report.js";
 import { removeBlock } from "../render/managed-region.js";
+import { aiwsBlockId } from "../generate/naming.js";
 import type { ModuleType } from "../modules/registry.js";
 
 const TYPES: ModuleType[] = ["language", "framework", "environment", "mcp"];
@@ -28,16 +29,16 @@ export function runRemove(cwd: string, typeArg: string, id: string): void {
 
   if (type === "language") {
     config.stack.languages = config.stack.languages.filter((l) => l.id !== id);
-    stripBlock(cwd, "AGENTS.md", `lang-${id}`);
-    stripBlock(cwd, ".github/copilot-instructions.md", `lang-${id}`);
+    stripBlock(cwd, "AGENTS.md", aiwsBlockId(`lang-${id}`));
+    stripBlock(cwd, ".github/copilot-instructions.md", aiwsBlockId(`lang-${id}`));
   } else if (type === "framework") {
     config.stack.frameworks = config.stack.frameworks.filter((f) => f.id !== id);
-    stripBlock(cwd, "AGENTS.md", `fw-${id}`);
-    stripBlock(cwd, ".github/copilot-instructions.md", `fw-${id}`);
+    stripBlock(cwd, "AGENTS.md", aiwsBlockId(`fw-${id}`));
+    stripBlock(cwd, ".github/copilot-instructions.md", aiwsBlockId(`fw-${id}`));
   } else if (type === "environment") {
     config.stack.environments = config.stack.environments.filter((e) => e.id !== id);
-    stripBlock(cwd, "AGENTS.md", `env-${id}`);
-    stripBlock(cwd, ".github/copilot-instructions.md", `env-${id}`);
+    stripBlock(cwd, "AGENTS.md", aiwsBlockId(`env-${id}`));
+    stripBlock(cwd, ".github/copilot-instructions.md", aiwsBlockId(`env-${id}`));
   } else {
     config.mcp = config.mcp.filter((m) => m !== id);
   }

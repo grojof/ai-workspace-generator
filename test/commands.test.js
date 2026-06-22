@@ -65,11 +65,11 @@ test("remove strips the module's block from AGENTS.md", () => {
   const { cwd } = setup({ stack: { languages: [{ id: "typescript", version: "5" }, { id: "go", version: "1" }] } });
   try {
     let agents = readFileSync(resolve(cwd, "AGENTS.md"), "utf8");
-    assert.match(agents, /ai-workspace:begin:lang-go/);
+    assert.match(agents, /ai-workspace:begin:aiws:lang-go/);
     runRemove(cwd, "language", "go");
     agents = readFileSync(resolve(cwd, "AGENTS.md"), "utf8");
-    assert.doesNotMatch(agents, /ai-workspace:begin:lang-go/, "go block should be gone");
-    assert.match(agents, /ai-workspace:begin:lang-typescript/, "typescript block should remain");
+    assert.doesNotMatch(agents, /ai-workspace:begin:aiws:lang-go/, "go block should be gone");
+    assert.match(agents, /ai-workspace:begin:aiws:lang-typescript/, "typescript block should remain");
   } finally {
     rmSync(cwd, { recursive: true, force: true });
   }

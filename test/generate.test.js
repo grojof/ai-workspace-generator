@@ -24,7 +24,7 @@ test("generate creates AGENTS.md with governance blocks", () => {
     generate(cwd, config);
     const agents = readFileSync(resolve(cwd, "AGENTS.md"), "utf8");
     for (const id of ["header", "core", "versioning", "safety", "workflow", "lang-typescript"]) {
-      assert.match(agents, new RegExp(`ai-workspace:begin:${id}`), `missing block ${id}`);
+      assert.match(agents, new RegExp(`ai-workspace:begin:aiws:${id}`), `missing block ${id}`);
     }
   } finally {
     rmSync(cwd, { recursive: true, force: true });
@@ -36,7 +36,7 @@ test("harness-engineering is an always-on Layer-0 principle with the ratchet rul
   try {
     generate(cwd, ConfigSchema.parse({ project: { name: "t" } }));
     const agents = readFileSync(resolve(cwd, "AGENTS.md"), "utf8");
-    assert.match(agents, /ai-workspace:begin:harness-engineering/);
+    assert.match(agents, /ai-workspace:begin:aiws:harness-engineering/);
     assert.match(agents, /Harness engineering \(Layer 0\)/);
     // The ratchet principle: rules trace to observed failures; fix the harness, not more prose.
     assert.match(agents, /ratchet principle/i);
@@ -81,7 +81,7 @@ test("learn purpose generates the tutor skill and learning block", () => {
   const cwd = tmpRepo();
   try {
     generate(cwd, ConfigSchema.parse({ project: { name: "t", purpose: "learn" } }));
-    assert.match(readFileSync(resolve(cwd, "AGENTS.md"), "utf8"), /ai-workspace:begin:learning/);
+    assert.match(readFileSync(resolve(cwd, "AGENTS.md"), "utf8"), /ai-workspace:begin:aiws:learning/);
     assert.ok(readFileSync(resolve(cwd, ".claude/skills/aiws-learn/SKILL.md"), "utf8"));
   } finally {
     rmSync(cwd, { recursive: true, force: true });
@@ -97,8 +97,8 @@ test("profile block renders only the active governance posture", () => {
     const bizAgents = readFileSync(resolve(biz, "AGENTS.md"), "utf8");
     const techAgents = readFileSync(resolve(tech, "AGENTS.md"), "utf8");
     // Block exists in both.
-    assert.match(bizAgents, /ai-workspace:begin:profile/);
-    assert.match(techAgents, /ai-workspace:begin:profile/);
+    assert.match(bizAgents, /ai-workspace:begin:aiws:profile/);
+    assert.match(techAgents, /ai-workspace:begin:aiws:profile/);
     // Only the active combination is emitted (no cross-contamination).
     assert.match(bizAgents, /Active profile: \*\*business\*\* . \*\*beginner\*\*/);
     assert.match(bizAgents, /guided flows/i);
@@ -119,7 +119,7 @@ test("profile defaults to technical/standard when unspecified", () => {
     assert.equal(config.profile.userType, "technical");
     assert.equal(config.profile.experience, "standard");
     generate(cwd, config);
-    assert.match(readFileSync(resolve(cwd, "AGENTS.md"), "utf8"), /ai-workspace:begin:profile/);
+    assert.match(readFileSync(resolve(cwd, "AGENTS.md"), "utf8"), /ai-workspace:begin:aiws:profile/);
   } finally {
     rmSync(cwd, { recursive: true, force: true });
   }
@@ -129,7 +129,7 @@ test("environment modules render a block", () => {
   const cwd = tmpRepo();
   try {
     generate(cwd, ConfigSchema.parse({ project: { name: "t" }, stack: { environments: [{ id: "wsl", version: "latest" }] } }));
-    assert.match(readFileSync(resolve(cwd, "AGENTS.md"), "utf8"), /ai-workspace:begin:env-wsl/);
+    assert.match(readFileSync(resolve(cwd, "AGENTS.md"), "utf8"), /ai-workspace:begin:aiws:env-wsl/);
   } finally {
     rmSync(cwd, { recursive: true, force: true });
   }
@@ -173,7 +173,7 @@ test("skill-routing block is profile-filtered", () => {
   try {
     generate(biz, ConfigSchema.parse({ project: { name: "t" }, language: "en", profile: { userType: "business", experience: "standard" } }));
     generate(tech, ConfigSchema.parse({ project: { name: "t" }, language: "en", profile: { userType: "technical", experience: "standard" } }));
-    const blockOf = (s) => s.match(/begin:skill-routing[\s\S]*?end:skill-routing/)[0];
+    const blockOf = (s) => s.match(/begin:aiws:skill-routing[\s\S]*?end:aiws:skill-routing/)[0];
     const bizBlock = blockOf(readFileSync(resolve(biz, "AGENTS.md"), "utf8"));
     const techBlock = blockOf(readFileSync(resolve(tech, "AGENTS.md"), "utf8"));
     // secure-commit (userType both) appears for everyone.
@@ -195,11 +195,11 @@ test("company overlay renders the selected organization (or none)", () => {
     generate(none, ConfigSchema.parse({ project: { name: "t" } }));
     const eA = readFileSync(resolve(example, "AGENTS.md"), "utf8");
     const nA = readFileSync(resolve(none, "AGENTS.md"), "utf8");
-    assert.match(eA, /ai-workspace:begin:company-overlay/);
+    assert.match(eA, /ai-workspace:begin:aiws:company-overlay/);
     assert.match(eA, /Example Co/);
     assert.match(eA, /Operational Excellence/);
     // none → no overlay block.
-    assert.doesNotMatch(nA, /ai-workspace:begin:company-overlay/);
+    assert.doesNotMatch(nA, /ai-workspace:begin:aiws:company-overlay/);
   } finally {
     rmSync(example, { recursive: true, force: true });
     rmSync(none, { recursive: true, force: true });

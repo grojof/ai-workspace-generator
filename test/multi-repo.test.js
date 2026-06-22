@@ -57,7 +57,7 @@ test("multi-repo: root is canonical, each child gets its adapter + stack packs",
     generate(cwd, ConfigSchema.parse(MULTI));
 
     // Root: canonical AGENTS.md + the CLAUDE.md bridge importing @AGENTS.md.
-    assert.match(readFileSync(resolve(cwd, "AGENTS.md"), "utf8"), /ai-workspace:begin:core/);
+    assert.match(readFileSync(resolve(cwd, "AGENTS.md"), "utf8"), /ai-workspace:begin:aiws:core/);
     const rootClaude = readFileSync(resolve(cwd, "CLAUDE.md"), "utf8");
     assert.match(rootClaude, /@AGENTS\.md/);
     assert.doesNotMatch(rootClaude, /@\.\.\/AGENTS\.md/);

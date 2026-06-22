@@ -1,4 +1,4 @@
-<!-- ai-workspace:begin:header -->
+<!-- ai-workspace:begin:aiws:header -->
 # t — AI Agent Guide (AGENTS.md)
 
 This file is the **single source of truth** for AI agents (Claude Code, GitHub Copilot, Cursor…).
@@ -7,9 +7,9 @@ mirror or import this content — **edit rules here**, then run `ai-workspace sy
 
 Sections between `ai-workspace:begin/end` markers are generated. Add your own notes **outside** them;
 they survive regeneration.
-<!-- ai-workspace:end:header -->
+<!-- ai-workspace:end:aiws:header -->
 
-<!-- ai-workspace:begin:core -->
+<!-- ai-workspace:begin:aiws:core -->
 ## Universal conventions (Layer 0)
 
 These apply to every contributor and every file, regardless of language.
@@ -45,9 +45,9 @@ These apply to every contributor and every file, regardless of language.
 - Use **Mermaid** for architecture, data flow, module dependencies and the SDD lifecycle.
 - Keep diagrams in `docs/development/status/ARCHITECTURE.md`; regenerate with `/aiws-doc-sync`.
 - **Always quote node labels** that contain special characters (`/`, `.`, `:`, `+`, `@`, `·`, `*`, `()`, `&`, `<br/>`): write `A["src/index.ts<br/>entry"]`, never `A[src/index.ts<br/>entry]`. Unquoted special characters cause flaky rendering across Mermaid versions (e.g. GitHub's intermittent `translate(undefined, NaN)` error).
-<!-- ai-workspace:end:core -->
+<!-- ai-workspace:end:aiws:core -->
 
-<!-- ai-workspace:begin:profile -->
+<!-- ai-workspace:begin:aiws:profile -->
 ## User profile (Layer 0 — governance posture)
 
 Active profile: **technical** · **standard**. Apply this posture by
@@ -63,9 +63,9 @@ default. It tunes guidance and verbosity — it never overrides the Safety gate,
 - Balance guidance and flexibility. Offer alternatives when they add real value.
 - Ask when a decision affects design or maintainability; allow reasonable manual configuration.
 - Keep protections on destructive changes, security, commits and sensitive data.
-<!-- ai-workspace:end:profile -->
+<!-- ai-workspace:end:aiws:profile -->
 
-<!-- ai-workspace:begin:versioning -->
+<!-- ai-workspace:begin:aiws:versioning -->
 ## Versioning policy (Layer 0)
 
 This project is treated as **NEW (greenfield)**.
@@ -77,9 +77,9 @@ This project is treated as **NEW (greenfield)**.
 - Pin versions explicitly and record them in `workspace.config.yaml`.
 
 For exact, up-to-date version facts and compatibility, query **context7** for each library — do not guess.
-<!-- ai-workspace:end:versioning -->
+<!-- ai-workspace:end:aiws:versioning -->
 
-<!-- ai-workspace:begin:safety -->
+<!-- ai-workspace:begin:aiws:safety -->
 ## Safety gate (Layer 0)
 
 Hard rules so the AI stays reliable and never "goes rogue" on risky changes.
@@ -103,9 +103,9 @@ to resolve a conflict. Never commit secrets. Flag vulnerable or unmaintained dep
 
 > If a request would require breaking these rules, say so and propose a safe alternative instead of
 > complying silently.
-<!-- ai-workspace:end:safety -->
+<!-- ai-workspace:end:aiws:safety -->
 
-<!-- ai-workspace:begin:workflow -->
+<!-- ai-workspace:begin:aiws:workflow -->
 ## Development workflow (Layer 0) — **mandatory**
 
 A single, structured way of working. This flow is **not optional**: do not skip
@@ -124,9 +124,9 @@ steps even if asked to "just do it quickly". If a shortcut is requested, explain
 
 > Enforcement: a `commit-msg` git hook in `.githooks/` blocks disallowed commits. Activate once with
 > `git config core.hooksPath .githooks`.
-<!-- ai-workspace:end:workflow -->
+<!-- ai-workspace:end:aiws:workflow -->
 
-<!-- ai-workspace:begin:harness-engineering -->
+<!-- ai-workspace:begin:aiws:harness-engineering -->
 ## Harness engineering (Layer 0)
 
 This workspace **is the agent's harness** — the instructions, skills, tools and docs that shape the AI's
@@ -143,9 +143,9 @@ failure**. When the agent slips, tighten the harness (a skill, a hook, a descrip
 prose — keeping guidance at the **right altitude**: specific enough to steer, lean enough to stay read.
 
 > Before adding to this file, ask: *what failure does this prevent?* If there isn't one, don't add it.
-<!-- ai-workspace:end:harness-engineering -->
+<!-- ai-workspace:end:aiws:harness-engineering -->
 
-<!-- ai-workspace:begin:routing -->
+<!-- ai-workspace:begin:aiws:routing -->
 ## Intent routing (Layer 0)
 
 **The user should not need to remember commands.** From plain language, detect the intent and apply the
@@ -164,9 +164,9 @@ the work over telling the user to run a command (mention the command only as an 
 
 When intent is ambiguous, ask one short clarifying question, then proceed. Never silently skip the
 Safety gate or the commit policy because the user phrased a request casually.
-<!-- ai-workspace:end:routing -->
+<!-- ai-workspace:end:aiws:routing -->
 
-<!-- ai-workspace:begin:skill-routing -->
+<!-- ai-workspace:begin:aiws:skill-routing -->
 ## Skill routing (Layer 0)
 
 Load skills by their *trigger*, not preemptively. Selection for the **technical** · **standard** profile:
@@ -184,9 +184,9 @@ Load skills by their *trigger*, not preemptively. Selection for the **technical*
 
 > `always` skills are the baseline; `suggested` ones activate by context; `on-demand` only when asked.
 > Don't activate skills that don't apply to this profile.
-<!-- ai-workspace:end:skill-routing -->
+<!-- ai-workspace:end:aiws:skill-routing -->
 
-<!-- ai-workspace:begin:tech-selection -->
+<!-- ai-workspace:begin:aiws:tech-selection -->
 ## Choosing the stack (Layer 0 — greenfield)
 
 This project has **no technology chosen yet**. Picking the language, framework, runtime/environment and the
@@ -208,9 +208,9 @@ to mind, and do not start coding before it is decided.
    `ai-workspace add <language|framework|environment> <id>` so the workspace regenerates the matching layers.
 
 > Keep it lean: offer "say **X** and I'll explain X" rather than dumping a full comparison unasked.
-<!-- ai-workspace:end:tech-selection -->
+<!-- ai-workspace:end:aiws:tech-selection -->
 
-<!-- ai-workspace:begin:company -->
+<!-- ai-workspace:begin:aiws:company -->
 ## Company conventions (Layer 4 — organization overlay)
 
 Reusable across projects of this organization. Fill in via `workspace.config.yaml` (`conventions:`).
@@ -220,9 +220,9 @@ Reusable across projects of this organization. Fill in via `workspace.config.yam
 
 > This layer holds organization-specific rules (prefixes, internal libraries, forbidden patterns).
 > Updating the base layers never overwrites it.
-<!-- ai-workspace:end:company -->
+<!-- ai-workspace:end:aiws:company -->
 
-<!-- ai-workspace:begin:business -->
+<!-- ai-workspace:begin:aiws:business -->
 ## Business / domain logic (Layer 5 — project)
 
 Project-specific domain knowledge. Keep this accurate — it is the AI's map of *what* you build.
@@ -232,4 +232,4 @@ Project-specific domain knowledge. Keep this accurate — it is the AI's map of 
 **Business invariants:** _(add rules under `business.invariants`)_
 
 > Keep this section and `docs/development/status/PROJECT-STATE.md` in sync via `/aiws-doc-sync`.
-<!-- ai-workspace:end:business -->
+<!-- ai-workspace:end:aiws:business -->

@@ -3,17 +3,22 @@ import { renderTemplate } from "../render/engine.js";
 import { docsPaths } from "./paths.js";
 import { BLOCK_MANIFEST, resolveTemplate } from "./blockManifest.js";
 import type { Block, BlockEntry } from "./blockManifest.js";
+import { aiwsBlockId } from "./naming.js";
 
 export type { Block } from "./blockManifest.js";
 
-/** Walk a block manifest into ordered, rendered blocks. Pure function of `config` + `manifest`. */
+/**
+ * Walk a block manifest into ordered, rendered blocks. Pure function of `config` + `manifest`.
+ * Every emitted id is namespaced to `aiws:*` (ADR 0003 F1b) — including the dynamic per-stack
+ * `lang-*`/`fw-*`/`env-*` ids — so the whole governance spine carries base provenance uniformly.
+ */
 export function composeFromManifest(config: Config, manifest: readonly BlockEntry[]): Block[] {
   // Resolve the docs layout once; templates that mention paths read `it.paths.*`.
   const data = { ...config, paths: docsPaths(config) };
   const blocks: Block[] = [];
   for (const entry of manifest) {
     if (entry.kind === "expand") {
-      blocks.push(...entry.expand(config));
+      for (const b of entry.expand(config)) blocks.push({ id: aiwsBlockId(b.id), content: b.content });
       continue;
     }
     if (entry.when && !entry.when(config)) continue;
@@ -21,7 +26,7 @@ export function composeFromManifest(config: Config, manifest: readonly BlockEntr
       entry.kind === "template"
         ? renderTemplate(resolveTemplate(entry.template, config), data)
         : entry.render(config);
-    blocks.push({ id: entry.id, content });
+    blocks.push({ id: aiwsBlockId(entry.id), content });
   }
   return blocks;
 }
