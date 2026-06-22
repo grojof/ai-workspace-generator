@@ -280,8 +280,11 @@ function generateClaudeSettings(cwd: string, config: Config): WriteResult {
   const guard = config.workflow.hooks.safetyGuard;
   if (guard !== "off") {
     settings.hooks ??= {};
+    const cmd = `node .claude/hooks/safety-guard.mjs ${guard}`;
     settings.hooks.PreToolUse = [
-      { matcher: "Bash", hooks: [{ type: "command", command: `node .claude/hooks/safety-guard.mjs ${guard}` }] },
+      { matcher: "Bash", hooks: [{ type: "command", command: cmd }] },
+      // Also guard hand-edits to generated base artifacts (manifest `file` entries) — ADR 0003 Part E.
+      { matcher: "Write|Edit|MultiEdit", hooks: [{ type: "command", command: cmd }] },
     ];
   } else if (settings.hooks?.PreToolUse) {
     if (JSON.stringify(settings.hooks.PreToolUse).includes("safety-guard.mjs")) {
@@ -293,10 +296,12 @@ function generateClaudeSettings(cwd: string, config: Config): WriteResult {
   return writeFile(path, JSON.stringify(settings, null, 2));
 }
 
-/** The portable Node safety-guard hook script (PreToolUse · Bash). Pure Node; fails open on any error. */
+/** The portable Node safety-guard hook script (PreToolUse · Bash + file edits). Pure Node; fails open on any error. */
 function safetyGuardScript(): string {
   return `#!/usr/bin/env node
-// ai-workspace safety guard — PreToolUse (Bash). Hardens the Safety gate deterministically.
+// ai-workspace safety guard — PreToolUse. Hardens the Safety gate deterministically.
+// Bash: warns/denies risky commands. Write|Edit|MultiEdit: warns/denies hand-edits to generated base
+// artifacts (manifest \`file\` entries) — they are overwritten on \`ai-workspace sync\` (ADR 0003 Part E).
 // Mode from argv[2]: "warn" => ask, anything else => deny. Fails OPEN: any error/no-match => allow.
 import { readFileSync } from "node:fs";
 
@@ -314,20 +319,34 @@ const RISKY = [
 ];
 
 function readStdin() { try { return readFileSync(0, "utf8"); } catch { return ""; } }
+function emit(reason) {
+  process.stdout.write(JSON.stringify({
+    hookSpecificOutput: { hookEventName: "PreToolUse", permissionDecision: decision, permissionDecisionReason: reason },
+  }));
+}
+// Owned (kind:"file") base artifacts from the integrity manifest — hand edits get overwritten on sync.
+function ownedBaseFiles() {
+  try {
+    const m = JSON.parse(readFileSync(".ai-workspace/manifest.json", "utf8"));
+    return (m.entries || []).filter((e) => e.kind === "file").map((e) => e.path);
+  } catch { return []; }
+}
 
 try {
   const data = JSON.parse(readStdin() || "{}");
-  const cmd = (data.tool_input && data.tool_input.command) || "";
-  for (const [re, why] of RISKY) {
-    if (re.test(cmd)) {
-      process.stdout.write(JSON.stringify({
-        hookSpecificOutput: {
-          hookEventName: "PreToolUse",
-          permissionDecision: decision,
-          permissionDecisionReason: "Safety gate: " + why + ". Confirm this is intended (see AGENTS.md).",
-        },
-      }));
-      break;
+  const tool = data.tool_name || "";
+  if (tool === "Bash") {
+    const cmd = (data.tool_input && data.tool_input.command) || "";
+    for (const [re, why] of RISKY) {
+      if (re.test(cmd)) { emit("Safety gate: " + why + ". Confirm this is intended (see AGENTS.md)."); break; }
+    }
+  } else if (tool === "Write" || tool === "Edit" || tool === "MultiEdit") {
+    const fp = ((data.tool_input && data.tool_input.file_path) || "").split("\\\\").join("/");
+    if (fp) {
+      const owned = ownedBaseFiles();
+      if (owned.some((p) => fp === p || fp.endsWith("/" + p))) {
+        emit("Safety gate: this is a generated base artifact (aiws) — hand edits are overwritten on \`ai-workspace sync\`. Edit the source (workspace.config.yaml / the skill pack) and re-sync, or run \`ai-workspace verify\`.");
+      }
     }
   }
 } catch { /* fail open */ }

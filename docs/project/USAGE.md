@@ -80,7 +80,8 @@ ai-workspace detect --json   # deterministic JSON (seed for the configure-worksp
 ```
 
 ### `sync` — regenerate
-Re-renders all artifacts from `workspace.config.yaml`. Idempotent.
+Re-renders all artifacts from `workspace.config.yaml`. Idempotent. `sync --check` previews what would be
+**restored** (a diff, no writes) — use it to see out-of-band drift before self-healing with `sync`.
 
 ### `doctor` — lint the workspace
 Checks the `AGENTS.md` token budget, adapter presence (incl. each child repo's `CLAUDE.md` in multi-repo),

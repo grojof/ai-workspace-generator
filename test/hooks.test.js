@@ -46,7 +46,7 @@ test("hooks · the guard decides: deny/ask on risky, allow on safe (E3)", () => 
     generate(cwd, ConfigSchema.parse({ project: { name: "t" }, workflow: { hooks: { safetyGuard: "block" } } }));
     const script = resolve(cwd, ".claude/hooks/safety-guard.mjs");
     const run = (cmd, mode) =>
-      spawnSync("node", [script, mode], { input: JSON.stringify({ tool_input: { command: cmd } }), encoding: "utf8" });
+      spawnSync("node", [script, mode], { input: JSON.stringify({ tool_name: "Bash", tool_input: { command: cmd } }), encoding: "utf8" });
 
     // risky → block emits deny.
     const deny = run("git push --force origin main", "block");
@@ -64,6 +64,32 @@ test("hooks · the guard decides: deny/ask on risky, allow on safe (E3)", () => 
     const bad = spawnSync("node", [script, "block"], { input: "not-json", encoding: "utf8" });
     assert.equal(bad.status, 0);
     assert.equal(bad.stdout.trim(), "");
+  } finally {
+    rmSync(cwd, { recursive: true, force: true });
+  }
+});
+
+test("hooks · the guard warns on hand-edits to generated base files; ignores user files (F3c)", () => {
+  const cwd = tmpRepo();
+  try {
+    generate(cwd, ConfigSchema.parse({ project: { name: "t" }, workflow: { hooks: { safetyGuard: "warn" } } }));
+    const script = resolve(cwd, ".claude/hooks/safety-guard.mjs");
+    // The hook reads .ai-workspace/manifest.json relative to cwd → run it from the generated repo.
+    const edit = (file_path) =>
+      spawnSync("node", [script, "warn"], { cwd, input: JSON.stringify({ tool_name: "Edit", tool_input: { file_path } }), encoding: "utf8" });
+
+    // An owned base artifact (manifest `file` entry) → ask.
+    const owned = edit(".claude/skills/aiws-secure-commit/SKILL.md");
+    assert.equal(JSON.parse(owned.stdout).hookSpecificOutput.permissionDecision, "ask");
+    // An absolute path to the same file also matches (endsWith).
+    const abs = edit(resolve(cwd, ".claude/skills/aiws-secure-commit/SKILL.md"));
+    assert.equal(JSON.parse(abs.stdout).hookSpecificOutput.permissionDecision, "ask");
+    // A user-owned file (not in the manifest) → no decision (allow).
+    const mine = edit("src/app.ts");
+    assert.equal(mine.stdout.trim(), "");
+    // AGENTS.md is `managed`, not `file` — hand edits there are legitimate (verify catches in-band tampering).
+    const agents = edit("AGENTS.md");
+    assert.equal(agents.stdout.trim(), "");
   } finally {
     rmSync(cwd, { recursive: true, force: true });
   }

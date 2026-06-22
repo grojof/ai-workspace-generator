@@ -12,8 +12,16 @@
       prose safe (no false positive); removed marker flagged; owned-file edit + deletion flagged. 93/93 green.
 - [x] Docs: USAGE (`verify` / `doctor --strict`) + MAINTAINING (manifest section). `TEMPLATES_VERSION` → 0.39.0.
 
+## F3c — self-heal + confinement (done)
+- [x] `sync --check`: dry-run preview (diff) of what `sync` would restore — out-of-band drift visible before
+      any write (self-heal without losing work). Wired into the CLI.
+- [x] Extended the `safetyGuard` PreToolUse hook: now also matches `Write|Edit|MultiEdit` and warns/denies
+      hand-edits to manifest `file` entries (generated `aiws-*` skills/commands/prompts). `managed` files
+      (AGENTS.md) are intentionally not guarded — editing them is legitimate; `verify` catches in-band drift.
+      Hook branches on `tool_name`; fails open. `TEMPLATES_VERSION` → 0.40.0.
+- [x] `test/hooks.test.js`: new F3c case (owned file → ask; absolute path matches; user file + AGENTS.md →
+      allow) + made the Bash case send a realistic `tool_name`. USAGE + MAINTAINING updated. 94/94 green.
+
 ## Deferred
-- **F3c** — self-heal (`sync --check` warns before overwrite) + confinement + extend the `safetyGuard`
-  PreToolUse hook to warn/block edits to manifest-listed base files (Claude Code only).
 - **F2c** — git company packs + `company` → object + runtime reserved-namespace guard with teeth.
 - **F4** — `aiws-reconcile` (base ↔ org overlay, propose-and-review), auditing against this manifest + relations.
