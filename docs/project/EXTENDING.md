@@ -89,7 +89,7 @@ in the compositor:
 ## Learning mode (purpose: learn)
 
 `project.purpose: "learn"` turns the workspace into a tutoring environment: it adds a `learning` block to
-AGENTS.md and a `learn` tutor skill + `/learn` command ([`src/generate/learning.ts`](../../src/generate/learning.ts)).
+AGENTS.md and an `aiws-learn` tutor skill + `/aiws-learn` command ([`src/generate/learning.ts`](../../src/generate/learning.ts)).
 To extend the teaching behavior, edit that generator and `templates/core/learning.md.eta` (+ es).
 
 ## Add an MCP server
@@ -189,8 +189,8 @@ ai-workspace sync         # generate now also emits the company packs (gated by 
 
 ## Add a native tool skill
 
-The generator's *own* skills (lean SDD flow, `living-docs`, learning guide, `vscode-setup`) are still produced
-by code: [`src/generate/skills.ts`](../../src/generate/skills.ts) (SDD/living-docs) and
+The generator's *own* skills (lean SDD flow, `aiws-living-docs`, learning guide, `aiws-vscode-setup`) are still produced
+by code: [`src/generate/skills.ts`](../../src/generate/skills.ts) (SDD/aiws-living-docs) and
 [`src/generate/guides.ts`](../../src/generate/guides.ts). For a one-off skill, write it with the `frontmatter`
 helper. Skills are emitted **only if `targets` includes `claude`**; the Copilot equivalent are prompts in
 `.github/prompts/`. (All the **fusion** content — sdd-builder/audit/schema/onboarding/migrate, corp-* — already

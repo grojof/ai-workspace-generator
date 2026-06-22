@@ -59,9 +59,9 @@ dimension:
 | Prompts / right altitude | lean `AGENTS.md` + `tokenBudget` + `doctor` watching the budget |
 | Progressive disclosure | `SKILL.md` skills + on-demand `references/`; `loadMode` |
 | Just-in-time | context7 (MCP) for living docs; the "the CLI never calls MCP" rule |
-| Memory / note-taking | living docs (`PROJECT-STATE.md`) + `/doc-sync` |
+| Memory / note-taking | living docs (`PROJECT-STATE.md`) + `/aiws-doc-sync` |
 | Tools with a clear purpose | skill catalog and routing by *trigger* |
-| Execution control | `commit-msg` hook (git), **safety-guard** (PreToolUse Bash, opt-in: warns/blocks force-push, `rm -rf`, migrations), `/doc-sync` Stop hook |
+| Execution control | `commit-msg` hook (git), **safety-guard** (PreToolUse Bash, opt-in: warns/blocks force-push, `rm -rf`, migrations), `/aiws-doc-sync` Stop hook |
 | Verification | `doctor`, the invariant tests (Phase 1 contracts, [ADR 0002](decisions/0002-extension-contracts.md)) |
 | Permissions / guardrails | the Safety gate (Layer 0) |
 

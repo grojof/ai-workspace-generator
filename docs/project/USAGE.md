@@ -69,14 +69,14 @@ Detects the stack, writes `workspace.config.yaml` and renders the artifacts.
 | `--from <paths...>` | Existing company material to ingest (recorded for `import`). |
 
 Mode resolution: `--advanced` → advanced; `--simple`/`--yes` → simple; otherwise it asks (Simple
-preselected). The richest path is the AI-guided `/configure` skill inside the editor.
+preselected). The richest path is the AI-guided `/aiws-configure` skill inside the editor.
 
 ### `detect` — detect the stack (read-only)
 Reads manifests (`package.json`, `pyproject.toml`, …) and **writes nothing**.
 
 ```bash
 ai-workspace detect          # human-readable summary
-ai-workspace detect --json   # deterministic JSON (seed for the configure-workspace skill / tooling)
+ai-workspace detect --json   # deterministic JSON (seed for the aiws-configure-workspace skill / tooling)
 ```
 
 ### `sync` — regenerate
@@ -262,7 +262,7 @@ generator produces works there **with no extra files**:
 - It only contains `$schema` and `mcp` on purpose — OpenCode raises a `ConfigInvalidError` on unknown
   top-level keys.
 - If you don't use MCP, **no `.opencode/opencode.json` is written** — `AGENTS.md` alone is enough.
-- Slash commands (`/sdd-*`, `/commit`, …) are **not** projected to OpenCode's command format (yet). You can
+- Slash commands (`/aiws-sdd-*`, `/aiws-commit`, …) are **not** projected to OpenCode's command format (yet). You can
   still trigger those flows in natural language, or define your own under `.opencode/command/`.
 
 ## Multi-repo
@@ -286,7 +286,7 @@ repos:
 
 - **The root is the coordinator.** It generates the **single source of truth** and all workspace-level output,
   composed over the **union** of every repo's stack: `AGENTS.md`, a `CLAUDE.md` bridge (`@AGENTS.md`), Copilot
-  instructions, `.mcp.json`/settings, the SDD module, **workflow** skills (sdd/secure-commit…), **non-stack**
+  instructions, `.mcp.json`/settings, the SDD module, **workflow** skills (aiws-sdd-*/aiws-secure-commit…), **non-stack**
   packs, living docs and governance.
 - **Each child repo** gets its Claude adapter: a `CLAUDE.md` that **imports** the root's (`@../AGENTS.md`) and
   the **stack skill-packs** for its stack (discovered natively by Claude Code when working in that subfolder).

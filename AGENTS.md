@@ -316,7 +316,7 @@ When asked to *"install this from &lt;repo URL&gt;"*, follow this flow (don't im
    `npm i -g https://github.com/grojof/ai-workspace-generator/releases/latest/download/ai-workspace-generator.tgz`.
    Expert/offline alternative: clone → `npm install && npm run build && npm link`.
 4. Verify with `ai-workspace --version`, then run `ai-workspace init`; for the richest config, hand off to the
-   `/configure` skill. **Update** = re-install the newer tarball (or `git pull && npm run build` from source).
+   `/aiws-configure` skill. **Update** = re-install the newer tarball (or `git pull && npm run build` from source).
 
 ### Working principles
 Guard-rails that always apply when working on this generator:

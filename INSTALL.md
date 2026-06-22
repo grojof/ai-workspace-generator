@@ -30,7 +30,7 @@ and it will, following the bootstrap directive in [`AGENTS.md`](AGENTS.md):
    cd /path/to/your-repo
    ai-workspace init
    ```
-   For the richest setup, run the `/configure` skill inside the editor and let the AI propose your config.
+   For the richest setup, run the `/aiws-configure` skill inside the editor and let the AI propose your config.
 
 ## Option B — Expert / from source
 

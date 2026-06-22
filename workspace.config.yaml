@@ -78,4 +78,4 @@ livingDocsHook: true
 tokenBudget:
   agentsMd: 6000
   perInstruction: 1500
-templatesVersion: 0.46.0
+templatesVersion: 0.47.0
