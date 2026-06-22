@@ -27,6 +27,9 @@ mantenimiento mínimo. **Sin datos de negocio reales.**
   filtrado por el perfil activo.
 - **Capas + composición declarativa** — orden y gating de bloques en `BLOCK_MANIFEST` (datos): añadir un
   bloque/principio = una fila. Contratos de extensión *enforced* en `test/invariants.test.js` (ADR 0002).
+  Los ids de la espina de gobernanza llevan el namespace reservado `aiws:` (`header` → `aiws:header`),
+  aplicado en `composeFromManifest`; skills/commands generados llevan `aiws-*` con procedencia
+  (`source: aiws@<TEMPLATES_VERSION>`) (ADR 0003 F1).
 - **Multi-repo (generación por repo)** — `repos[]` (additive) + `resolveRepos`/`unionStack`; `generate()`
   separa **workspace-level** (root: `AGENTS.md` + CLAUDE.md puente + Copilot + MCP/settings + skills de
   workflow + packs no-stack, sobre la unión de stacks) de **repo-level** (cada hijo: `CLAUDE.md` que importa
@@ -50,3 +53,8 @@ mantenimiento mínimo. **Sin datos de negocio reales.**
   `typecheck` + `test` en Node 20/22 en cada push a `main` y en PRs; Dependabot semanal (actions + dev deps).
 - **Material de origen:** el **texto** de `vendor/` (mirror upstream) se versiona; los binarios están gitignorados.
 - **Extensión a empresa:** fuera de este repo público; se trae como overlays propios (ver [EXTENDING](../../project/EXTENDING.md)).
+- **Foundations (ADR 0003):** una sola tenencia (personal/freelance = org `corp-<handle>`); namespace reservado
+  `aiws-*` (skills/commands) / `aiws:*` (block ids) con procedencia; migración de namespace **automatizada** en
+  `ai-workspace upgrade` (`src/commands/migrate.ts`: reescribe marcadores legacy y poda huérfanos del rename,
+  idempotente, previsualizable con `--check`). F1 hecho (TEMPLATES_VERSION 0.37.0); pendientes F2 (packs git +
+  `relation` + guard de namespace reservado), F3 (manifiesto de integridad + `aiws-verify`), F4 (`aiws-reconcile`).
