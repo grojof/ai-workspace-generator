@@ -168,9 +168,12 @@ mirror for clean diffs (binaries/build are excluded via `.gitignore`).
 
 ## Packaging as a plugin
 
-The repo is also a Claude Code plugin: [`.claude-plugin/plugin.json`](../../.claude-plugin/plugin.json),
-[`.claude-plugin/marketplace.json`](../../.claude-plugin/marketplace.json) and the `/aiws` command in
-[`commands/`](../../commands/). When adding a user-facing command, update `commands/aiws.md`.
+Plugin/marketplace packaging is a **feature the CLI gives consumer repos**, not how this repo ships itself:
+this project is distributed as the **`ai-workspace` npm CLI** (install via the release tarball). Running
+`ai-workspace package` on a *target* repo projects its generated workspace into a Claude Code plugin served
+from that repo as a private marketplace — see [DISTRIBUTION.md](DISTRIBUTION.md) for the produced layout
+(`.claude-plugin/marketplace.json` + `plugins/<slug>/`). This repo intentionally ships **no** hand-rolled
+self-plugin (it would diverge from the generated output and rot unmaintained).
 
 ## Performance and token budget
 
