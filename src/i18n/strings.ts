@@ -10,6 +10,19 @@ export interface Phase {
   name: string;
   summary: string;
   does: string;
+  /**
+   * Rich, AI-facing phase data (English-only) — feeds the generated SKILL.md so it sits at the "right
+   * altitude" (Agent Skills + context-engineering best practices; see 0012a). Optional so the ES phase
+   * list and any other consumer stay valid; populated for the English phases that drive skills/commands.
+   */
+  /** Intent-based, 3rd-person "what it does AND when to use it" (replaces the circular trigger). */
+  description?: string;
+  /** Inputs to read first (prior change artifacts). */
+  reads?: string[];
+  /** The artifact this phase writes: a file + its section template. */
+  produces?: { file: string; sections: string[] };
+  /** The quality checklist the artifact must pass before moving to the next phase. */
+  quality?: string[];
 }
 
 export interface Strings {
@@ -63,16 +76,106 @@ const en: Strings = {
     manifest: "Integrity manifest of base-owned artifacts.",
   },
   phases: [
-    { name: "sdd-constitution", summary: "Establish project principles (greenfield bootstrap).", does: "Capture the project's non-negotiable principles and guardrails in the project's `constitution.md`. Do this once when a project is born; later specs and designs must honor it. (Idea borrowed from Spec-Kit; only for new projects.)" },
-    { name: "sdd-explore", summary: "Investigate before committing to a change.", does: "Clarify the problem, survey the code, list open questions and options. Write findings to the change's `explore.md`." },
-    { name: "sdd-propose", summary: "Create a change proposal.", does: "State intent, scope, approach and risks in the change's `proposal.md`." },
-    { name: "sdd-clarify", summary: "Resolve ambiguities before writing the spec.", does: "Ask targeted questions about underspecified areas and record the decisions in the change's `clarify.md`, so the spec that follows is unambiguous. (Idea borrowed from Spec-Kit.)" },
-    { name: "sdd-spec", summary: "Write requirements & scenarios (delta spec).", does: "Capture WHAT must be true in the change's `spec.md`. Requirements with acceptance scenarios." },
-    { name: "sdd-design", summary: "Technical design & architecture decisions.", does: "Capture HOW in the change's `design.md`, with Mermaid diagrams where useful." },
-    { name: "sdd-tasks", summary: "Break the change into a task checklist.", does: "Derive an ordered checklist from spec + design into the change's `tasks.md`." },
-    { name: "sdd-apply", summary: "Implement tasks following spec & design.", does: "Implement tasks in order, checking them off in `tasks.md`. Keep code aligned with the spec." },
-    { name: "sdd-verify", summary: "Validate implementation against spec.", does: "Check each requirement/scenario; report gaps in the change's `verify-report.md`." },
-    { name: "sdd-archive", summary: "Fold the change into main specs and archive.", does: "Merge the delta spec into the stable specs, then move the change folder to the archive." },
+    {
+      name: "sdd-constitution",
+      summary: "Establish project principles (greenfield bootstrap).",
+      does: "Capture the project's non-negotiable principles and guardrails in the project's `constitution.md`. Do this once when a project is born; later specs and designs must honor it. (Idea borrowed from Spec-Kit; only for new projects.)",
+      description:
+        "Capture a new project's non-negotiable principles (test-first, simplicity, anti-abstraction, integration-first) in a constitution every later spec must honour. Use once, at the birth of a greenfield project — not for existing repos or per-feature work.",
+      reads: ["the project's goals and constraints", "any existing house style or org conventions"],
+      produces: { file: "constitution.md", sections: ["Principles (numbered, each with a one-line rationale)", "Constraints", "Amendment rule (rationale + approval required)"] },
+      quality: ["Each principle is testable, not a platitude", "Numbered and stable (amendments are deliberate)", "No feature specifics — only durable rules"],
+    },
+    {
+      name: "sdd-explore",
+      summary: "Investigate before committing to a change.",
+      does: "Clarify the problem, survey the code, list open questions and options. Write findings to the change's `explore.md`.",
+      description:
+        "Investigate a feature or bug before committing to an approach: frame the problem, survey the relevant code, and lay out options with trade-offs. Use at the very start of a non-trivial change, when the problem or solution space is still unclear.",
+      reads: ["the request / issue", "the relevant modules and their tests", "related prior changes in the archive"],
+      produces: { file: "explore.md", sections: ["Problem (grounded in the code)", "Current reality", "Open questions", "Options with trade-offs", "Recommendation"] },
+      quality: ["Claims cite real files/symbols, not assumptions", "At least two options weighed", "Open questions are explicit, not glossed over"],
+    },
+    {
+      name: "sdd-propose",
+      summary: "Create a change proposal.",
+      does: "State intent, scope, approach and risks in the change's `proposal.md`.",
+      description:
+        "Turn an explored idea into a reviewable proposal: state the why, the scope (in and out), the approach, and the risks. Use once exploration converges and before writing the spec — it is the decision artifact a reviewer signs off.",
+      reads: ["explore.md", "the constitution / AGENTS.md guard-rails"],
+      produces: { file: "proposal.md", sections: ["Why", "What (scope: in / out)", "Approach", "Decisions to confirm", "Risks"] },
+      quality: ["Scope boundaries are explicit (what it will NOT do)", "Any plausible-alternative decision is surfaced, not assumed", "Risks name a mitigation"],
+    },
+    {
+      name: "sdd-clarify",
+      summary: "Resolve ambiguities before writing the spec.",
+      does: "Ask targeted questions about underspecified areas and record the decisions in the change's `clarify.md`, so the spec that follows is unambiguous. (Idea borrowed from Spec-Kit.)",
+      description:
+        "Surface and resolve ambiguity before the spec is written: ask targeted questions about underspecified behaviour, edge cases and decisions, and record the answers. Use between proposal and spec whenever the proposal leaves choices open.",
+      reads: ["proposal.md", "explore.md", "any `[NEEDS CLARIFICATION]` markers"],
+      produces: { file: "clarify.md", sections: ["Questions (each with options + a recommendation)", "Decisions (the chosen answer + why)"] },
+      quality: ["Each question changes what the spec would say", "Decisions are concrete enough to remove the ambiguity", "No open `[NEEDS CLARIFICATION]` left for the spec"],
+    },
+    {
+      name: "sdd-spec",
+      summary: "Write requirements & scenarios (delta spec).",
+      does: "Capture WHAT must be true in the change's `spec.md`. Requirements with acceptance scenarios.",
+      description:
+        "Specify WHAT must be true — testable requirements and acceptance scenarios — as a delta against the current specs. Use after clarify; the spec, not the code, is the source of truth for behaviour. Avoid HOW (that is design).",
+      reads: ["proposal.md", "clarify.md", "the current `specs/` baseline this change deltas"],
+      produces: { file: "spec.md", sections: ["Requirements (RFC 2119 MUST/SHOULD/MAY)", "Acceptance scenarios (Given / When / Then)", "Success criteria (measurable, SC-001…)", "Out of scope"] },
+      quality: ["Every requirement is verifiable", "Scenarios are concrete (Given/When/Then), not vague", "Success criteria are measurable", "Describes WHAT, never HOW"],
+    },
+    {
+      name: "sdd-design",
+      summary: "Technical design & architecture decisions.",
+      does: "Capture HOW in the change's `design.md`, with Mermaid diagrams where useful.",
+      description:
+        "Decide HOW the spec is met: the technical approach, the key architecture decisions and their trade-offs, with Mermaid diagrams where they clarify. Use after the spec is stable, before breaking work into tasks.",
+      reads: ["spec.md", "the existing architecture (`ARCHITECTURE.md`) and affected modules"],
+      produces: { file: "design.md", sections: ["Approach", "Architecture decisions (option chosen + why)", "Diagrams (Mermaid, quoted labels)", "Data / contracts", "Trade-offs & complexity"] },
+      quality: ["Every spec requirement is covered by the design", "Decisions record the rejected alternatives", "Diagram labels with special chars are quoted", "No gold-plating beyond the spec"],
+    },
+    {
+      name: "sdd-tasks",
+      summary: "Break the change into a task checklist.",
+      does: "Derive an ordered checklist from spec + design into the change's `tasks.md`.",
+      description:
+        "Break the spec and design into an ordered, checkable task list — small, verifiable steps that map back to requirements. Use once spec and design are agreed, to drive (and track) implementation.",
+      reads: ["spec.md", "design.md"],
+      produces: { file: "tasks.md", sections: ["Ordered tasks (checkboxes)", "[P] markers for parallelizable work", "Each task traces to a requirement"] },
+      quality: ["Tasks are small and independently verifiable", "Order respects real dependencies", "Together they cover every requirement"],
+    },
+    {
+      name: "sdd-apply",
+      summary: "Implement tasks following spec & design.",
+      does: "Implement tasks in order, checking them off in `tasks.md`. Keep code aligned with the spec.",
+      description:
+        "Implement the tasks in order, keeping the code aligned with the spec and design, checking each off as it lands. Use to execute an agreed plan — if reality diverges from the spec, stop and update the spec first.",
+      reads: ["tasks.md", "spec.md", "design.md"],
+      produces: { file: "tasks.md (kept current)", sections: ["Tasks checked off as completed", "Notes on any deviation (with the spec updated to match)"] },
+      quality: ["Code matches the spec — divergence updates the spec, not silently the code", "Tests accompany behaviour", "Each task checked off only when actually done"],
+    },
+    {
+      name: "sdd-verify",
+      summary: "Validate implementation against spec.",
+      does: "Check each requirement/scenario; report gaps in the change's `verify-report.md`.",
+      description:
+        "Validate the implementation against the spec: walk every requirement and acceptance scenario, run the checks, and report any gaps. Use after apply, before archiving — it is the evidence the change is actually done.",
+      reads: ["spec.md (requirements + scenarios)", "the implemented code and its tests"],
+      produces: { file: "verify-report.md", sections: ["Per-requirement result (pass / fail / partial)", "Evidence (tests, output)", "Gaps and follow-ups"] },
+      quality: ["Every requirement and scenario is checked", "Failures are reported honestly with the evidence", "No requirement marked done without proof"],
+    },
+    {
+      name: "sdd-archive",
+      summary: "Fold the change into main specs and archive.",
+      does: "Merge the delta spec into the stable specs, then move the change folder to the archive.",
+      description:
+        "Fold a verified change's delta into the stable specs and move its folder to the archive. Use only after verify passes: ADDED requirements are appended, MODIFIED replace, REMOVED delete; then the change is archived with its full history.",
+      reads: ["verify-report.md (must pass)", "spec.md delta", "the target `specs/` baseline"],
+      produces: { file: "specs/ (updated) + archive/<date-name>/", sections: ["Apply delta: ADDED→append, MODIFIED→replace, REMOVED→delete", "Move the change folder to the archive (full context preserved)"] },
+      quality: ["Verify passed before archiving", "Delta merge rules applied exactly", "Stable specs remain internally consistent after merge"],
+    },
   ],
 };
 

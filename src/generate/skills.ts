@@ -6,19 +6,38 @@ import { docsPaths } from "./paths.js";
 import { skillFrontmatter as frontmatter, aiwsId } from "./naming.js";
 import type { Phase } from "../i18n/strings.js";
 
-// AI skill → English only (token efficiency).
+// AI skill → English only (token efficiency). Rich, self-contained, "right altitude" (0012a): an
+// intent-based description (not a circular trigger), what to read, the output template, and a quality bar.
 function sddSkill(p: Phase, config: Config): string {
   const store = docsPaths(config);
-  const trigger = `Trigger: when planning/executing the ${p.name.replace("sdd-", "")} phase of a Spec-Driven Development change.`;
-  const lines = [
-    "## How to work",
-    "- Read prior artifacts in the change folder before writing the next one.",
+  const phase = p.name.replace("sdd-", "");
+  const description = p.description ?? `${p.summary} ${p.does}`;
+  const storeLine =
     config.sdd.backend === "none"
-      ? "- Backend is `none`: artifacts are not persisted to disk."
-      : `- Artifacts live in \`${store.changes}/<change>/\` and are versioned in git.`,
-    "- Follow the SDD lifecycle and conventions in AGENTS.md and `_shared/sdd-convention.md`.",
-  ];
-  return [frontmatter(aiwsId(p.name), `${p.summary} ${trigger}`), `## ${aiwsId(p.name)}`, "", p.does, "", ...lines].join("\n");
+      ? "Backend is `none`: artifacts are not persisted to disk — keep them in the working context."
+      : `Artifacts live in \`${store.changes}/<change>/\` and are versioned in git.`;
+
+  const body: string[] = [`## ${aiwsId(p.name)}`, "", p.does, ""];
+
+  if (p.reads?.length) {
+    body.push("## Read first", ...p.reads.map((r) => `- ${r}`), "");
+  }
+  if (p.produces) {
+    body.push(`## Produce — \`${p.produces.file}\``, ...p.produces.sections.map((s) => `- ${s}`), "");
+  }
+  if (p.quality?.length) {
+    body.push("## Quality bar", ...p.quality.map((q) => `- [ ] ${q}`), "");
+  }
+  body.push(
+    "## How to work",
+    `1. Read the prior artifacts in the change folder before writing \`${p.produces?.file ?? `${phase}.md`}\`.`,
+    "2. Fill the section template above; keep it concise and high-signal.",
+    "3. Self-check against the quality bar before moving to the next phase.",
+    "",
+    `> ${storeLine} Follow the SDD lifecycle in AGENTS.md and \`_shared/sdd-convention.md\`.`,
+  );
+
+  return [frontmatter(aiwsId(p.name), description), ...body].join("\n");
 }
 
 // AI skill (shared convention) → English only (token efficiency).

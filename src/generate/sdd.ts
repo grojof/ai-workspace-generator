@@ -24,6 +24,8 @@ export function phasesFor(config: Config): Phase[] {
 }
 
 // AI-facing slash command → English only (token efficiency).
+// Claude command = a THIN launcher (0012a): the skill carries the substance, so the command just points to
+// it — no duplicated guidance (fixes the command⟂skill overlap).
 function commandFile(p: Phase, config: Config): string {
   const backend = config.sdd.backend;
   const store = docsPaths(config);
@@ -34,7 +36,7 @@ function commandFile(p: Phase, config: Config): string {
     "",
     `# /${aiwsId(p.name)}`,
     "",
-    p.does,
+    `Run the **\`${aiwsId(p.name)}\`** skill — it carries the inputs to read, the \`${p.produces?.file ?? `${p.name.replace("sdd-", "")}.md`}\` template, and the quality bar for this phase.`,
     "",
     backend === "none"
       ? "> Backend `none`: artifacts are not persisted to disk."
@@ -42,22 +44,21 @@ function commandFile(p: Phase, config: Config): string {
     backend === "hybrid"
       ? "> If engram is available, also persist a summary to cross-session memory; the in-repo files remain canonical."
       : "",
-    "",
-    "Follow the SDD lifecycle in AGENTS.md. Read prior artifacts in the change folder before writing the next one.",
   ].filter((l) => l !== "").join("\n");
 }
 
+// Copilot has no skill to launch, so the prompt stays SUBSTANTIVE — but derived from the same Phase data
+// (purpose + produce template + quality), not a thin near-duplicate of the command.
 function copilotPrompt(p: Phase, config: Config): string {
-  return [
-    "---",
-    "mode: agent",
-    `description: ${p.summary}`,
-    "---",
-    "",
-    p.does,
-    "",
-    "Follow the SDD lifecycle documented in `.github/copilot-instructions.md` / `AGENTS.md`.",
-  ].join("\n");
+  const lines = ["---", "mode: agent", `description: ${p.summary}`, "---", "", p.description ?? p.does, ""];
+  if (p.produces) {
+    lines.push(`## Produce — \`${p.produces.file}\``, ...p.produces.sections.map((s) => `- ${s}`), "");
+  }
+  if (p.quality?.length) {
+    lines.push("## Quality bar", ...p.quality.map((q) => `- [ ] ${q}`), "");
+  }
+  lines.push("Follow the SDD lifecycle documented in `AGENTS.md`.");
+  return lines.join("\n");
 }
 
 // /sdd-sync — SPDD code→prompt sync (a maintenance command, not a phase). Claude target, methodology spdd.
