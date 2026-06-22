@@ -259,7 +259,7 @@ flowchart LR
 
 **Commands** (Claude: `/aiws-sdd-*`; Copilot: prompt files in `.github/prompts/`)
 - `/aiws-sdd-explore <topic>` — investigate before committing.
-- `/aiws-sdd-propose` → `/aiws-sdd-clarify` → `/aiws-sdd-spec` + `/aiws-sdd-design` → `/aiws-sdd-tasks` → `/aiws-sdd-apply` → `/aiws-sdd-verify` → `/aiws-sdd-archive`.
+- `/aiws-sdd-propose` → `/aiws-sdd-clarify` → `/aiws-sdd-spec` + `/aiws-sdd-design` → `/aiws-sdd-tasks` → `/aiws-sdd-apply` → `/aiws-sdd-verify` → `/aiws-sdd-archive`. Each phase's **`aiws-sdd-*` skill** carries its inputs, output template and quality bar — loaded on demand (cross-tool Agent Skills).
 
 **Artifacts** live in `docs/development/changes/<change-name>/` and are **versioned in git** (reviewable in PRs, readable by any AI tool). The store follows OpenSpec's *layout* (specs + changes + archive) as a convention — it is **not** the OpenSpec CLI.
 

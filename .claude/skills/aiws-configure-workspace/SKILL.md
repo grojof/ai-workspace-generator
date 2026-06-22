@@ -5,7 +5,7 @@ description: >
 license: Apache-2.0
 metadata:
   author: ai-workspace
-  source: aiws@0.51.0
+  source: aiws@0.52.0
   version: "1.0"
 ---
 ## Configure this AI workspace (guided)
