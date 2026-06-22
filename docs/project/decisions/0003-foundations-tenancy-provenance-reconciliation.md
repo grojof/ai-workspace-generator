@@ -10,7 +10,7 @@
 The generator's value vs. plain SDD scaffolders (Spec-Kit, OpenSpec — both thin "init-once" CLIs) is the
 **config-driven, single-source, idempotent, layered governance engine**: the one thing that lets a team/company
 **standardise norms across many repos and tools and push updates without drift**. Research (see
-[changes/0012-generated-harness-quality/research.md](../../development/changes/0012-generated-harness-quality/research.md))
+[changes/archive/0012-generated-harness-quality/research.md](../../development/changes/archive/0012-generated-harness-quality/research.md))
 confirmed AGENTS.md is becoming the universal native instructions file, so the moat is governance, not scaffolding.
 
 But the moment we picture **base philosophy (ours) + company extensions + future base updates**, it turns chaotic:

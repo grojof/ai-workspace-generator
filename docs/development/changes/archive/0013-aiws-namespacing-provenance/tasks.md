@@ -11,7 +11,7 @@
 - [x] `src/modules/skills.ts`: 8 non-pack registry ids → `aiws-*` (pack rows left for F2).
 - [x] `templates/core/routing.md.eta`: skill-name references → `aiws-*`.
 - [x] Tests: `generate.test.js` + `multi-repo.test.js` skill-path asserts → `aiws-*`. Regenerated `test/__fixtures__/agents/*.md` (skill-routing block only; block-order golden unchanged). 79/79 green; `doctor` 0/0 (AGENTS.md 5787/6000). Verified: all base skills emit as `aiws-*` (packs `find-skills`/`mcp-builder`/`skill-creator` remain → F2).
-- [ ] Reserved-namespace guard (+ test) — deferred to F2 (lands with external/git pack sources).
+- [x] Reserved-namespace guard (+ test) — **landed in F2c** (`packsSync` reserved-namespace guard, change 0014).
 
 ## F1a.2 — commands + prose sweep (done)
 - [x] Command/prompt files + identifiers → `/aiws-*`: `sdd.ts` (`/aiws-sdd-*`, `/aiws-sdd-sync`), `governance.ts` (`/aiws-commit`, `/aiws-upgrade-deps`), `guides.ts` (`/aiws-configure`), `learning.ts` (`/aiws-learn`), `livingDocs.ts` (`/aiws-doc-sync`).

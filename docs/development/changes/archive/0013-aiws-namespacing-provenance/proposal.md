@@ -5,7 +5,7 @@
 Make everything the generator owns **identifiable, reserved and stamped**, so later foundations (overlay
 relations, integrity manifest, `aiws-reconcile`) and the 0012 quality work have a clean base. Today generated
 skills are unprefixed and collide with upstream ecosystems (e.g. our thin `sdd-explore` vs richer global ones),
-and nothing records *who owns* an artifact. Per [ADR 0003](../../../project/decisions/0003-foundations-tenancy-provenance-reconciliation.md):
+and nothing records *who owns* an artifact. Per [ADR 0003](../../../../project/decisions/0003-foundations-tenancy-provenance-reconciliation.md):
 base = `aiws-*` / `aiws:*` (reserved); org = `corp-<handle>-*` / `corp-<handle>:*`.
 
 ## Scope
@@ -27,7 +27,7 @@ Ships in **two reviewable slices** (same change folder, sequential):
   `managed-region.ts` already escapes the `:`). Widen the invariants parse/golden regex to allow `:`.
 - **`upgrade` migration:** rewrite legacy marker ids → `aiws:*`, and remove orphaned legacy skill folders/commands
   (`.claude/skills/sdd-explore/` → `aiws-sdd-explore/`), so existing repos don't end up with duplicated/orphaned
-  content. Ship a migration map + a note in [MAINTAINING](../../../project/MAINTAINING.md).
+  content. Ship a migration map + a note in [MAINTAINING](../../../../project/MAINTAINING.md).
 - Regenerate the byte baselines (`test/__fixtures__/agents/*.md`) + the invariants golden **deliberately**.
 
 ### Out of scope (later foundations)
