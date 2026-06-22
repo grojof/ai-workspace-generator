@@ -243,7 +243,7 @@ function buildVscodeMcpFile(cwd: string, config: Config): WriteResult {
   return writeFile(resolve(cwd, ".vscode/mcp.json"), buildVscodeMcp(config.mcp));
 }
 
-/** Write .claude/settings.json, merging an optional /doc-sync Stop hook into any existing file. */
+/** Write .claude/settings.json, merging an optional /aiws-doc-sync Stop hook into any existing file. */
 function generateClaudeSettings(cwd: string, config: Config): WriteResult {
   const path = resolve(cwd, ".claude/settings.json");
   const hookCmd = `echo "${strings(config.language).docSyncReminder}"`;
@@ -263,7 +263,7 @@ function generateClaudeSettings(cwd: string, config: Config): WriteResult {
   } else if (settings.hooks?.Stop) {
     // Remove our managed hook if disabled (best-effort: only when it's exactly ours).
     const stop = settings.hooks.Stop;
-    if (Array.isArray(stop) && JSON.stringify(stop).includes("/doc-sync")) {
+    if (Array.isArray(stop) && JSON.stringify(stop).includes("/aiws-doc-sync")) {
       delete settings.hooks.Stop;
       if (Object.keys(settings.hooks).length === 0) delete settings.hooks;
     }

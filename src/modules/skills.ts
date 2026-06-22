@@ -47,7 +47,7 @@ const claude = (c: Config) => c.targets.includes("claude");
 
 export const SKILLS: SkillEntry[] = [
   {
-    id: "secure-commit",
+    id: "aiws-secure-commit",
     domain: "core",
     level: "all",
     userType: "both",
@@ -57,7 +57,7 @@ export const SKILLS: SkillEntry[] = [
     trigger: { en: "committing changes", es: "al hacer commit" },
   },
   {
-    id: "dependency-upgrade",
+    id: "aiws-dependency-upgrade",
     domain: "technical",
     level: "standard",
     userType: "technical",
@@ -70,7 +70,7 @@ export const SKILLS: SkillEntry[] = [
     },
   },
   {
-    id: "sdd-*",
+    id: "aiws-sdd-*",
     domain: "development",
     level: "all",
     userType: "both",
@@ -183,7 +183,7 @@ export const SKILLS: SkillEntry[] = [
   // Company business-content skills are an optional extension point: bundle your own `corp-*` packs
   // under `skill-packs/` gated by `company` (see docs/project/EXTENDING.md). None ship in this public repo.
   {
-    id: "living-docs",
+    id: "aiws-living-docs",
     domain: "documentation",
     level: "all",
     userType: "both",
@@ -196,7 +196,7 @@ export const SKILLS: SkillEntry[] = [
     },
   },
   {
-    id: "ai-workspace-guide",
+    id: "aiws-workspace-guide",
     domain: "onboarding",
     level: "beginner",
     userType: "both",
@@ -209,7 +209,7 @@ export const SKILLS: SkillEntry[] = [
     },
   },
   {
-    id: "configure-workspace",
+    id: "aiws-configure-workspace",
     domain: "onboarding",
     level: "all",
     userType: "both",
@@ -222,7 +222,7 @@ export const SKILLS: SkillEntry[] = [
     },
   },
   {
-    id: "vscode-setup",
+    id: "aiws-vscode-setup",
     domain: "onboarding",
     level: "beginner",
     userType: "both",
@@ -232,7 +232,7 @@ export const SKILLS: SkillEntry[] = [
     trigger: { en: "setting up VS Code / extensions", es: "configurar VS Code / extensiones" },
   },
   {
-    id: "learn",
+    id: "aiws-learn",
     domain: "onboarding",
     level: "all",
     userType: "both",

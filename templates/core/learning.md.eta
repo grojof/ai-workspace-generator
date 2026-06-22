@@ -9,4 +9,4 @@ This workspace is for **learning**, not shipping. The AI acts as a **tutor**, no
 - Adapt to the learner's level; check understanding before moving on.
 - Use **context7** to ground explanations in current, version-accurate docs.
 
-Start with: `/learn <topic>` or just say what you want to learn. See the `learn` skill.
+Start with: `/aiws-learn <topic>` or just say what you want to learn. See the `aiws-learn` skill.

@@ -34,8 +34,8 @@ flowchart TD
   AG --> CO[".github/copilot-instructions.md<br/>espejo generado"]
   GEN --> MCP[".mcp.json / .vscode/mcp.json"]
   GEN --> IGN[".claudeignore / .copilotignore"]
-<% if (it.sdd.enabled) { %>  GEN --> SDD["Metodología SDD: <%= it.paths.development %>/ + comandos /sdd-* (sin CLI externo)"]
-<% } %><% if (it.livingDocs) { %>  GEN --> DOCS["<%= it.paths.status %>/*  ·  /doc-sync"]
+<% if (it.sdd.enabled) { %>  GEN --> SDD["Metodología SDD: <%= it.paths.development %>/ + comandos /aiws-sdd-* (sin CLI externo)"]
+<% } %><% if (it.livingDocs) { %>  GEN --> DOCS["<%= it.paths.status %>/*  ·  /aiws-doc-sync"]
 <% } %>
 ```
 
@@ -49,13 +49,13 @@ flowchart TD
 - **Añade un módulo de stack:** `ai-workspace add <language|framework|mcp> <id>`.
 - **Actualiza plantillas:** `ai-workspace upgrade` (muestra un diff primero).
 - **Comprueba la salud:** `ai-workspace doctor` (presupuesto de tokens, referencias rotas).
-<% if (it.sdd.enabled) { %>- **Planifica un cambio:** `/sdd-explore` → `/sdd-propose` → `/sdd-clarify` → … → `/sdd-archive` (es una metodología — los artefactos son Markdown en `<%= it.paths.development %>/`, sin CLI externo).
-<% } %><% if (it.livingDocs) { %>- **Refresca el estado del proyecto para la IA:** `/doc-sync`.
-<% } %>- **¿Empiezas con IA?** Pregunta por la skill `ai-workspace-guide` o usa `/aiws-guide`.
+<% if (it.sdd.enabled) { %>- **Planifica un cambio:** `/aiws-sdd-explore` → `/aiws-sdd-propose` → `/aiws-sdd-clarify` → … → `/aiws-sdd-archive` (es una metodología — los artefactos son Markdown en `<%= it.paths.development %>/`, sin CLI externo).
+<% } %><% if (it.livingDocs) { %>- **Refresca el estado del proyecto para la IA:** `/aiws-doc-sync`.
+<% } %>- **¿Empiezas con IA?** Pregunta por la skill `aiws-workspace-guide` o usa `/aiws-guide`.
 
 ## Gobernanza y commits
 - **Modo de proyecto:** <%= it.project.mode %> — <%= it.project.mode === "existing" ? "versiones conservadoras; sube solo tras evaluación" : "versiones estables actuales" %>.
-- **Commits:** <%= it.workflow.commits.coAuthor ? "con" : "sin" %> trailers de co-author; <%= it.workflow.commits.automate === "with-approval" ? "se commitea solo tras tu aprobación (usa /commit)" : "manual (commiteas tú)" %>.
+- **Commits:** <%= it.workflow.commits.coAuthor ? "con" : "sin" %> trailers de co-author; <%= it.workflow.commits.automate === "with-approval" ? "se commitea solo tras tu aprobación (usa /aiws-commit)" : "manual (commiteas tú)" %>.
 - **Barrera de seguridad:** la IA debe parar y preguntar antes de subir versiones, migrar, resolver conflictos o cambios arriesgados.
 <% if (it.workflow.commits.gitHook) { %>- **Refuerzo:** activa el hook de commit una vez → `git config core.hooksPath .githooks`
 <% } %>

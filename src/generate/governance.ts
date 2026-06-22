@@ -2,19 +2,16 @@ import { resolve } from "node:path";
 import type { Config } from "../config/schema.js";
 import { writeFile, writeIfMissing, type WriteResult } from "../render/writer.js";
 import { docsPaths } from "./paths.js";
+import { skillFrontmatter as frontmatter } from "./naming.js";
 
 /**
  * Governance artifacts: skills + commands that enforce the version/security/commit
  * policy declared in AGENTS.md, plus a commit-msg git hook for hard enforcement.
  */
 
-function frontmatter(name: string, description: string): string {
-  return ["---", `name: ${name}`, "description: >", `  ${description}`, "license: Apache-2.0", "metadata:", "  author: ai-workspace", '  version: "1.0"', "---", ""].join("\n");
-}
+// --- aiws-dependency-upgrade skill (AI-facing → English only) ---------------------
 
-// --- dependency-upgrade skill (AI-facing → English only) ---------------------
-
-const DEP_UPGRADE = `## dependency-upgrade
+const DEP_UPGRADE = `## aiws-dependency-upgrade
 
 Rigorously assess whether a version bump or migration is **feasible and worth it** — before touching
 anything. Never upgrade or migrate on your own initiative: it is a deliberate change requiring user
@@ -36,12 +33,12 @@ The user asks to update a dependency/language/framework, migrate, or resolve a v
 > If the migration can't be done safely, say so clearly and propose the conservative path.
 `;
 
-// --- secure-commit skill -----------------------------------------------------
+// --- aiws-secure-commit skill -----------------------------------------------------
 
 // AI skill → English only (token efficiency).
 function secureCommit(config: Config): string {
   const c = config.workflow.commits;
-  return `## secure-commit
+  return `## aiws-secure-commit
 
 Create commits following the project policy. ${c.automate === "with-approval" ? "Prepare and **ask for approval** before committing." : "**Never** commit automatically; leave it to the user."}
 
@@ -65,9 +62,9 @@ function commitCommand(config: Config): string {
 description: Create a commit following the project policy (no co-author, with approval).
 ---
 
-# /commit
+# /aiws-commit
 
-Follow the \`secure-commit\` skill and the commit policy in AGENTS.md. Prepare a commit with the current
+Follow the \`aiws-secure-commit\` skill and the commit policy in AGENTS.md. Prepare a commit with the current
 task's changes, show me the message and ${config.workflow.commits.automate === "with-approval" ? "wait for my approval before running it" : "let me commit"}.
 Never add Co-Authored-By or use --no-verify.
 `;
@@ -75,12 +72,12 @@ Never add Co-Authored-By or use --no-verify.
 
 function upgradeDepsCommand(): string {
   return `---
-description: Assess a version bump/migration with the dependency-upgrade skill (feasibility + security).
+description: Assess a version bump/migration with the aiws-dependency-upgrade skill (feasibility + security).
 ---
 
-# /upgrade-deps
+# /aiws-upgrade-deps
 
-Follow the \`dependency-upgrade\` skill. Do not change anything yet: investigate feasibility, compatibility
+Follow the \`aiws-dependency-upgrade\` skill. Do not change anything yet: investigate feasibility, compatibility
 and security (use context7), give me a verdict with the long-term recommendation, and wait for my decision.
 `;
 }
@@ -123,29 +120,29 @@ export function generateGovernance(cwd: string, config: Config): WriteResult[] {
   if (config.targets.includes("claude")) {
     results.push(
       writeFile(
-        resolve(cwd, ".claude/skills/dependency-upgrade/SKILL.md"),
+        resolve(cwd, ".claude/skills/aiws-dependency-upgrade/SKILL.md"),
         frontmatter(
-          "dependency-upgrade",
+          "aiws-dependency-upgrade",
           "Assess feasibility and security of version bumps/migrations before touching anything. Trigger: when asked to update dependencies, migrate, or resolve version conflicts.",
         ) + depUpgradeBody,
       ),
     );
     results.push(
       writeFile(
-        resolve(cwd, ".claude/skills/secure-commit/SKILL.md"),
+        resolve(cwd, ".claude/skills/aiws-secure-commit/SKILL.md"),
         frontmatter(
-          "secure-commit",
+          "aiws-secure-commit",
           "Create commits per policy (no co-author, with approval, conventional). Trigger: when committing changes.",
         ) + secureCommit(config),
       ),
     );
-    results.push(writeFile(resolve(cwd, ".claude/commands/commit.md"), commitCommand(config)));
-    results.push(writeFile(resolve(cwd, ".claude/commands/upgrade-deps.md"), upgradeDepsCommand()));
+    results.push(writeFile(resolve(cwd, ".claude/commands/aiws-commit.md"), commitCommand(config)));
+    results.push(writeFile(resolve(cwd, ".claude/commands/aiws-upgrade-deps.md"), upgradeDepsCommand()));
   }
 
   if (config.targets.includes("copilot")) {
-    results.push(writeFile(resolve(cwd, ".github/prompts/commit.prompt.md"), commandPrompt(commitCommand(config).split("---\n").pop() ?? "")));
-    results.push(writeFile(resolve(cwd, ".github/prompts/upgrade-deps.prompt.md"), commandPrompt(upgradeDepsCommand().split("---\n").pop() ?? "")));
+    results.push(writeFile(resolve(cwd, ".github/prompts/aiws-commit.prompt.md"), commandPrompt(commitCommand(config).split("---\n").pop() ?? "")));
+    results.push(writeFile(resolve(cwd, ".github/prompts/aiws-upgrade-deps.prompt.md"), commandPrompt(upgradeDepsCommand().split("---\n").pop() ?? "")));
   }
 
   if (config.workflow.commits.gitHook) {

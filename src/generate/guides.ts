@@ -3,6 +3,7 @@ import type { Config } from "../config/schema.js";
 import { writeFile, writeIfMissing, type WriteResult } from "../render/writer.js";
 import { docsPaths } from "./paths.js";
 import { LANGUAGES, FRAMEWORKS, ENVIRONMENTS, type ModuleEntry } from "../modules/registry.js";
+import { skillFrontmatter as frontmatter } from "./naming.js";
 
 /** Registry entries present in the config's stack, in catalog order (languages → frameworks → environments). */
 function stackModules(config: Config): ModuleEntry[] {
@@ -19,10 +20,6 @@ function stackModules(config: Config): ModuleEntry[] {
  * command / Copilot prompt to invoke it, recommended VS Code extensions, and a
  * VS Code setup guide. Written for developers new to AI agents/skills/MCP.
  */
-
-function frontmatter(name: string, description: string): string {
-  return ["---", `name: ${name}`, "description: >", `  ${description}`, "license: Apache-2.0", "metadata:", "  author: ai-workspace", '  version: "1.0"', "---", ""].join("\n");
-}
 
 // ---------------------------------------------------------------------------
 // Learner guide skill
@@ -48,17 +45,17 @@ Your repo ships an AI setup for **Claude Code** and **GitHub Copilot**, all gene
 1. Open the repo in VS Code (Copilot) or Claude Code.
 2. Read \`AI-WORKSPACE.md\` — the index of everything generated.
 3. Fill your own layers in \`AGENTS.md\`: company conventions and business logic.
-4. Start coding. For big changes use SDD. When done, run \`/doc-sync\`.
+4. Start coding. For big changes use SDD. When done, run \`/aiws-doc-sync\`.
 
 ### Start on an EXISTING project
 1. Same, but check the \`AGENTS.md\` rules fit the current code.
 2. Ingest existing company standards with \`ai-workspace import <path>\`.
-3. Run \`/doc-sync\` so the AI has a map of the current state.
+3. Run \`/aiws-doc-sync\` so the AI has a map of the current state.
 
 ### SDD step by step
 For non-trivial changes; each step writes a file in \`openspec/changes/<change>/\`:
-\`/sdd-explore\` → \`/sdd-propose\` → \`/sdd-spec\` → \`/sdd-design\` → \`/sdd-tasks\` → \`/sdd-apply\` →
-\`/sdd-verify\` → \`/sdd-archive\`. Go in order. Small changes can skip SDD, but run \`/doc-sync\` after.
+\`/aiws-sdd-explore\` → \`/aiws-sdd-propose\` → \`/aiws-sdd-spec\` → \`/aiws-sdd-design\` → \`/aiws-sdd-tasks\` → \`/aiws-sdd-apply\` →
+\`/aiws-sdd-verify\` → \`/aiws-sdd-archive\`. Go in order. Small changes can skip SDD, but run \`/aiws-doc-sync\` after.
 
 ### Useful generator commands
 - \`ai-workspace sync\` — regenerate after editing \`AGENTS.md\`/config.
@@ -74,7 +71,7 @@ description: Guide to using this AI workspace (SDD, skills, MCP) — great for b
 
 Explain how to work with this workspace based on the user's level and goal. For beginners, start with
 concepts and a concrete SDD example. For a change request, propose the right flow (SDD or direct) and
-walk them through it. Lean on the \`ai-workspace-guide\` skill and \`AI-WORKSPACE.md\`.
+walk them through it. Lean on the \`aiws-workspace-guide\` skill and \`AI-WORKSPACE.md\`.
 `;
 
 const GUIDE_PROMPT_EN = `---
@@ -139,16 +136,16 @@ without explicit approval.**
 ### 4. Apply (only after approval)
 - Write \`workspace.config.yaml\`, then run \`ai-workspace sync\` to generate artifacts (idempotent — a second
   run reports 0 changes; your text outside managed markers survives). Apply any folder moves **only** as
-  approved, one reviewable step at a time (Safety gate). Finish with \`/doc-sync\` if living docs are on.
+  approved, one reviewable step at a time (Safety gate). Finish with \`/aiws-doc-sync\` if living docs are on.
 `;
 
 const CONFIGURE_CMD_EN = `---
 description: Guided workspace configuration — analyze an existing repo (or set up a new one) and propose a config.
 ---
 
-# /configure
+# /aiws-configure
 
-Drive the \`configure-workspace\` skill: analyze the repo (\`ai-workspace detect --json\` + read the tree),
+Drive the \`aiws-configure-workspace\` skill: analyze the repo (\`ai-workspace detect --json\` + read the tree),
 propose a \`workspace.config.yaml\` + skill set + conflict report, and apply only after the user approves.
 Never move or overwrite files without explicit approval.
 `;
@@ -160,7 +157,7 @@ description: Guided workspace configuration — analyze an existing repo and pro
 
 Analyze this repository and propose a \`workspace.config.yaml\` + skill set, then apply only after approval.
 Seed detection with \`ai-workspace detect --json\`; use \`find-skills\` for gaps; never move files without
-explicit approval. Follow the \`configure-workspace\` skill.
+explicit approval. Follow the \`aiws-configure-workspace\` skill.
 `;
 
 // AI skill/command/prompt → English only (token efficiency).
@@ -174,14 +171,14 @@ export function generateGuides(cwd: string, config: Config): WriteResult[] {
   const configureDesc = "Configure or re-configure this AI workspace: analyze an existing repo (or set up a new one) and propose a workspace.config.yaml + skill set. Trigger: when the user wants to set up, configure, or re-detect the workspace.";
 
   if (config.targets.includes("claude")) {
-    results.push(writeFile(resolve(cwd, ".claude/skills/ai-workspace-guide/SKILL.md"), frontmatter("ai-workspace-guide", desc) + guideBody));
+    results.push(writeFile(resolve(cwd, ".claude/skills/aiws-workspace-guide/SKILL.md"), frontmatter("aiws-workspace-guide", desc) + guideBody));
     results.push(writeFile(resolve(cwd, ".claude/commands/aiws-guide.md"), GUIDE_CMD_EN));
-    results.push(writeFile(resolve(cwd, ".claude/skills/configure-workspace/SKILL.md"), frontmatter("configure-workspace", configureDesc) + CONFIGURE_SKILL_EN));
-    results.push(writeFile(resolve(cwd, ".claude/commands/configure.md"), CONFIGURE_CMD_EN));
+    results.push(writeFile(resolve(cwd, ".claude/skills/aiws-configure-workspace/SKILL.md"), frontmatter("aiws-configure-workspace", configureDesc) + CONFIGURE_SKILL_EN));
+    results.push(writeFile(resolve(cwd, ".claude/commands/aiws-configure.md"), CONFIGURE_CMD_EN));
   }
   if (config.targets.includes("copilot")) {
     results.push(writeFile(resolve(cwd, ".github/prompts/aiws-guide.prompt.md"), GUIDE_PROMPT_EN));
-    results.push(writeFile(resolve(cwd, ".github/prompts/configure.prompt.md"), CONFIGURE_PROMPT_EN));
+    results.push(writeFile(resolve(cwd, ".github/prompts/aiws-configure.prompt.md"), CONFIGURE_PROMPT_EN));
   }
   return results;
 }
@@ -215,7 +212,7 @@ A **profile** bundles extensions and settings for a kind of work. Create one for
 
 ### Copilot
 - Copilot reads \`.github/copilot-instructions.md\` and \`.github/instructions/*.instructions.md\` automatically.
-- Prompts in \`.github/prompts/*.prompt.md\` (incl. \`/sdd-*\` and \`doc-sync\`) are available in chat.
+- Prompts in \`.github/prompts/*.prompt.md\` (incl. \`/aiws-sdd-*\` and \`doc-sync\`) are available in chat.
 - Configure the MCP in \`.vscode/mcp.json\` if your VS Code version supports it.
 
 ### Claude Code
@@ -253,7 +250,7 @@ export function generateVscode(cwd: string, config: Config): WriteResult[] {
 
   if (config.targets.includes("claude")) {
     const desc = "Set up VS Code (recommended extensions and profiles) to work well with this workspace. Trigger: when the user asks about extensions, VS Code profiles, or preparing the editor.";
-    results.push(writeFile(resolve(cwd, ".claude/skills/vscode-setup/SKILL.md"), frontmatter("vscode-setup", desc) + VSCODE_SKILL_EN));
+    results.push(writeFile(resolve(cwd, ".claude/skills/aiws-vscode-setup/SKILL.md"), frontmatter("aiws-vscode-setup", desc) + VSCODE_SKILL_EN));
   }
   return results;
 }

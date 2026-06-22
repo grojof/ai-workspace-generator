@@ -6,5 +6,5 @@ without re-scanning everything.
 - `<%= it.paths.status %>/PROJECT-STATE.md` — overview, module map, **stack & production-target decision (what + why)**, lightweight decisions log, current status.
 - `<%= it.paths.status %>/ARCHITECTURE.md` — architecture with **Mermaid** diagrams.
 
-**Keep it fresh:** run `/doc-sync` (Claude) or the `doc-sync` prompt (Copilot) when you finish a task.
+**Keep it fresh:** run `/aiws-doc-sync` (Claude) or the `doc-sync` prompt (Copilot) when you finish a task.
 <% if (it.sdd.backend !== "none") { %>It derives change status from `<%= it.paths.changes %>/*`.<% } %> Read these files first; they are cheaper than scanning the repo.

@@ -43,7 +43,7 @@ These apply to every contributor and every file, regardless of language.
 
 ### Diagrams
 - Use **Mermaid** for architecture, data flow, module dependencies and the SDD lifecycle.
-- Keep diagrams in `docs/development/status/ARCHITECTURE.md`; regenerate with `/doc-sync`.
+- Keep diagrams in `docs/development/status/ARCHITECTURE.md`; regenerate with `/aiws-doc-sync`.
 - **Always quote node labels** that contain special characters (`/`, `.`, `:`, `+`, `@`, `·`, `*`, `()`, `&`, `<br/>`): write `A["src/index.ts<br/>entry"]`, never `A[src/index.ts<br/>entry]`. Unquoted special characters cause flaky rendering across Mermaid versions (e.g. GitHub's intermittent `translate(undefined, NaN)` error).
 <!-- ai-workspace:end:core -->
 
@@ -112,15 +112,15 @@ A single, structured way of working. This flow is **not optional**: do not skip
 steps even if asked to "just do it quickly". If a shortcut is requested, explain the risk and follow the flow.
 
 **The flow for any change**
-1. **Non-trivial change** → use SDD: `/sdd-explore` → `/sdd-propose` → `/sdd-spec` + `/sdd-design` → `/sdd-tasks` → `/sdd-apply` → `/sdd-verify` → `/sdd-archive`.
-2. **Small change** → implement directly, then run `/doc-sync`.
+1. **Non-trivial change** → use SDD: `/aiws-sdd-explore` → `/aiws-sdd-propose` → `/aiws-sdd-spec` + `/aiws-sdd-design` → `/aiws-sdd-tasks` → `/aiws-sdd-apply` → `/aiws-sdd-verify` → `/aiws-sdd-archive`.
+2. **Small change** → implement directly, then run `/aiws-doc-sync`.
 3. Honor the **Safety gate** above for anything risky.
 4. **Commit** following the policy below.
 
 **Commit policy**
 - **Conventional Commits**, imperative mood (`feat:`, `fix:`, `refactor:`, `docs:`, `test:`, `chore:`). One logical change per commit.
 - Commits are authored by the **user's own git identity**. Do **not** add `Co-Authored-By:` or any AI-attribution trailers.
-- **Automate with approval:** after a completed change (spec-driven or small), prepare the commit and ask for confirmation; commit **only** once the user approves. Use the `/commit` command.
+- **Automate with approval:** after a completed change (spec-driven or small), prepare the commit and ask for confirmation; commit **only** once the user approves. Use the `/aiws-commit` command.
 - Never use `--no-verify` or bypass hooks.
 
 > Enforcement: a `commit-msg` git hook in `.githooks/` blocks disallowed commits. Activate once with
@@ -158,10 +158,10 @@ the work over telling the user to run a command (mention the command only as an 
 | "let's start this project / set the ground rules", and `docs/development/constitution.md` is still the seed | First establish the **constitution** (project principles) — Spec-Kit-style bootstrap, once — then proceed. |
 | "let's build / add / implement <feature>", anything non-trivial | Run the **SDD flow** (explore → propose → **clarify** → spec → design → tasks → apply → verify → archive). It's a methodology, not a tool — artifacts are Markdown in `docs/development/`. |
 | A small, well-understood change | Implement directly, then refresh living docs. |
-| "update / upgrade / bump / migrate / install a newer version" | **Do NOT just do it.** Run the `dependency-upgrade` assessment first (feasibility + security), then await the decision. |
-| "commit / save / guarda los cambios", or you just finished a change | Use the **secure-commit** flow: prepare a conventional commit, no co-author, and ask for approval before committing. |
-| "I'm new / how does this work / explain SDD / how do I start" | Use the **ai-workspace-guide**. |
-| "set up the editor / which extensions / profiles" | Use the **vscode-setup** guidance. |
+| "update / upgrade / bump / migrate / install a newer version" | **Do NOT just do it.** Run the `aiws-dependency-upgrade` assessment first (feasibility + security), then await the decision. |
+| "commit / save / guarda los cambios", or you just finished a change | Use the **aiws-secure-commit** flow: prepare a conventional commit, no co-author, and ask for approval before committing. |
+| "I'm new / how does this work / explain SDD / how do I start" | Use the **aiws-workspace-guide**. |
+| "set up the editor / which extensions / profiles" | Use the **aiws-vscode-setup** guidance. |
 | Anything risky, a conflict, or version/migration change | Honor the **Safety gate**: stop, verify feasibility, recommend, await decision. |
 | You finished a task and project state changed | Refresh the living docs (`docs/development/status/*`). |
 
@@ -176,13 +176,13 @@ Load skills by their *trigger*, not preemptively. Selection for the **technical*
 
 | Skill | When | Load |
 |-------|------|------|
-| `secure-commit` | committing changes | always |
-| `sdd-*` | planning/implementing a non-trivial change | suggested |
-| `living-docs` | after finishing a task or when project state changed | suggested |
-| `ai-workspace-guide` | new here — how this workspace works | suggested |
-| `configure-workspace` | configuring or re-configuring the workspace (analyze an existing repo, or set up a new one) | suggested |
-| `dependency-upgrade` | before any version bump or migration (assess first) | on-demand · high risk |
-| `vscode-setup` | setting up VS Code / extensions | on-demand |
+| `aiws-secure-commit` | committing changes | always |
+| `aiws-sdd-*` | planning/implementing a non-trivial change | suggested |
+| `aiws-living-docs` | after finishing a task or when project state changed | suggested |
+| `aiws-workspace-guide` | new here — how this workspace works | suggested |
+| `aiws-configure-workspace` | configuring or re-configuring the workspace (analyze an existing repo, or set up a new one) | suggested |
+| `aiws-dependency-upgrade` | before any version bump or migration (assess first) | on-demand · high risk |
+| `aiws-vscode-setup` | setting up VS Code / extensions | on-demand |
 | `find-skills` | discovering/installing skills from the open ecosystem (npx skills) | on-demand |
 | `frontend-design` | designing or polishing a web frontend (layout, typography, color, spacing, visual taste) | on-demand |
 | `frontend-ui-dark-ts` | working with the frontend-ui-dark-ts stack | on-demand |
@@ -304,7 +304,7 @@ Project-specific domain knowledge. Keep this accurate — it is the AI's map of 
 
 **Business invariants:** _(add rules under `business.invariants`)_
 
-> Keep this section and `docs/development/status/PROJECT-STATE.md` in sync via `/doc-sync`.
+> Keep this section and `docs/development/status/PROJECT-STATE.md` in sync via `/aiws-doc-sync`.
 <!-- ai-workspace:end:business -->
 
 <!-- ai-workspace:begin:sdd -->
@@ -336,10 +336,10 @@ flowchart LR
 - Project *mode* governs the one-time ramp; per-feature, the size/risk of the change decides whether the
   full flow is worth it.
 
-**Commands** (Claude: `/sdd-*`; Copilot: prompt files in `.github/prompts/`)
-- `/sdd-constitution` — define the project's principles (once).
-- `/sdd-explore <topic>` — investigate before committing.
-- `/sdd-propose` → `/sdd-clarify` → `/sdd-spec` + `/sdd-design` → `/sdd-tasks` → `/sdd-apply` → `/sdd-verify` → `/sdd-archive`.
+**Commands** (Claude: `/aiws-sdd-*`; Copilot: prompt files in `.github/prompts/`)
+- `/aiws-sdd-constitution` — define the project's principles (once).
+- `/aiws-sdd-explore <topic>` — investigate before committing.
+- `/aiws-sdd-propose` → `/aiws-sdd-clarify` → `/aiws-sdd-spec` + `/aiws-sdd-design` → `/aiws-sdd-tasks` → `/aiws-sdd-apply` → `/aiws-sdd-verify` → `/aiws-sdd-archive`.
 
 **Artifacts** live in `docs/development/changes/<change-name>/` and are **versioned in git** (reviewable in PRs, readable by any AI tool). The store follows OpenSpec's *layout* (specs + changes + archive) as a convention — it is **not** the OpenSpec CLI.
 
@@ -348,7 +348,7 @@ flowchart LR
 - `clarify` resolves ambiguity *before* the spec is finalized. Specs are the source of truth for *what*;
   design for *how*; tasks track progress.
 - New specs and designs must honor `docs/development/constitution.md`.
-- After implementing, run `/sdd-verify` against the spec, then `/sdd-archive` (folds the delta into `docs/development/specs/`).
+- After implementing, run `/aiws-sdd-verify` against the spec, then `/aiws-sdd-archive` (folds the delta into `docs/development/specs/`).
 <!-- ai-workspace:end:sdd -->
 
 <!-- ai-workspace:begin:living-docs -->
@@ -360,6 +360,6 @@ without re-scanning everything.
 - `docs/development/status/PROJECT-STATE.md` — overview, module map, **stack & production-target decision (what + why)**, lightweight decisions log, current status.
 - `docs/development/status/ARCHITECTURE.md` — architecture with **Mermaid** diagrams.
 
-**Keep it fresh:** run `/doc-sync` (Claude) or the `doc-sync` prompt (Copilot) when you finish a task.
+**Keep it fresh:** run `/aiws-doc-sync` (Claude) or the `doc-sync` prompt (Copilot) when you finish a task.
 It derives change status from `docs/development/changes/*`. Read these files first; they are cheaper than scanning the repo.
 <!-- ai-workspace:end:living-docs -->

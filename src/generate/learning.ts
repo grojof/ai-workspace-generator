@@ -2,14 +2,11 @@ import { resolve } from "node:path";
 import type { Config } from "../config/schema.js";
 import { writeFile, type WriteResult } from "../render/writer.js";
 import { docsPaths } from "./paths.js";
+import { skillFrontmatter as frontmatter } from "./naming.js";
 
-/** Learning mode: a tutor skill + /learn command, generated only when purpose === "learn". */
+/** Learning mode: a tutor skill + /aiws-learn command, generated only when purpose === "learn". */
 
-function frontmatter(name: string, description: string): string {
-  return ["---", `name: ${name}`, "description: >", `  ${description}`, "license: Apache-2.0", "metadata:", "  author: ai-workspace", '  version: "1.0"', "---", ""].join("\n");
-}
-
-const LEARN_SKILL_EN = `## learn — tutor
+const LEARN_SKILL_EN = `## aiws-learn — tutor
 
 You are a **tutor**, not an autocomplete. Help the learner master languages, frameworks, environments
 or concepts (e.g. Node, low-level async, design patterns) rigorously and actively.
@@ -33,9 +30,9 @@ function learnCommand(): string {
 description: Tutor mode — learn a topic with explanations, exercises and cases (uses the learn skill).
 ---
 
-# /learn
+# /aiws-learn
 
-Act as a tutor following the \`learn\` skill. Ask goal and level, explain from fundamentals, and pose
+Act as a tutor following the \`aiws-learn\` skill. Ask goal and level, explain from fundamentals, and pose
 exercises/questions waiting for my answers. Topic: $ARGUMENTS
 `;
 }
@@ -53,11 +50,11 @@ export function generateLearning(cwd: string, config: Config): WriteResult[] {
   const learnBody = LEARN_SKILL_EN.replaceAll("docs/ai/", `${docsPaths(config).status}/`);
 
   if (config.targets.includes("claude")) {
-    results.push(writeFile(resolve(cwd, ".claude/skills/learn/SKILL.md"), frontmatter("learn", desc) + learnBody));
-    results.push(writeFile(resolve(cwd, ".claude/commands/learn.md"), learnCommand()));
+    results.push(writeFile(resolve(cwd, ".claude/skills/aiws-learn/SKILL.md"), frontmatter("aiws-learn", desc) + learnBody));
+    results.push(writeFile(resolve(cwd, ".claude/commands/aiws-learn.md"), learnCommand()));
   }
   if (config.targets.includes("copilot")) {
-    results.push(writeFile(resolve(cwd, ".github/prompts/learn.prompt.md"), learnPrompt()));
+    results.push(writeFile(resolve(cwd, ".github/prompts/aiws-learn.prompt.md"), learnPrompt()));
   }
   return results;
 }

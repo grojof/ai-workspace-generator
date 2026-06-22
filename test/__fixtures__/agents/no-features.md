@@ -43,7 +43,7 @@ These apply to every contributor and every file, regardless of language.
 
 ### Diagrams
 - Use **Mermaid** for architecture, data flow, module dependencies and the SDD lifecycle.
-- Keep diagrams in `docs/development/status/ARCHITECTURE.md`; regenerate with `/doc-sync`.
+- Keep diagrams in `docs/development/status/ARCHITECTURE.md`; regenerate with `/aiws-doc-sync`.
 - **Always quote node labels** that contain special characters (`/`, `.`, `:`, `+`, `@`, `·`, `*`, `()`, `&`, `<br/>`): write `A["src/index.ts<br/>entry"]`, never `A[src/index.ts<br/>entry]`. Unquoted special characters cause flaky rendering across Mermaid versions (e.g. GitHub's intermittent `translate(undefined, NaN)` error).
 <!-- ai-workspace:end:core -->
 
@@ -112,14 +112,14 @@ A single, structured way of working. This flow is **not optional**: do not skip
 steps even if asked to "just do it quickly". If a shortcut is requested, explain the risk and follow the flow.
 
 **The flow for any change**
-1. Plan briefly, implement the smallest correct change, then run `/doc-sync`.
+1. Plan briefly, implement the smallest correct change, then run `/aiws-doc-sync`.
 3. Honor the **Safety gate** above for anything risky.
 4. **Commit** following the policy below.
 
 **Commit policy**
 - **Conventional Commits**, imperative mood (`feat:`, `fix:`, `refactor:`, `docs:`, `test:`, `chore:`). One logical change per commit.
 - Commits are authored by the **user's own git identity**. Do **not** add `Co-Authored-By:` or any AI-attribution trailers.
-- **Automate with approval:** after a completed change (spec-driven or small), prepare the commit and ask for confirmation; commit **only** once the user approves. Use the `/commit` command.
+- **Automate with approval:** after a completed change (spec-driven or small), prepare the commit and ask for confirmation; commit **only** once the user approves. Use the `/aiws-commit` command.
 - Never use `--no-verify` or bypass hooks.
 
 > Enforcement: a `commit-msg` git hook in `.githooks/` blocks disallowed commits. Activate once with
@@ -155,10 +155,10 @@ the work over telling the user to run a command (mention the command only as an 
 | The user says (in any wording)… | You do… |
 |---------------------------------|---------|
 | A small, well-understood change | Implement directly, then refresh living docs. |
-| "update / upgrade / bump / migrate / install a newer version" | **Do NOT just do it.** Run the `dependency-upgrade` assessment first (feasibility + security), then await the decision. |
-| "commit / save / guarda los cambios", or you just finished a change | Use the **secure-commit** flow: prepare a conventional commit, no co-author, and ask for approval before committing. |
-| "I'm new / how does this work / explain SDD / how do I start" | Use the **ai-workspace-guide**. |
-| "set up the editor / which extensions / profiles" | Use the **vscode-setup** guidance. |
+| "update / upgrade / bump / migrate / install a newer version" | **Do NOT just do it.** Run the `aiws-dependency-upgrade` assessment first (feasibility + security), then await the decision. |
+| "commit / save / guarda los cambios", or you just finished a change | Use the **aiws-secure-commit** flow: prepare a conventional commit, no co-author, and ask for approval before committing. |
+| "I'm new / how does this work / explain SDD / how do I start" | Use the **aiws-workspace-guide**. |
+| "set up the editor / which extensions / profiles" | Use the **aiws-vscode-setup** guidance. |
 | Anything risky, a conflict, or version/migration change | Honor the **Safety gate**: stop, verify feasibility, recommend, await decision. |
 | You finished a task and project state changed | Refresh the living docs (`docs/development/status/*`). |
 
@@ -173,11 +173,11 @@ Load skills by their *trigger*, not preemptively. Selection for the **technical*
 
 | Skill | When | Load |
 |-------|------|------|
-| `secure-commit` | committing changes | always |
-| `ai-workspace-guide` | new here — how this workspace works | suggested |
-| `configure-workspace` | configuring or re-configuring the workspace (analyze an existing repo, or set up a new one) | suggested |
-| `dependency-upgrade` | before any version bump or migration (assess first) | on-demand · high risk |
-| `vscode-setup` | setting up VS Code / extensions | on-demand |
+| `aiws-secure-commit` | committing changes | always |
+| `aiws-workspace-guide` | new here — how this workspace works | suggested |
+| `aiws-configure-workspace` | configuring or re-configuring the workspace (analyze an existing repo, or set up a new one) | suggested |
+| `aiws-dependency-upgrade` | before any version bump or migration (assess first) | on-demand · high risk |
+| `aiws-vscode-setup` | setting up VS Code / extensions | on-demand |
 | `find-skills` | discovering/installing skills from the open ecosystem (npx skills) | on-demand |
 | `mcp-builder` | building or evaluating an MCP server (tools, resources, Node or Python, best practices) | on-demand |
 | `skill-creator` | authoring, structuring or evaluating a Claude skill (SKILL.md, references, packaging) | on-demand |
@@ -231,5 +231,5 @@ Project-specific domain knowledge. Keep this accurate — it is the AI's map of 
 
 **Business invariants:** _(add rules under `business.invariants`)_
 
-> Keep this section and `docs/development/status/PROJECT-STATE.md` in sync via `/doc-sync`.
+> Keep this section and `docs/development/status/PROJECT-STATE.md` in sync via `/aiws-doc-sync`.
 <!-- ai-workspace:end:business -->

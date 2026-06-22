@@ -13,4 +13,4 @@ Project-specific domain knowledge. Keep this accurate — it is the AI's map of 
 <% for (const inv of it.business.invariants) { %>- <%= inv %>
 <% } %><% } else { %>**Business invariants:** _(add rules under `business.invariants`)_
 <% } %>
-> Keep this section and `<%= it.paths.status %>/PROJECT-STATE.md` in sync via `/doc-sync`.
+> Keep this section and `<%= it.paths.status %>/PROJECT-STATE.md` in sync via `/aiws-doc-sync`.
