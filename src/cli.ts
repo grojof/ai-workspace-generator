@@ -54,9 +54,10 @@ program
 program
   .command("sync")
   .description("Re-render all artifacts from workspace.config.yaml (idempotent).")
-  .action(() => {
+  .option("--check", "preview what sync would restore without writing (self-heal preview)")
+  .action((opts) => {
     try {
-      runSync(process.cwd());
+      runSync(process.cwd(), { check: opts.check });
     } catch (err) {
       console.error(pc.red(`\n${(err as Error).message}\n`));
       process.exit(1);

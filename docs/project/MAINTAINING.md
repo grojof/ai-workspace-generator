@@ -77,6 +77,15 @@ drift/marker/deletion (CI gate); a stale `source` version is a warning. The mani
 shape changes. User seeds (`writeIfMissing`) and vendored/stack packs are deliberately **not** tracked — they
 are the user's.
 
+Three integrity safeguards consume the manifest (ADR 0003 Part E, all opt-in / non-destructive):
+- **Detect** — `ai-workspace verify` / `doctor --strict` (above).
+- **Self-heal** — `ai-workspace sync` restores canonical content; `sync --check` previews the diff first so no
+  out-of-band work is lost silently.
+- **Confine (authoring-time)** — when `workflow.hooks.safetyGuard` is on, the generated
+  `.claude/hooks/safety-guard.mjs` PreToolUse hook also matches `Write|Edit|MultiEdit` and warns/denies hand-edits
+  to manifest `file` entries (generated `aiws-*` skills/commands/prompts — overwritten on sync). `managed` files
+  like `AGENTS.md` are **not** guarded (editing them is normal; `verify` catches in-region tampering after).
+
 Files written with `writeIfMissing` (`.editorconfig`, `.claude/settings.json`, the SDD store scaffold under
 `docs.development` (default `docs/development/`), `docs/development/status/*` seeds, `.vscode/extensions.json`,
 imported copies) have the opposite trait: editing their template **does not** reach users who already have the
