@@ -13,7 +13,8 @@ import { parse } from "yaml";
 import { z } from "zod";
 import type { Config } from "../config/schema.js";
 import { writeFile, writeBinary, type WriteResult } from "../render/writer.js";
-import type { SkillEntry, SkillUserType } from "../modules/skills.js";
+import { SKILLS, type SkillEntry, type SkillUserType } from "../modules/skills.js";
+import { isReservedNamespace } from "./naming.js";
 import { docsPaths } from "./paths.js";
 
 /** Binary asset extensions copied byte-for-byte (templates, logos) — never utf8-normalized. `.drawio`/`.svg` are XML text. */
@@ -75,6 +76,26 @@ const PackManifestSchema = z.object({
       company: z.union([z.literal("any"), z.array(z.enum(["example"]))]).optional(),
     })
     .optional(),
+  /**
+   * How this pack's content relates to the base (ADR 0003 part C) — the auditable primitive `aiws-reconcile`
+   * reads. `new` (default) = an independent skill; `extends` = augments the base catalog; `overrides:<aiws-id>`
+   * = replaces/augments a named base skill. The `overrides` target must be a reserved `aiws-*` id (existence
+   * against the live base set is checked at load by {@link assertRelationsResolve}).
+   */
+  relation: z
+    .string()
+    .default("new")
+    .superRefine((val, ctx) => {
+      if (val === "new" || val === "extends") return;
+      const m = /^overrides:(.+)$/.exec(val);
+      if (!m) {
+        ctx.addIssue({ code: z.ZodIssueCode.custom, message: `relation must be "new", "extends", or "overrides:<aiws-id>" (got "${val}")` });
+        return;
+      }
+      if (!isReservedNamespace(m[1])) {
+        ctx.addIssue({ code: z.ZodIssueCode.custom, message: `relation "overrides:${m[1]}" must target a base aiws- id` });
+      }
+    }),
   /** Whether this pack contributes a `skill-routing` row. `false` when routing stays in the catalog (migration). */
   routing: z.boolean().default(true),
   /** Resolve `{{paths.*}}` tokens in the copied content (for migrated TS skills). Off for raw vendored packs. */
@@ -99,6 +120,45 @@ export interface LoadedPack {
   dir: string;
 }
 
+/** A pack's relation to the base (ADR 0003 part C), parsed from the `relation` field. */
+export interface PackRelation {
+  kind: "new" | "extends" | "overrides";
+  /** The overridden base id, only when `kind === "overrides"`. */
+  target?: string;
+}
+
+/** Interpret a manifest's `relation` field (already format-validated by the schema). */
+export function packRelation(manifest: PackManifest): PackRelation {
+  if (manifest.relation === "extends") return { kind: "extends" };
+  const m = /^overrides:(.+)$/.exec(manifest.relation);
+  if (m) return { kind: "overrides", target: m[1] };
+  return { kind: "new" };
+}
+
+/** The set of base skill ids a pack may legitimately `overrides:` — registry skills + bundled pack ids. */
+function baseSkillIds(packs: LoadedPack[]): Set<string> {
+  const ids = new Set<string>();
+  for (const s of SKILLS) ids.add(s.id);
+  for (const { manifest } of packs) ids.add(manifest.id);
+  return ids;
+}
+
+/**
+ * Reject any `overrides:<id>` whose target is not a real base skill. The orchestrator family is registered
+ * as the `aiws-sdd-*` glob, so an `aiws-sdd-<x>` target resolves against it. Throws on a dangling override.
+ */
+export function assertRelationsResolve(packs: LoadedPack[]): void {
+  const ids = baseSkillIds(packs);
+  for (const { manifest } of packs) {
+    const r = packRelation(manifest);
+    if (r.kind !== "overrides" || !r.target) continue;
+    const resolves = ids.has(r.target) || (ids.has("aiws-sdd-*") && r.target.startsWith("aiws-sdd-"));
+    if (!resolves) {
+      throw new Error(`pack "${manifest.id}": relation "overrides:${r.target}" names no base skill (not in the aiws- catalog).`);
+    }
+  }
+}
+
 /** Read and validate every `skill-packs/<id>/pack.yaml`. */
 export function loadPacks(): LoadedPack[] {
   const root = skillPacksDir();
@@ -111,7 +171,13 @@ export function loadPacks(): LoadedPack[] {
     const manifest = PackManifestSchema.parse(parse(readFileSync(manifestPath, "utf8")));
     packs.push({ manifest, dir: join(root, entry.name) });
   }
+  assertRelationsResolve(packs);
   return packs;
+}
+
+/** Parse a raw `pack.yaml` object into a validated manifest (exposed for tests + external pack loading). */
+export function parsePackManifest(raw: unknown): PackManifest {
+  return PackManifestSchema.parse(raw);
 }
 
 /** Whether a pack's stack binding matches any enabled language/framework/environment in the config. */

@@ -16,10 +16,15 @@
       automatically (same `aiws-X` → `X` rule).
 - [x] Bumped `TEMPLATES_VERSION` → 0.38.0. **84/84 green** (new invariant included).
 
-## F2b — overlay `relation` in `pack.yaml` (next)
-- [ ] Add optional `relation` (extends / overrides:<aiws-id> / new) to `PackManifestSchema`; validate at load
-      (`overrides` targets a real `aiws-*` id; `extends`/`overrides` require a base). Record in artifact provenance.
-- [ ] Tests: each relation kind validates; dangling `overrides:aiws-missing` rejected.
+## F2b — overlay `relation` in `pack.yaml` (done)
+- [x] Added `relation` (new / extends / overrides:<aiws-id>) to `PackManifestSchema` with a `superRefine`
+      (format + reserved-namespace target). Helpers `packRelation()` + `parsePackManifest()` exported.
+- [x] `assertRelationsResolve(packs)` checks `overrides:` targets against the live base catalog (registry
+      `SKILLS` ids + bundled pack ids, with the `aiws-sdd-*` orchestrator glob); wired into `loadPacks`.
+- [x] `test/pack-relations.test.js` (4 tests): defaults/parse; rejects malformed + non-reserved targets;
+      existence check rejects dangling, accepts real ids + glob; all bundled packs load clean (default `new`).
+- [x] Documented `relation:` in EXTENDING.md (`pack.yaml` reference). Recording into the integrity manifest
+      is deferred to **F3** (no provenance sink exists yet).
 
 ## F2c — git company packs (deferred, own spec/design)
 - [ ] `company` string → object `{ id, packs }` (+ config migration normalising `"example"` → `{ id: "example" }`);
