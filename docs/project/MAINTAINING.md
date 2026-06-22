@@ -49,6 +49,22 @@ Therefore:
 - Treat block ids as permanent public API. Prefer changing *content* over changing *ids*.
 - If you must rename/remove, publish a **migration** and mark it as a major change in the changelog.
 
+### The `aiws:` block-id namespace (ADR 0003 F1b)
+
+Governance-spine blocks composed into `AGENTS.md` / `CLAUDE.md` / Copilot carry the reserved `aiws:`
+namespace (`header` → `aiws:header`, `lang-*` → `aiws:lang-*`). The prefix is applied **centrally** in
+`composeFromManifest` ([`src/generate/agents.ts`](../../src/generate/agents.ts)) — manifest entries and
+inline ids (`claude`, `copilot-header`) stay bare in source; the namespace is added at compose time, so
+dynamic per-stack ids are covered uniformly. Non-spine managed regions stay bare on purpose:
+infra-ignore / `.gitattributes`, the living-doc seeds (`overview`/`diagram`, user-owned), and `imported`.
+
+Renaming bare → namespaced is exactly the orphan trap above, so the migration is **automated**:
+`ai-workspace upgrade` runs [`migrateBlockIds`](../../src/commands/migrate.ts) **before** rendering
+(rewrites legacy spine markers in place, so generate updates the regions instead of appending duplicates)
+and [`pruneRenamedOrphans`](../../src/commands/migrate.ts) **after** (removes the pre-rename skill folders /
+command + prompt files left by the `aiws-` rename, guarded by the freshly-written artifact set). Both steps
+are idempotent. If you add a new spine block id, no extra migration work is needed — it is born namespaced.
+
 Files written with `writeIfMissing` (`.editorconfig`, `.claude/settings.json`, the SDD store scaffold under
 `docs.development` (default `docs/development/`), `docs/development/status/*` seeds, `.vscode/extensions.json`,
 imported copies) have the opposite trait: editing their template **does not** reach users who already have the

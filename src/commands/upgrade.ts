@@ -6,6 +6,7 @@ import { generate } from "../generate/index.js";
 import { setDryRun, getPlanned } from "../render/writer.js";
 import { lineDiff } from "../render/diff.js";
 import { printArtifacts } from "../util/report.js";
+import { migrateBlockIds, pruneRenamedOrphans } from "./migrate.js";
 import { TEMPLATES_VERSION } from "../version.js";
 
 interface UpgradeOptions {
@@ -27,6 +28,18 @@ export function runUpgrade(cwd: string, options: UpgradeOptions = {}): void {
   console.log(
     pc.bold(`\nUpgrade — templates ${pc.cyan(from)} → ${pc.cyan(TEMPLATES_VERSION)}\n`),
   );
+
+  // One-shot namespace migration (ADR 0003 F1b): rewrite legacy bare spine markers to `aiws:*` BEFORE
+  // rendering, so generate updates the existing regions in place instead of appending duplicates next to
+  // orphans. Idempotent — already-namespaced repos see no changes. Preview mode leaves files untouched.
+  if (!options.check) {
+    const migrated = migrateBlockIds(cwd, config);
+    if (migrated.length) {
+      console.log(pc.dim("  Namespaced legacy managed blocks:"));
+      for (const m of migrated) console.log(pc.dim(`    ${m.file} (${m.count} marker${m.count === 1 ? "" : "s"})`));
+      console.log();
+    }
+  }
 
   // Dry run to compute what would change.
   setDryRun(true);
@@ -60,6 +73,15 @@ export function runUpgrade(cwd: string, options: UpgradeOptions = {}): void {
   // Apply for real.
   const { artifacts } = generate(cwd, config);
   printArtifacts(artifacts);
+
+  // Prune skill folders / command + prompt files orphaned by the `aiws-` rename (F1a), guarded by the
+  // freshly-written artifact set so nothing the generator still emits is ever removed.
+  const removed = pruneRenamedOrphans(cwd, artifacts.map((a) => a.path));
+  if (removed.length) {
+    console.log(pc.dim(`\n  Removed ${removed.length} renamed orphan(s):`));
+    for (const r of removed) console.log(pc.dim(`    ${r}`));
+  }
+
   config.templatesVersion = TEMPLATES_VERSION;
   saveConfig(cwd, config);
   console.log(pc.green(`\n✔ Upgraded to templates ${TEMPLATES_VERSION}.\n`));
