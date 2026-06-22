@@ -59,6 +59,13 @@ source — the namespace is added at compose time.
 More feature blocks: `aiws:sdd` (if `sdd.enabled`), `aiws:living-docs` (if `livingDocs`), and `imported` (added by
 `ai-workspace import`).
 
+**Progressive disclosure (0017a).** Layers 1–3 (`lang-*`/`fw-*`/`env-*`) don't inline their rules in AGENTS.md
+anymore — the body lives in a neutral `references/stack/<id>.md` and the block keeps only a resolving **pointer**.
+One source ([`src/generate/references.ts`](../../src/generate/references.ts) `stackBody`) feeds every projection:
+the reference file (read by Claude/Codex/opencode via the pointer) and, where a file glob exists, a Copilot
+`.github/instructions/<id>.instructions.md` (`applyTo`) that loads by path. Layer-0 governance stays inline; the
+pointer is guarded by `doctor`'s dangling-reference check.
+
 The `sdd` block supports two **methodologies** (`sdd.methodology`): `sdd` (spec-driven, default) and `spdd`
 (Structured-Prompt-Driven — the REASONS Canvas prompt as a versioned artifact). They are **orthogonal** to
 `sdd.schema` (spec depth): `spdd` **implies** `schema: reasons` (normalized in a single `ConfigSchema`

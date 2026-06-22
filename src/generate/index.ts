@@ -16,6 +16,7 @@ import { generateGuides, generateVscode } from "./guides.js";
 import { generateGovernance } from "./governance.js";
 import { generateLearning } from "./learning.js";
 import { generateDocsIndex } from "./docsIndex.js";
+import { generateStackReferences } from "./references.js";
 import { docsPaths } from "./paths.js";
 import { strings } from "../i18n/strings.js";
 
@@ -178,6 +179,14 @@ function generateWorkspace(cwd: string, config: Config, add: (r: WriteResult, de
   // 1. AGENTS.md — single source of truth, composed managed blocks (union stack).
   add(writeManaged(resolve(cwd, "AGENTS.md"), "html", blocks), t.desc.agents);
 
+  // 1b. Stack detail (0017a): the per-stack bodies live in `references/stack/<id>.md`; AGENTS.md carries only
+  //     pointers. Generated for every target (the pointer must resolve); Copilot also gets an `applyTo`
+  //     projection where a file glob exists. One source (`stackBody`) feeds all of them.
+  const stackRefDesc = es
+    ? "Detalle de stack (reglas por lenguaje/framework/entorno) referenciado desde AGENTS.md."
+    : "Stack detail (per-language/framework/environment rules) referenced from AGENTS.md.";
+  for (const r of generateStackReferences(cwd, config, wsConfig.stack)) add(r, stackRefDesc);
+
   // 2. Claude adapter (root). Claude Code reads CLAUDE.md, not AGENTS.md, so the root gets a CLAUDE.md that
   //    imports @AGENTS.md (a bridge — no stack skills here; child repos get their own in the repo phase).
   if (config.targets.includes("claude")) {
@@ -199,31 +208,6 @@ function generateWorkspace(cwd: string, config: Config, add: (r: WriteResult, de
     const copilotBlocks = [{ id: aiwsBlockId("copilot-header"), content: copilotHeader(es) }];
     add(writeManaged(resolve(cwd, ".github/copilot-instructions.md"), "html", copilotBlocks), t.desc.copilot);
     if (config.vscode) add(buildVscodeMcpFile(cwd, config), t.desc.vscodeMcp);
-
-    // Path-scoped instruction for TypeScript, when present in any repo's stack.
-    if (wsConfig.stack.languages.some((l) => l.id === "typescript")) {
-      const tsInstr = es
-        ? [
-            "---",
-            'applyTo: "**/*.ts,**/*.tsx"',
-            "---",
-            "",
-            "Aplica las reglas de TypeScript de AGENTS.md (Capa 1). Modo estricto, sin any implícito,",
-            "exports nombrados, valida datos externos con un schema en el límite.",
-          ].join("\n")
-        : [
-            "---",
-            'applyTo: "**/*.ts,**/*.tsx"',
-            "---",
-            "",
-            "Apply the TypeScript rules from AGENTS.md (Layer 1). Strict mode, no implicit any,",
-            "named exports, validate external data with a schema at the boundary.",
-          ].join("\n");
-      add(
-        writeFile(resolve(cwd, ".github/instructions/typescript.instructions.md"), tsInstr),
-        t.desc.tsInstructions,
-      );
-    }
 
     // Per-repo Copilot guidance: Copilot has no nested discovery, so each child repo gets a path-scoped
     // `applyTo` instruction at the workspace root. Single-repo (empty repos[]) emits none.

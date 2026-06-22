@@ -21,6 +21,8 @@ El workspace de IA de este proyecto fue creado y adaptado por **ai-workspace**. 
 
 ## Índice de artefactos generados
 - `AGENTS.md` — Fuente única de verdad para todos los agentes de IA.
+- `references/stack/typescript.md` — Detalle de stack (reglas por lenguaje/framework/entorno) referenciado desde AGENTS.md.
+- `references/stack/node-runtime.md` — Detalle de stack (reglas por lenguaje/framework/entorno) referenciado desde AGENTS.md.
 - `CLAUDE.md` — Adaptador de Claude Code (importa @AGENTS.md).
 - `.mcp.json` — Servidores MCP para Claude Code.
 - `.claude/settings.json` — Ajustes de Claude Code (permisos, hooks, env).
