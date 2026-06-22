@@ -46,7 +46,7 @@ export function isManagedFile(rel: string): boolean {
 export function isOwnedFile(rel: string): boolean {
   return (
     /(^|\/)\.claude\/skills\/aiws-[^/]+\//.test(rel) ||
-    // Generated shared references the base owns + regenerates (e.g. `_shared/sdd-convention.md`).
+    // Generated shared references the base owns + regenerates (e.g. `_shared/aiws-sdd-convention.md`).
     /(^|\/)\.claude\/skills\/_shared\/[^/]+\.md$/.test(rel) ||
     /(^|\/)\.claude\/commands\/aiws-[^/]+\.md$/.test(rel) ||
     /(^|\/)\.github\/prompts\/aiws-[^/]+\.prompt\.md$/.test(rel)

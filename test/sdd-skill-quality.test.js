@@ -42,7 +42,7 @@ test("sdd convention · documents the delta format + archive merge rules (0012b)
   const cwd = tmpRepo();
   try {
     generate(cwd, ConfigSchema.parse({ project: { name: "t" } }));
-    const conv = readFileSync(resolve(cwd, ".claude/skills/_shared/sdd-convention.md"), "utf8");
+    const conv = readFileSync(resolve(cwd, ".claude/skills/_shared/aiws-sdd-convention.md"), "utf8");
     assert.match(conv, /## Delta spec format \(OpenSpec\)/);
     assert.match(conv, /## ADDED Requirements/);
     assert.match(conv, /## Archive merge rules/);
@@ -61,7 +61,7 @@ test("sdd convention · is regenerated, not write-if-missing — sync restores i
   try {
     const config = ConfigSchema.parse({ project: { name: "t" } });
     generate(cwd, config);
-    const path = resolve(cwd, ".claude/skills/_shared/sdd-convention.md");
+    const path = resolve(cwd, ".claude/skills/_shared/aiws-sdd-convention.md");
     writeFileSync(path, "STALE hand-edited convention\n");
     // A re-sync overwrites the stale copy back to canonical (it is OUR reference, not a user scaffold).
     generate(cwd, config);

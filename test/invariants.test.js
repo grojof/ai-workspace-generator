@@ -204,7 +204,7 @@ test("invariant · generated output carries no legacy command tokens (aiws- name
       }),
     );
     // Match only actual legacy command names (the negative lookahead avoids file paths like
-    // `_shared/sdd-convention.md` or `.githooks/commit-msg`).
+    // `_shared/aiws-sdd-convention.md` or `.githooks/commit-msg`).
     const legacy = [
       /\/sdd-(explore|propose|clarify|spec|design|tasks|apply|verify|archive|constitution|sync)(?![-\w])/,
       /\/doc-sync(?![-\w])/,
