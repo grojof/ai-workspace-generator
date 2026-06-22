@@ -1,6 +1,6 @@
 import { resolve } from "node:path";
 import type { Config } from "../config/schema.js";
-import { writeFile, writeIfMissing, type WriteResult } from "../render/writer.js";
+import { writeFile, type WriteResult } from "../render/writer.js";
 import { phasesFor } from "./sdd.js";
 import { docsPaths } from "./paths.js";
 import { skillFrontmatter as frontmatter, aiwsId } from "./naming.js";
@@ -94,6 +94,18 @@ change folder to \`${s.archive}/<date-name>/\` preserving its full context:
 - **ADDED** → append the requirement to the matching domain spec.
 - **MODIFIED** → replace the existing requirement's body.
 - **REMOVED** → delete the requirement.
+
+## Evaluating a skill (the quality bar in practice)
+
+Each phase skill ships a **Quality bar** checklist — that is its eval rubric. Before moving on, judge the
+artifact against it with 2–3 quick scenarios rather than a vague "looks good":
+
+- **Typical** — a normal change: does the artifact pass every quality item?
+- **Edge** — a thin or ambiguous input: are gaps named (e.g. \`[NEEDS CLARIFICATION]\`) instead of guessed?
+- **Anti** — a tempting shortcut (skipping clarify, HOW in the spec, gold-plating the design): is it caught?
+
+If an artifact fails its quality bar, fix the artifact (or the upstream phase) before proceeding — the bar is
+the contract, not a suggestion.
 `;
 }
 
@@ -128,8 +140,10 @@ export function generateSkills(cwd: string, config: Config): WriteResult[] {
     for (const p of phasesFor(config)) {
       results.push(writeFile(resolve(cwd, `.claude/skills/${aiwsId(p.name)}/SKILL.md`), sddSkill(p, config)));
     }
+    // Regenerated (not writeIfMissing) so existing repos get convention updates on sync — it's OUR canonical
+    // reference, not a user-owned scaffold (0012d).
     results.push(
-      writeIfMissing(
+      writeFile(
         resolve(cwd, ".claude/skills/_shared/sdd-convention.md"),
         sddConvention(config),
       ),
