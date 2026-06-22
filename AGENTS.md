@@ -196,29 +196,13 @@ Load skills by their *trigger*, not preemptively. Selection for the **technical*
 <!-- ai-workspace:end:aiws:skill-routing -->
 
 <!-- ai-workspace:begin:aiws:lang-typescript -->
-## TypeScript (Layer 1 — language) · target vlatest
-
-- **Strict mode on.** `strict: true`, `noUncheckedIndexedAccess`, no implicit `any`.
-- Prefer `type`/`interface` over `any`. Use `unknown` at boundaries, narrow before use.
-- No `// @ts-ignore` without a one-line reason comment. Fix the type instead.
-- Format with **Prettier**, lint with **ESLint** (`@typescript-eslint`). CI fails on lint errors.
-- `import type { … }` for type-only imports. No default exports for shared modules — named exports.
-- Async: `async/await`, never floating promises. Handle rejections explicitly.
-- Validate external data with a schema (e.g. `zod`) at the edge; trust types only after parsing.
-- Tests colocated or in `__tests__`; use the project's runner (vitest/jest). Name: `*.test.ts`.
-
-> For current API/best-practice details, query **context7** for `typescript@latest`.
+## typescript (Layer 1 — language) · target vlatest
+Rules → [references/stack/typescript.md](references/stack/typescript.md) (applies to `**/*.ts, **/*.tsx`).
 <!-- ai-workspace:end:aiws:lang-typescript -->
 
 <!-- ai-workspace:begin:aiws:env-node-runtime -->
-## Node runtime (Layer 3 — environment)
-
-- Manage Node versions with **nvm** (or fnm/Volta). Pin the version in `.nvmrc`; run `nvm use`.
-- Prefer the project's lockfile (npm/pnpm/yarn) — commit it; install with `npm ci` in CI.
-- Don't install global packages for project tooling; use `devDependencies` and `npx`.
-- One Node major per project; document it. Match CI to the local version.
-
-> For setup specifics on your OS, query **context7** (or the nvm docs).
+## node-runtime (Layer 3 — environment) · latest
+Rules → [references/stack/node-runtime.md](references/stack/node-runtime.md).
 <!-- ai-workspace:end:aiws:env-node-runtime -->
 
 <!-- ai-workspace:begin:aiws:company -->

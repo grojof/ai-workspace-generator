@@ -1,0 +1,12 @@
+## TypeScript (Layer 1 — language) · target vlatest
+
+- **Strict mode on.** `strict: true`, `noUncheckedIndexedAccess`, no implicit `any`.
+- Prefer `type`/`interface` over `any`. Use `unknown` at boundaries, narrow before use.
+- No `// @ts-ignore` without a one-line reason comment. Fix the type instead.
+- Format with **Prettier**, lint with **ESLint** (`@typescript-eslint`). CI fails on lint errors.
+- `import type { … }` for type-only imports. No default exports for shared modules — named exports.
+- Async: `async/await`, never floating promises. Handle rejections explicitly.
+- Validate external data with a schema (e.g. `zod`) at the edge; trust types only after parsing.
+- Tests colocated or in `__tests__`; use the project's runner (vitest/jest). Name: `*.test.ts`.
+
+> For current API/best-practice details, query **context7** for `typescript@latest`.
