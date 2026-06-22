@@ -28,4 +28,6 @@
 - [ ] **Deferred** (clarify Q2): revisit only when a new block actually breaches the token budget.
 
 ## Verify & archive
-- [ ] `/aiws-sdd-verify` against the spec; living docs refreshed; then `/aiws-sdd-archive`.
+- [x] Verified against the spec: doctor 0/0, verify ✔, 120/120 tests, AGENTS.md 5903/6000; first `/aiws-audit`
+  report written to `docs/development/audits/2026-06-23-audit.md`; living docs refreshed.
+- [x] Archived. **0016c (AGENTS.md split) is deferred to a future change** (not part of 0016's committed scope).
