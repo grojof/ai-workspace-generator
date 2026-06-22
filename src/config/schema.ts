@@ -177,6 +177,20 @@ export const RepoSchema = z.object({
   stack: StackSchema.optional(),
 });
 
+/**
+ * Organization overlay + its company packs (ADR 0003 D / F2c). A bare string (`company: example`) is accepted
+ * for back-compat and normalised to `{ id, packs: [] }`. `id` is open — `none` (personal/generic), a bundled
+ * overlay (`example`), or any org handle (`corp-<handle>`); unknown ids simply get no overlay template.
+ */
+export const CompanySchema = z.preprocess(
+  (v) => (typeof v === "string" ? { id: v } : v),
+  z.object({
+    id: z.string().default("none"),
+    /** Git company packs to vendor in via `ai-workspace packs sync`, each `git+<url>#<ref>` (pinned). */
+    packs: z.array(z.string()).default([]),
+  }),
+);
+
 const BaseConfigSchema = z.object({
   version: z.literal(1).default(1),
   project: z.object({
@@ -190,10 +204,10 @@ const BaseConfigSchema = z.object({
   /** Who the workspace is for + how much AI fluency they have. Drives governance posture. */
   profile: ProfileSchema.prefault({}),
   /**
-   * Organization overlay (culture + working rules). `none` for personal/generic repos.
-   * `example` is a placeholder org you can rename/extend — see `templates/company/` and docs/project/EXTENDING.md.
+   * Organization overlay (culture + working rules) + company packs. `id: none` for personal/generic repos.
+   * A bare string is normalised to `{ id, packs: [] }`. See `templates/company/` and docs/project/EXTENDING.md.
    */
-  company: z.enum(["none", "example"]).default("none"),
+  company: CompanySchema.prefault({}),
   targets: z.array(z.enum(["claude", "copilot", "codex", "opencode"])).default(["claude", "copilot"]),
   /** Generate `.vscode/` recommendations (extensions/settings/mcp). Off for Visual Studio / non-VS-Code users. */
   vscode: z.boolean().default(true),
