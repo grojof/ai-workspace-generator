@@ -65,6 +65,18 @@ and [`pruneRenamedOrphans`](../../src/commands/migrate.ts) **after** (removes th
 command + prompt files left by the `aiws-` rename, guarded by the freshly-written artifact set). Both steps
 are idempotent. If you add a new spine block id, no extra migration work is needed — it is born namespaced.
 
+### The integrity manifest (ADR 0003 Part E)
+
+`generate` writes `.ai-workspace/manifest.json` ([`src/generate/manifest.ts`](../../src/generate/manifest.ts))
+as its **last** step — one fingerprint per base-owned artifact. `managed` files (`AGENTS.md`, `CLAUDE.md`,
+Copilot) hash only their `aiws:*` regions, so user prose outside the markers stays free; `file` artifacts
+(`.claude/skills/aiws-*`, `.claude/commands/aiws-*`, `.github/prompts/aiws-*`) hash whole. `ai-workspace verify`
+/ `doctor --strict` ([`src/commands/verify.ts`](../../src/commands/verify.ts)) recompute and exit non-zero on
+drift/marker/deletion (CI gate); a stale `source` version is a warning. The manifest is **committed** and
+**skipped in dry-run** (`upgrade --check`). It is a generated artifact ⇒ bump `TEMPLATES_VERSION` when its
+shape changes. User seeds (`writeIfMissing`) and vendored/stack packs are deliberately **not** tracked — they
+are the user's.
+
 Files written with `writeIfMissing` (`.editorconfig`, `.claude/settings.json`, the SDD store scaffold under
 `docs.development` (default `docs/development/`), `docs/development/status/*` seeds, `.vscode/extensions.json`,
 imported copies) have the opposite trait: editing their template **does not** reach users who already have the

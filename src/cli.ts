@@ -5,6 +5,7 @@ import { CLI_VERSION } from "./version.js";
 import { runInit } from "./commands/init.js";
 import { runSync } from "./commands/sync.js";
 import { runDoctor } from "./commands/doctor.js";
+import { runVerify } from "./commands/verify.js";
 import { runAdd } from "./commands/add.js";
 import { runRemove } from "./commands/remove.js";
 import { runList } from "./commands/list.js";
@@ -65,9 +66,23 @@ program
 program
   .command("doctor")
   .description("Lint the workspace: token budgets and key artifacts.")
-  .action(() => {
+  .option("--strict", "also verify base integrity against the manifest (non-zero exit on tampering)")
+  .action((opts) => {
     try {
       runDoctor(process.cwd());
+      if (opts.strict) runVerify(process.cwd());
+    } catch (err) {
+      console.error(pc.red(`\n${(err as Error).message}\n`));
+      process.exit(1);
+    }
+  });
+
+program
+  .command("verify")
+  .description("Verify base integrity against .ai-workspace/manifest.json (CI gate; non-zero exit on tampering).")
+  .action(() => {
+    try {
+      runVerify(process.cwd());
     } catch (err) {
       console.error(pc.red(`\n${(err as Error).message}\n`));
       process.exit(1);

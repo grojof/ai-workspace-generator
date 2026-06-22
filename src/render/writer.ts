@@ -23,6 +23,11 @@ export function getPlanned(): Map<string, string> {
   return planned;
 }
 
+/** Whether writes are currently being previewed (no disk writes) — lets generate skip disk-derived steps. */
+export function isDryRun(): boolean {
+  return dryRun;
+}
+
 function commit(absPath: string, content: string): void {
   if (dryRun) {
     planned.set(absPath, content);
