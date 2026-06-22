@@ -34,7 +34,7 @@ test("methodology · spdd reframes the orchestrator and ships the reasons machin
     // Reuses the /sdd-* family — no parallel /spdd-* commands.
     assert.doesNotMatch(agents, /\/spdd-/);
     // spdd => reasons => the reasons skills are generated.
-    assert.ok(readFileSync(resolve(cwd, ".claude/skills/sdd-spec-schema/SKILL.md"), "utf8"));
+    assert.ok(readFileSync(resolve(cwd, ".claude/skills/aiws-sdd-spec-schema/SKILL.md"), "utf8"));
     assert.equal(existsSync(resolve(cwd, ".claude/commands/spdd-story.md")), false);
   } finally {
     rmSync(cwd, { recursive: true, force: true });
@@ -66,22 +66,22 @@ test("methodology · spdd wires the sync loop; sdd does not (0009 E1-E4)", () =>
     const has = (d, p) => existsSync(resolve(d, p));
 
     // E1: skill + command only under spdd.
-    assert.ok(has(spdd, ".claude/skills/sdd-spec-sync/SKILL.md"));
+    assert.ok(has(spdd, ".claude/skills/aiws-sdd-spec-sync/SKILL.md"));
     assert.ok(has(spdd, ".claude/commands/aiws-sdd-sync.md"));
-    assert.equal(has(sdd, ".claude/skills/sdd-spec-sync/SKILL.md"), false);
+    assert.equal(has(sdd, ".claude/skills/aiws-sdd-spec-sync/SKILL.md"), false);
     assert.equal(has(sdd, ".claude/commands/aiws-sdd-sync.md"), false);
-    assert.equal(has(reasons, ".claude/skills/sdd-spec-sync/SKILL.md"), false);
+    assert.equal(has(reasons, ".claude/skills/aiws-sdd-spec-sync/SKILL.md"), false);
 
     // E2: orchestrator documents the loop under spdd only.
-    assert.match(readFileSync(resolve(spdd, "AGENTS.md"), "utf8"), /\/aiws-sdd-sync.*sdd-spec-sync|sdd-spec-sync.*\/aiws-sdd-sync/s);
-    assert.doesNotMatch(readFileSync(resolve(sdd, "AGENTS.md"), "utf8"), /sdd-spec-sync/);
+    assert.match(readFileSync(resolve(spdd, "AGENTS.md"), "utf8"), /\/aiws-sdd-sync.*aiws-sdd-spec-sync|aiws-sdd-spec-sync.*\/aiws-sdd-sync/s);
+    assert.doesNotMatch(readFileSync(resolve(sdd, "AGENTS.md"), "utf8"), /aiws-sdd-spec-sync/);
 
-    // E3: prompt→code half reused (sdd-code-maintenance present under spdd), no /spdd-* commands.
-    assert.ok(has(spdd, ".claude/skills/sdd-code-maintenance/SKILL.md"));
+    // E3: prompt→code half reused (aiws-sdd-code-maintenance present under spdd), no /spdd-* commands.
+    assert.ok(has(spdd, ".claude/skills/aiws-sdd-code-maintenance/SKILL.md"));
     assert.equal(has(spdd, ".claude/commands/spdd-sync.md"), false);
 
     // E4: the skill is propose-and-review (no auto-apply).
-    const skill = readFileSync(resolve(spdd, ".claude/skills/sdd-spec-sync/SKILL.md"), "utf8");
+    const skill = readFileSync(resolve(spdd, ".claude/skills/aiws-sdd-spec-sync/SKILL.md"), "utf8");
     assert.match(skill, /propose/i);
     assert.match(skill, /approval|approve/i);
     assert.match(skill, /no auto-apply/i);

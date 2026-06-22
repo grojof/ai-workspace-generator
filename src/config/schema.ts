@@ -67,7 +67,7 @@ export const SddSchema = z.object({
   /**
    * Spec depth mode. `lean` = the light Spec-Kit/OpenSpec flow (default, keep it simple). `reasons` =
    * the closed REASONS Canvas (8 sections + frontmatter, profiles A/B, validation) for auditable
-   * enterprise apps — loaded on demand via the `sdd-spec-schema` skill, never inlined in AGENTS.md.
+   * enterprise apps — loaded on demand via the `aiws-sdd-spec-schema` skill, never inlined in AGENTS.md.
    */
   schema: z.enum(["lean", "reasons"]).default("lean"),
   /**

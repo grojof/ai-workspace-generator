@@ -14,16 +14,30 @@ impersonate the base by shipping `aiws-*` ids. It also needs the base catalog it
 F2's pieces differ too much in size and risk to land together (the same reason F1 split into F1a/F1b).
 Recommended order — cheap and unblocking first, network/design-heavy last:
 
-### F2a — namespace the base packs + reserved-namespace guard *(mechanical + validation, no network)*
-- Rename the bundled non-aiws packs to `aiws-*`: `find-skills`, `mcp-builder`, `skill-creator`, and the
-  `sdd-*` fusion family (spec-schema, onboarding, audits, builder, migrate, spec-sync, code-maintenance).
-  Folder renames in `skill-packs/`, `pack.yaml` `id:`, registry rows in `src/modules/skills.ts`,
-  `gating`/routing references. `pruneRenamedOrphans` (F1b.2) already cleans the orphans on `upgrade`.
-- Wire `isReservedNamespace()` into pack loading: a pack whose `id` is `aiws-*`/`aiws:*` but whose
-  **source is not the base** is rejected with a clear error (impersonation guard). Bundled base packs are
-  exempt by construction.
-- Tests: every bundled pack id is `aiws-*`; an external pack claiming `aiws-foo` is rejected; byte
-  baselines / routing fixtures updated. Bump `TEMPLATES_VERSION`.
+### F2a — namespace the authored base packs + reserved-namespace guard *(mechanical + validation, no network)*
+
+**Provenance principle (refined during exploration).** `aiws-` marks artifacts **we author** — the harness /
+governance / methodology content. It must NOT be stamped on:
+- **Vendored upstream packs** (`base: vendor/…`): `find-skills` (vercel-labs, MIT), `mcp-builder`,
+  `skill-creator` (anthropics, Apache-2.0). Renaming them would misattribute third-party work and break the
+  `skills sync` id→mirror identity. They keep their ecosystem names.
+- **Stack packs** (`odoo-18.0`, `frontend-design`, `frontend-ui-dark-ts`, `webapp-testing`): keyed to a real
+  technology and legitimately overridable by a company. They keep their ecosystem names.
+
+So F2a renames only the **`sdd-*` fusion family we author** (`templated: true`, no `base:`): the SPDD/REASONS
+machinery — `sdd-spec-schema`, `sdd-onboarding`, `sdd-init`, `sdd-spec-capture`, `sdd-spec-review`,
+`sdd-code-generation`, `sdd-code-maintenance`, `sdd-test-generation`, `sdd-self-review`, `sdd-handoff`,
+`sdd-spec-sync`, `sdd-reverse-engineering`, `sdd-migrate`, `sdd-audit-{security,style,stack,architecture}`
+→ `aiws-sdd-*` (consistent with the `aiws-sdd-*` orchestrator renamed in F1a). Folder renames in
+`skill-packs/`, `pack.yaml` `id:`, registry rows + the audit-id `.replace` logic in `src/modules/skills.ts`,
+`sdd.ts` gating. `pruneRenamedOrphans` (F1b.2) already cleans the orphans on `upgrade`.
+
+- Wire `isReservedNamespace()` into pack loading so a pack with an `aiws-*` id from a **non-base source** is
+  rejected (impersonation guard). With no external sources until F2c, this lands as a self-invariant now
+  (every *authored* base pack is `aiws-*`; vendored/stack packs are exempt by `base:`/stack-binding) and gains
+  runtime teeth in F2c.
+- Tests: authored base packs emit `aiws-*`; vendored + stack packs keep their names; byte baselines /
+  routing fixtures + `methodology.test.js` paths updated. Bump `TEMPLATES_VERSION`.
 
 ### F2b — overlay `relation` in `pack.yaml` *(schema + validation, surfaced for reconcile)*
 - Add an optional `relation` to overlay metadata: `extends` (adds to a base skill), `overrides:<aiws-id>`

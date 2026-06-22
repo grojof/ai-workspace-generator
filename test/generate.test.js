@@ -213,28 +213,28 @@ test("reasons schema mode generates the spec-schema skill + routing; lean does n
     generate(reasons, ConfigSchema.parse({ project: { name: "t" }, sdd: { schema: "reasons" } }));
     generate(lean, ConfigSchema.parse({ project: { name: "t" } }));
     // reasons → schema + onboarding skills exist + AGENTS.md routes to them.
-    assert.ok(readFileSync(resolve(reasons, ".claude/skills/sdd-spec-schema/SKILL.md"), "utf8"));
-    assert.ok(readFileSync(resolve(reasons, ".claude/skills/sdd-onboarding/SKILL.md"), "utf8"));
+    assert.ok(readFileSync(resolve(reasons, ".claude/skills/aiws-sdd-spec-schema/SKILL.md"), "utf8"));
+    assert.ok(readFileSync(resolve(reasons, ".claude/skills/aiws-sdd-onboarding/SKILL.md"), "utf8"));
     assert.match(readFileSync(resolve(reasons, "AGENTS.md"), "utf8"), /REASONS Canvas/);
-    assert.match(readFileSync(resolve(reasons, "AGENTS.md"), "utf8"), /sdd-onboarding/);
+    assert.match(readFileSync(resolve(reasons, "AGENTS.md"), "utf8"), /aiws-sdd-onboarding/);
     // lean → no reasons skills, no REASONS routing.
-    assert.equal(existsSync(resolve(lean, ".claude/skills/sdd-spec-schema/SKILL.md")), false);
-    assert.equal(existsSync(resolve(lean, ".claude/skills/sdd-onboarding/SKILL.md")), false);
+    assert.equal(existsSync(resolve(lean, ".claude/skills/aiws-sdd-spec-schema/SKILL.md")), false);
+    assert.equal(existsSync(resolve(lean, ".claude/skills/aiws-sdd-onboarding/SKILL.md")), false);
     assert.doesNotMatch(readFileSync(resolve(lean, "AGENTS.md"), "utf8"), /REASONS Canvas/);
     // reasons → reviewer audit skills exist; lean → not.
     for (const a of ["security", "style", "stack", "architecture"]) {
-      assert.ok(readFileSync(resolve(reasons, `.claude/skills/sdd-audit-${a}/SKILL.md`), "utf8"));
-      assert.equal(existsSync(resolve(lean, `.claude/skills/sdd-audit-${a}/SKILL.md`)), false);
+      assert.ok(readFileSync(resolve(reasons, `.claude/skills/aiws-sdd-audit-${a}/SKILL.md`), "utf8"));
+      assert.equal(existsSync(resolve(lean, `.claude/skills/aiws-sdd-audit-${a}/SKILL.md`)), false);
     }
     // reasons → builder workflow + reverse-engineering skills exist; lean → not.
-    for (const b of ["sdd-init", "sdd-spec-capture", "sdd-spec-review", "sdd-code-generation", "sdd-code-maintenance", "sdd-test-generation", "sdd-self-review", "sdd-handoff", "sdd-reverse-engineering", "sdd-migrate"]) {
+    for (const b of ["aiws-sdd-init", "aiws-sdd-spec-capture", "aiws-sdd-spec-review", "aiws-sdd-code-generation", "aiws-sdd-code-maintenance", "aiws-sdd-test-generation", "aiws-sdd-self-review", "aiws-sdd-handoff", "aiws-sdd-reverse-engineering", "aiws-sdd-migrate"]) {
       assert.ok(readFileSync(resolve(reasons, `.claude/skills/${b}/SKILL.md`), "utf8"));
       assert.equal(existsSync(resolve(lean, `.claude/skills/${b}/SKILL.md`)), false);
     }
-    assert.match(readFileSync(resolve(reasons, "AGENTS.md"), "utf8"), /sdd-spec-capture/);
+    assert.match(readFileSync(resolve(reasons, "AGENTS.md"), "utf8"), /aiws-sdd-spec-capture/);
     // reasons → the spec lifecycle is documented and routed.
     assert.match(readFileSync(resolve(reasons, "AGENTS.md"), "utf8"), /status.*draft.*user-reviewed.*it-approved/);
-    assert.match(readFileSync(resolve(reasons, ".claude/skills/sdd-spec-schema/SKILL.md"), "utf8"), /Lifecycle/);
+    assert.match(readFileSync(resolve(reasons, ".claude/skills/aiws-sdd-spec-schema/SKILL.md"), "utf8"), /Lifecycle/);
   } finally {
     rmSync(reasons, { recursive: true, force: true });
     rmSync(lean, { recursive: true, force: true });
@@ -341,7 +341,7 @@ test("config.skills (0006): explicit list filters the library; empty = all; feat
     assert.ok(has(picked, "odoo-18.0"));
     for (const id of ["mcp-builder", "skill-creator", "find-skills"]) assert.equal(has(picked, id), false);
     // feature bundles (sdd-*, routing:false) are governed by their flags, NOT the explicit list.
-    assert.ok(has(feat, "sdd-spec-schema"));
+    assert.ok(has(feat, "aiws-sdd-spec-schema"));
     assert.equal(has(feat, "mcp-builder"), false);
   } finally {
     for (const d of [all, picked, feat]) rmSync(d, { recursive: true, force: true });

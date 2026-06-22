@@ -83,7 +83,7 @@ export const SKILLS: SkillEntry[] = [
     },
   },
   {
-    id: "sdd-onboarding",
+    id: "aiws-sdd-onboarding",
     domain: "onboarding",
     level: "all",
     userType: "technical",
@@ -96,7 +96,7 @@ export const SKILLS: SkillEntry[] = [
     },
   },
   {
-    id: "sdd-spec-schema",
+    id: "aiws-sdd-spec-schema",
     domain: "development",
     level: "all",
     userType: "technical",
@@ -108,7 +108,7 @@ export const SKILLS: SkillEntry[] = [
       es: "redactar/validar una spec en modo REASONS",
     },
   },
-  ...(["sdd-audit-security", "sdd-audit-style", "sdd-audit-stack", "sdd-audit-architecture"].map((id) => ({
+  ...(["aiws-sdd-audit-security", "aiws-sdd-audit-style", "aiws-sdd-audit-stack", "aiws-sdd-audit-architecture"].map((id) => ({
     id,
     domain: (id.endsWith("security") ? "security" : "technical") as SkillDomain,
     level: "advanced" as SkillLevel,
@@ -116,18 +116,18 @@ export const SKILLS: SkillEntry[] = [
     loadMode: "advanced-only" as SkillLoadMode,
     risk: "low" as SkillRisk,
     enabled: (c: Config) => c.sdd.enabled && c.sdd.schema === "reasons" && claude(c),
-    trigger: { en: `${id.replace("sdd-audit-", "")} audit of a REASONS spec/app`, es: `auditoría de ${id.replace("sdd-audit-", "")} de una spec/app REASONS` },
+    trigger: { en: `${id.replace("aiws-sdd-audit-", "")} audit of a REASONS spec/app`, es: `auditoría de ${id.replace("aiws-sdd-audit-", "")} de una spec/app REASONS` },
   }))),
   // Builder workflow (author side) — idea → spec → code → tests → handoff. REASONS mode only.
   ...([
-    { id: "sdd-init", en: "scaffolding a new app's layout", es: "crear el layout de una app nueva" },
-    { id: "sdd-spec-capture", en: "capturing requirements as a REASONS spec", es: "capturar requisitos como spec REASONS" },
-    { id: "sdd-spec-review", en: "revising a spec / signing it off (status lifecycle)", es: "revisar una spec / firmarla (ciclo de estado)" },
-    { id: "sdd-code-generation", en: "generating code from a signed-off spec", es: "generar código desde una spec aprobada" },
-    { id: "sdd-code-maintenance", en: "propagating a spec change into code", es: "propagar un cambio de spec al código" },
-    { id: "sdd-test-generation", en: "generating tests from the spec's §5", es: "generar tests desde la §5 de la spec" },
-    { id: "sdd-self-review", en: "validating before IT handoff", es: "validar antes del handoff a IT" },
-    { id: "sdd-handoff", en: "packaging the app for IT review", es: "empaquetar la app para revisión de IT" },
+    { id: "aiws-sdd-init", en: "scaffolding a new app's layout", es: "crear el layout de una app nueva" },
+    { id: "aiws-sdd-spec-capture", en: "capturing requirements as a REASONS spec", es: "capturar requisitos como spec REASONS" },
+    { id: "aiws-sdd-spec-review", en: "revising a spec / signing it off (status lifecycle)", es: "revisar una spec / firmarla (ciclo de estado)" },
+    { id: "aiws-sdd-code-generation", en: "generating code from a signed-off spec", es: "generar código desde una spec aprobada" },
+    { id: "aiws-sdd-code-maintenance", en: "propagating a spec change into code", es: "propagar un cambio de spec al código" },
+    { id: "aiws-sdd-test-generation", en: "generating tests from the spec's §5", es: "generar tests desde la §5 de la spec" },
+    { id: "aiws-sdd-self-review", en: "validating before IT handoff", es: "validar antes del handoff a IT" },
+    { id: "aiws-sdd-handoff", en: "packaging the app for IT review", es: "empaquetar la app para revisión de IT" },
   ].map(({ id, en, es }) => ({
     id,
     domain: "development" as SkillDomain,
@@ -140,7 +140,7 @@ export const SKILLS: SkillEntry[] = [
   }))),
   {
     // SPDD closed loop (code→prompt) — fold non-behavioural code changes back into the Canvas. SPDD only.
-    id: "sdd-spec-sync",
+    id: "aiws-sdd-spec-sync",
     domain: "development",
     level: "standard",
     userType: "technical",
@@ -154,7 +154,7 @@ export const SKILLS: SkillEntry[] = [
   },
   {
     // Reviewer-side recovery — produce a draft spec from existing code (advanced/IT).
-    id: "sdd-reverse-engineering",
+    id: "aiws-sdd-reverse-engineering",
     domain: "development",
     level: "advanced",
     userType: "technical",
@@ -168,7 +168,7 @@ export const SKILLS: SkillEntry[] = [
   },
   {
     // One-off migration of a legacy non-Git SDD workspace (versioned by `_vN` filenames) to this model.
-    id: "sdd-migrate",
+    id: "aiws-sdd-migrate",
     domain: "development",
     level: "advanced",
     userType: "technical",
