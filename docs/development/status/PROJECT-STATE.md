@@ -54,7 +54,11 @@ mantenimiento mínimo. **Sin datos de negocio reales.**
 - **Material de origen:** el **texto** de `vendor/` (mirror upstream) se versiona; los binarios están gitignorados.
 - **Extensión a empresa:** fuera de este repo público; se trae como overlays propios (ver [EXTENDING](../../project/EXTENDING.md)).
 - **Foundations (ADR 0003):** una sola tenencia (personal/freelance = org `corp-<handle>`); namespace reservado
-  `aiws-*` (skills/commands) / `aiws:*` (block ids) con procedencia; migración de namespace **automatizada** en
-  `ai-workspace upgrade` (`src/commands/migrate.ts`: reescribe marcadores legacy y poda huérfanos del rename,
-  idempotente, previsualizable con `--check`). F1 hecho (TEMPLATES_VERSION 0.37.0); pendientes F2 (packs git +
-  `relation` + guard de namespace reservado), F3 (manifiesto de integridad + `aiws-verify`), F4 (`aiws-reconcile`).
+  `aiws-*` (skills/commands) / `aiws:*` (block ids) con procedencia. Principio: `aiws-` solo marca lo que
+  **nosotros** autoramos — los packs **vendored** (`base:`) y los **stack packs** conservan su nombre de
+  ecosistema. Migración de namespace **automatizada** en `ai-workspace upgrade` (`src/commands/migrate.ts`,
+  idempotente, `--check`). Los packs de empresa declaran su `relation` (new / extends / overrides:`<aiws-id>`)
+  en `pack.yaml` — primitiva auditable para `aiws-reconcile`. Hechos: F1 (namespace + migración), F2a (packs
+  `sdd-*` autorados → `aiws-sdd-*` + invariante), F2b (`relation`). TEMPLATES_VERSION 0.38.0. Pendientes: **F2c**
+  (packs git de empresa + `company` → objeto + guard runtime; requiere spec/design propio — Safety gate),
+  F3 (manifiesto de integridad + `aiws-verify`), F4 (`aiws-reconcile`).
