@@ -1,6 +1,6 @@
 {
   "name": "ai-workspace-generator",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Generate and adapt an AI workspace (Claude Code + GitHub Copilot) for any project: layered instructions, skills, SDD, MCPs, living docs and token-efficient config.",
   "type": "module",
   "bin": {
