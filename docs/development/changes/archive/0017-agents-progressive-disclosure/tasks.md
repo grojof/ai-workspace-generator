@@ -17,7 +17,8 @@
 - [x] Honest measurement (`estimateTokens`): **REASONS mode −~170 tok** (where the duplication lived); **sdd mode +~20** (the cross-tool pointer) — sdd-mode wasn't bloated, so it isn't padded; this repo 5645 → 5678.
 - [x] **`harness-engineering` stays inline** — it's Layer-0 *stance* (how the harness evolves), has no skill home, and is already lean. **`living-docs` stays** — already a pointer to `/aiws-doc-sync` (its skill); ~lean.
 - [x] Tests green (124/124); byte fixtures regenerated; `TEMPLATES_VERSION` → 0.52.0; dogfood synced; doctor 0/0.
-- [ ] Deferred polish: align skill frontmatter to the Agent Skills spec (validate via `skills-ref`); reconsider `skill-routing` — small follow-ups, not blocking.
+- [x] Polish: generated skills already conform to the Agent Skills spec (name=dir, lowercase-hyphen, description ≤1024) — added `skill-spec.test.js` to fix it as a regression guard (cross-tool portability).
+- [x] Reconsidered `skill-routing` → **keep**: it's a profile-filtered index with "when + load mode" at a glance; slimming it would churn every byte fixture for marginal gain now that the table is small relative to the spine.
 
 ## Verify & archive
-- [ ] `/aiws-audit` + verify against the spec; living docs; then archive 0017.
+- [x] Verified against the spec: 0017a (stack→references+pointers) + 0017b (REASONS prune) shipped; doctor 0/0, verify ✔, 125/125 tests, AGENTS.md within budget. Living docs refreshed; change archived.

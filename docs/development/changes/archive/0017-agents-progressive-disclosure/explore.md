@@ -8,7 +8,7 @@
 ## What already exists (half the goal is built)
 
 **Conditional composition** is already done in `BLOCK_MANIFEST`
-([src/generate/blockManifest.ts](../../../../src/generate/blockManifest.ts)): blocks are gated by `when`, so a
+([src/generate/blockManifest.ts](../../../../../src/generate/blockManifest.ts)): blocks are gated by `when`, so a
 repo only gets the blocks its context needs — `company-overlay` only when a company is set, `lang-*`/`fw-*`/
 `env-*` expanded per stack entry, `tech-selection` only for greenfield, `sdd`/`living-docs`/`learning` only when
 enabled. "Stays clean per context" ✅. What is **not** done: the *detail* of each block is still **inline and

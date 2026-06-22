@@ -50,6 +50,11 @@ mantenimiento mínimo. **Sin datos de negocio reales.**
 - **Coherencia de docs (0016a)** — `docs.contract` (config, con default; README raíz = índice `authored`) +
   checks en `doctor` (refs colgantes + huérfanos, `warn`, `docCoherence.ts` puro y testeado); `doc-sync` cubre
   `docs/project/`. El store SDD queda fuera de alcance.
+- **Autoauditoría (0016b)** — skill `aiws-audit` + `/aiws-audit`: informe **read-only** fechado en
+  `docs/development/audits/` que compone `doctor`/`verify`/`reconcile` + el contrato. Bucle autoalimentado.
+- **Progressive disclosure (0017)** — AGENTS.md = hub Layer-0 inline + **punteros**; detalle de stack en
+  `references/stack/<id>.md` (`src/generate/references.ts`, una fuente) proyectado al loader nativo de cada
+  target (Copilot `applyTo`; resto leen el puntero); detalle de tarea delegado a las skills cross-tool.
 
 ## Decisiones vigentes
 
@@ -81,5 +86,12 @@ mantenimiento mínimo. **Sin datos de negocio reales.**
   índice `authored`) y checks de coherencia en `doctor` (refs colgantes + huérfanos, `warn`, `docCoherence.ts`),
   con `doc-sync` cubriendo `docs/project/`. **0016b** (PR #54) añadió la skill **`aiws-audit`** + `/aiws-audit`:
   autoauditoría **read-only** fechada en `docs/development/audits/` (compone `doctor`/`verify`/`reconcile` + el
-  contrato) — el repo se autoalimenta. TEMPLATES_VERSION **0.50.0**; AGENTS.md 5903/6000. **0016 entregado**
-  (a + backlog + b); solo **0016c (split de AGENTS.md) diferido** hasta que un bloque reviente el budget.
+  contrato) — el repo se autoalimenta. **0016 entregado** (a + backlog + b).
+- **Progressive disclosure de AGENTS.md (0017, antes 0016c):** investigación del ecosistema (PRs #56–#58,
+  `0017/research.md`) confirmó que **Agent Skills es ya estándar abierto cross-tool** (Claude/Codex/Copilot/
+  opencode) y la convergencia en 3 niveles (always inline · path `applyTo`/globs · task skill-`description`).
+  **0017a** (PR #56): reglas de stack → `references/stack/<id>.md` + **punteros** en AGENTS.md (ids estables) +
+  proyección Copilot `applyTo`; de-hardcodeado el `typescript.instructions.md`. **0017b** (PR #58): podado el
+  detalle REASONS duplicado del orquestador SDD → puntero a las skills cross-tool (REASONS −~170 tok). Layer-0
+  de gobernanza **siempre inline**; los punteros los vigila el check de refs de 0016a; skills validadas contra
+  el Agent Skills spec (`skill-spec.test.js`). TEMPLATES_VERSION **0.52.0**; AGENTS.md 5678/6000.

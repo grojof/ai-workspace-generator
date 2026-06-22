@@ -3,7 +3,7 @@
 ## One source
 
 Extract the body the per-stack layers render today (`renderLanguage/Framework/Environment` in
-[blockManifest.ts](../../../../src/generate/blockManifest.ts)) into a single `stackBody(config, type, entry)`.
+[blockManifest.ts](../../../../../src/generate/blockManifest.ts)) into a single `stackBody(config, type, entry)`.
 That body is the **one source**, consumed by:
 1. the **reference file** `references/stack/<id>.md`,
 2. the **Copilot projection** `.github/instructions/<id>.instructions.md` (when a glob exists),
@@ -32,7 +32,7 @@ The link resolves from the repo root (where AGENTS.md lives), so 0016a's danglin
 
 ## De-hardcode the existing TS instruction
 
-[`index.ts:203-225`](../../../../src/generate/index.ts) hand-writes `typescript.instructions.md` (a thin
+[`index.ts:203-225`](../../../../../src/generate/index.ts) hand-writes `typescript.instructions.md` (a thin
 pointer to AGENTS.md). 0017a **removes** that special case and lets `generateStackReferences` emit it
 generically — and with the real body, so Copilot actually gets the rules by path instead of a redirect.
 
