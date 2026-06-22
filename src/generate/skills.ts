@@ -3,11 +3,8 @@ import type { Config } from "../config/schema.js";
 import { writeFile, writeIfMissing, type WriteResult } from "../render/writer.js";
 import { phasesFor } from "./sdd.js";
 import { docsPaths } from "./paths.js";
+import { skillFrontmatter as frontmatter } from "./naming.js";
 import type { Phase } from "../i18n/strings.js";
-
-function frontmatter(name: string, description: string): string {
-  return ["---", `name: ${name}`, "description: >", `  ${description}`, "license: Apache-2.0", "metadata:", "  author: ai-workspace", '  version: "1.0"', "---", ""].join("\n");
-}
 
 // AI skill → English only (token efficiency).
 function sddSkill(p: Phase, config: Config): string {

@@ -3,6 +3,7 @@ import type { Config } from "../config/schema.js";
 import { writeFile, writeIfMissing, type WriteResult } from "../render/writer.js";
 import { docsPaths } from "./paths.js";
 import { LANGUAGES, FRAMEWORKS, ENVIRONMENTS, type ModuleEntry } from "../modules/registry.js";
+import { skillFrontmatter as frontmatter } from "./naming.js";
 
 /** Registry entries present in the config's stack, in catalog order (languages → frameworks → environments). */
 function stackModules(config: Config): ModuleEntry[] {
@@ -19,10 +20,6 @@ function stackModules(config: Config): ModuleEntry[] {
  * command / Copilot prompt to invoke it, recommended VS Code extensions, and a
  * VS Code setup guide. Written for developers new to AI agents/skills/MCP.
  */
-
-function frontmatter(name: string, description: string): string {
-  return ["---", `name: ${name}`, "description: >", `  ${description}`, "license: Apache-2.0", "metadata:", "  author: ai-workspace", '  version: "1.0"', "---", ""].join("\n");
-}
 
 // ---------------------------------------------------------------------------
 // Learner guide skill

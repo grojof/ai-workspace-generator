@@ -2,15 +2,12 @@ import { resolve } from "node:path";
 import type { Config } from "../config/schema.js";
 import { writeFile, writeIfMissing, type WriteResult } from "../render/writer.js";
 import { docsPaths } from "./paths.js";
+import { skillFrontmatter as frontmatter } from "./naming.js";
 
 /**
  * Governance artifacts: skills + commands that enforce the version/security/commit
  * policy declared in AGENTS.md, plus a commit-msg git hook for hard enforcement.
  */
-
-function frontmatter(name: string, description: string): string {
-  return ["---", `name: ${name}`, "description: >", `  ${description}`, "license: Apache-2.0", "metadata:", "  author: ai-workspace", '  version: "1.0"', "---", ""].join("\n");
-}
 
 // --- dependency-upgrade skill (AI-facing → English only) ---------------------
 
