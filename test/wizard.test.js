@@ -49,7 +49,7 @@ test("simpleDefaults: profile is independent of detection (never silently inferr
 
 test("buildConfig(simpleDefaults) ⇒ valid Config with documented Simple defaults + detected versions", () => {
   const c = buildConfig(simpleDefaults(DETECTED, basics()), DETECTED);
-  assert.equal(c.company, "none");
+  assert.equal(c.company.id, "none");
   assert.equal(c.sdd.enabled, true);
   assert.equal(c.sdd.backend, "files");
   assert.equal(c.sdd.methodology, "sdd");
@@ -70,7 +70,7 @@ test("buildConfig: advanced-like input maps stack + company⇒reasons + context7
     livingDocs: false, useContext7: false, safetyGuard: "block",
   };
   const c = buildConfig(inputs, EMPTY);
-  assert.equal(c.company, "example");
+  assert.equal(c.company.id, "example");
   assert.equal(c.sdd.schema, "reasons"); // company !== none ⇒ reasons
   assert.deepEqual(c.stack.languages, [{ id: "go", version: "latest" }]); // not detected ⇒ latest
   assert.deepEqual(c.mcp, []); // context7 off

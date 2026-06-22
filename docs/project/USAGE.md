@@ -144,6 +144,17 @@ ai-workspace skills sync                         # dry-run, latest upstream tag
 ai-workspace skills sync --source agent-skills --ref v1.2.3 --apply
 ```
 
+### `packs sync` — vendor company packs (git, pinned)
+Clones the git company packs declared in `company.packs` (each `git+<url>#<ref>`, pinned) into
+`.ai-workspace/packs/<id>/` (committed) and writes `packs-lock.json` with the resolved sha. The network is
+touched only here, never at `generate`. External packs may not claim the reserved `aiws-*` namespace. After a
+sync, `ai-workspace sync` emits the company packs (gated by profile/stack/company). See
+[EXTENDING](EXTENDING.md#company-packs-over-git-adr-0003-f2c).
+
+```bash
+ai-workspace packs sync   # then: ai-workspace sync
+```
+
 ## The `workspace.config.yaml` file
 
 It is the **single input**. `AGENTS.md` is the canonical output; everything else is an idempotent projection.

@@ -6,6 +6,7 @@ import { runInit } from "./commands/init.js";
 import { runSync } from "./commands/sync.js";
 import { runDoctor } from "./commands/doctor.js";
 import { runVerify } from "./commands/verify.js";
+import { runPacksSync } from "./commands/packsSync.js";
 import { runAdd } from "./commands/add.js";
 import { runRemove } from "./commands/remove.js";
 import { runList } from "./commands/list.js";
@@ -179,6 +180,19 @@ skills
   .action((opts) => {
     try {
       runSkillsSync({ ref: opts.ref, apply: opts.apply, source: opts.source });
+    } catch (err) {
+      console.error(pc.red(`\n${(err as Error).message}\n`));
+      process.exit(1);
+    }
+  });
+
+const packs = program.command("packs").description("Manage vendored company packs (git, pinned by ref).");
+packs
+  .command("sync")
+  .description("Vendor the git company packs from `company.packs` into .ai-workspace/packs/ (committed, pinned).")
+  .action(() => {
+    try {
+      runPacksSync(process.cwd());
     } catch (err) {
       console.error(pc.red(`\n${(err as Error).message}\n`));
       process.exit(1);

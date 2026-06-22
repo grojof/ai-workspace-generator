@@ -26,7 +26,7 @@ export type BlockEntry =
 
 /** Resolve a template path, substituting `{company}` for the selected organization. */
 export function resolveTemplate(template: string, config: Config): string {
-  return template.replace("{company}", config.company);
+  return template.replace("{company}", config.company.id);
 }
 
 function renderLanguage(config: Config, entry: { id: string; version: string }): string {
@@ -95,7 +95,7 @@ export const BLOCK_MANIFEST: readonly BlockEntry[] = [
   { kind: "expand", expand: (config) => config.stack.environments.map((e) => ({ id: `env-${e.id}`, content: renderEnvironment(config, e) })) },
   { kind: "template", id: "learning", template: "core/learning.md.eta", when: (c) => c.project.purpose === "learn" },
   // Organization overlay (culture + working rules), English-only (AI-facing); only when a company is set.
-  { kind: "template", id: "company-overlay", template: "company/{company}/overlay.md.eta", when: (c) => c.company !== "none" },
+  { kind: "template", id: "company-overlay", template: "company/{company}/overlay.md.eta", when: (c) => c.company.id !== "none" && templateExists(`company/${c.company.id}/overlay.md.eta`) },
   { kind: "template", id: "company", template: "company/overlay.md.eta" },
   { kind: "template", id: "business", template: "business/domain.md.eta" },
   { kind: "template", id: "sdd", template: "sdd/orchestrator.md.eta", when: (c) => c.sdd.enabled },

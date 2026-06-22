@@ -157,6 +157,36 @@ relation: new                 # how this pack relates to the base — see below 
 **Test:** a workspace with the stack active (e.g. `stack.frameworks: [react]`, technical profile) inherits the
 full pack in `.claude/skills/react-19/` (with its `references/`).
 
+## Company packs over git (ADR 0003 F2c)
+
+A company keeps its own skills/overlays in a **separate git repo** and consumes the base as a dependency,
+without forking. `company` is `{ id, packs }`:
+
+```yaml
+company:
+  id: corp-acme            # personal/freelance = corp-<handle>; `none` = generic
+  packs:
+    - git+https://github.com/acme/ai-packs.git#v1.3.0   # pinned by tag/sha/branch (required)
+```
+
+The pack repo uses the **same `skill-packs/<id>/` layout** (one or more `corp-<handle>-*` packs, each a
+`pack.yaml` + `SKILL.md` + optional `references/`, with a `relation:`). Then:
+
+```bash
+ai-workspace packs sync   # clones each ref, vendors into .ai-workspace/packs/<id>/ (committed), writes packs-lock.json
+ai-workspace sync         # generate now also emits the company packs (gated by profile/stack/company)
+```
+
+- **Pinned + vendored + committed:** the network is touched only at `packs sync`, never at `generate`.
+  `packs-lock.json` records the resolved sha for reproducibility. Review `.ai-workspace/packs/` in PRs.
+- **Reserved-namespace guard:** an external pack may **not** claim an `aiws-*` / `aiws:*` id — only the base
+  may. Use a `corp-<handle>-` id. The guard runs at `packs sync` and at load.
+- **Relations** (`relation: overrides:<aiws-id>`) are validated against the live base catalog (a dangling
+  override throws). Company-owned skills are **not** tracked by the integrity manifest (only `aiws-*` are).
+
+> Updating: bump the `#ref`, re-run `packs sync`, review the diff. `aiws-reconcile` (planned) will audit the
+> company overlay against the base on each upgrade.
+
 ## Add a native tool skill
 
 The generator's *own* skills (lean SDD flow, `living-docs`, learning guide, `vscode-setup`) are still produced

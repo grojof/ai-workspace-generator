@@ -73,7 +73,7 @@ const PackManifestSchema = z.object({
           methodology: z.enum(["sdd", "spdd"]).optional(),
         })
         .optional(),
-      company: z.union([z.literal("any"), z.array(z.enum(["example"]))]).optional(),
+      company: z.union([z.literal("any"), z.array(z.string())]).optional(),
     })
     .optional(),
   /**
@@ -159,9 +159,9 @@ export function assertRelationsResolve(packs: LoadedPack[]): void {
   }
 }
 
-/** Read and validate every `skill-packs/<id>/pack.yaml`. */
-export function loadPacks(): LoadedPack[] {
-  const root = skillPacksDir();
+/** Read every `<root>/<id>/pack.yaml` into validated manifests. `external` packs may not claim the reserved
+ *  `aiws` namespace (impersonation guard, ADR 0003 Part E) — a base id from outside the base is rejected. */
+function readPacksFrom(root: string, opts: { external: boolean }): LoadedPack[] {
   if (!existsSync(root)) return [];
   const packs: LoadedPack[] = [];
   for (const entry of readdirSync(root, { withFileTypes: true })) {
@@ -169,8 +169,34 @@ export function loadPacks(): LoadedPack[] {
     const manifestPath = join(root, entry.name, "pack.yaml");
     if (!existsSync(manifestPath)) continue;
     const manifest = PackManifestSchema.parse(parse(readFileSync(manifestPath, "utf8")));
+    if (opts.external && isReservedNamespace(manifest.id)) {
+      throw new Error(`company pack "${manifest.id}" uses the reserved \`aiws\` namespace — only the base may. Use a \`corp-<handle>-\` id.`);
+    }
     packs.push({ manifest, dir: join(root, entry.name) });
   }
+  return packs;
+}
+
+/** Read and validate every bundled `skill-packs/<id>/pack.yaml`. */
+export function loadPacks(): LoadedPack[] {
+  const packs = readPacksFrom(skillPacksDir(), { external: false });
+  assertRelationsResolve(packs);
+  return packs;
+}
+
+/** Where vendored company packs land in a consumer repo (committed; produced by `ai-workspace packs sync`). */
+export function companyPacksDir(cwd: string): string {
+  return resolve(cwd, ".ai-workspace/packs");
+}
+
+/** Read vendored company packs from `.ai-workspace/packs/` (external source → reserved-namespace guarded). */
+export function loadCompanyPacks(cwd: string): LoadedPack[] {
+  return readPacksFrom(companyPacksDir(cwd), { external: true });
+}
+
+/** Bundled base packs + the repo's vendored company packs, with overlay relations validated across the union. */
+export function loadAllPacks(cwd: string): LoadedPack[] {
+  const packs = [...readPacksFrom(skillPacksDir(), { external: false }), ...loadCompanyPacks(cwd)];
   assertRelationsResolve(packs);
   return packs;
 }
@@ -213,8 +239,8 @@ function gatingHolds(manifest: PackManifest, config: Config): boolean {
   }
   if (g.company) {
     if (g.company === "any") {
-      if (config.company === "none") return false;
-    } else if (!g.company.includes(config.company as "example")) return false;
+      if (config.company.id === "none") return false;
+    } else if (!g.company.includes(config.company.id)) return false;
   }
   return true;
 }
@@ -315,8 +341,8 @@ function applyOverlays(skill: string, dir: string, config: Config): string {
   let out = skill;
   const genericPath = join(dir, "overlay.md");
   if (existsSync(genericPath)) out = appendBlock(out, "pack-overlay", readFileSync(genericPath, "utf8"));
-  if (config.company !== "none") {
-    const overlayPath = join(dir, `overlay.${config.company}.md`);
+  if (config.company.id !== "none") {
+    const overlayPath = join(dir, `overlay.${config.company.id}.md`);
     if (existsSync(overlayPath)) out = appendBlock(out, "company-overlay", readFileSync(overlayPath, "utf8"));
   }
   return out;
@@ -350,7 +376,8 @@ export function generateStackPacks(cwd: string, config: Config, scope: PackScope
   if (!config.targets.includes("claude")) return results;
 
   const tokens = packTokens(config);
-  for (const { manifest, dir } of loadPacks()) {
+  // Bundled base packs + the repo's vendored company packs (.ai-workspace/packs/), guarded + relation-checked.
+  for (const { manifest, dir } of loadAllPacks(cwd)) {
     if (!packApplies(manifest, config) || !packSelected(manifest, config)) continue;
     if (scope === "workspace" && hasStackBinding(manifest)) continue;
     if (scope === "repo" && !hasStackBinding(manifest)) continue;

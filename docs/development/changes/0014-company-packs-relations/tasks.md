@@ -26,7 +26,19 @@
 - [x] Documented `relation:` in EXTENDING.md (`pack.yaml` reference). Recording into the integrity manifest
       is deferred to **F3** (no provenance sink exists yet).
 
-## F2c — git company packs (deferred, own spec/design)
-- [ ] `company` string → object `{ id, packs }` (+ config migration normalising `"example"` → `{ id: "example" }`);
-      open the org id for `corp-<handle>`; fetch/pin git packs (reuse `skills sync` git+vendor); runtime
-      reserved-namespace guard with teeth (reject external `aiws-*`).
+## F2c — git company packs (done)
+**Decisions:** vendored/committed via CLI (network only at sync, never at generate); shipped in one PR.
+- [x] **Reshape:** `company` string → object `{ id, packs }` (`CompanySchema` with a `z.preprocess` that
+      normalises a bare string → `{ id, packs: [] }`); org id **opened** (any `corp-<handle>`), `gating.company`
+      opened to `string[]`, company-overlay gate guards on `templateExists`. Swept `config.company` →
+      `config.company.id` across blockManifest / packaging / stackPacks. Existing string configs + byte output unchanged.
+- [x] **Fetch:** `ai-workspace packs sync` (`src/commands/packsSync.ts`) — parses `git+<url>#<ref>` (ref
+      **required**), shallow-clones each at the ref, vendors `skill-packs/<id>/` → `.ai-workspace/packs/<id>/`
+      (committed), writes `packs-lock.json` with the resolved sha.
+- [x] **Load + guard:** `loadCompanyPacks(cwd)` / `loadAllPacks(cwd)` read `.ai-workspace/packs/`; `generateStackPacks`
+      emits company packs (gated). **Reserved-namespace guard** (reject external `aiws-*`) runs at sync AND at load;
+      relations validated across the base∪company union. Company skills are not integrity-tracked (only `aiws-*`).
+- [x] `test/company-packs.test.js` (4, hermetic local-git): ref parsing; string→object normalisation; end-to-end
+      sync→vendor→generate-emits; impostor `aiws-*` rejected. `TEMPLATES_VERSION` → 0.45.0. 105/105. EXTENDING + USAGE.
+
+> **F2 complete** (a/b/c). Next foundation: **F4** `aiws-reconcile` (base ↔ company overlay, propose-and-review).

@@ -32,9 +32,10 @@ const ORG_NAME: Record<string, string> = {
 export function names(config: Config): { slug: string; plugin: string; marketplace: string; owner: string } {
   const dist = config.distribution;
   const slug = kebab(config.project.name) || "workspace";
-  const owner = dist.owner ?? (config.company !== "none" ? ORG_NAME[config.company]! : config.project.name);
+  const org = config.company.id;
+  const owner = dist.owner ?? (org !== "none" ? (ORG_NAME[org] ?? org) : config.project.name);
   const plugin = kebab(dist.plugin ?? slug);
-  const marketplace = kebab(dist.marketplace ?? (config.company !== "none" ? `${config.company}-tools` : `${slug}-tools`));
+  const marketplace = kebab(dist.marketplace ?? (org !== "none" ? `${org}-tools` : `${slug}-tools`));
   return { slug, plugin, marketplace, owner };
 }
 
