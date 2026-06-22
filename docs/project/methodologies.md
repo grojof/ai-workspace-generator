@@ -38,8 +38,8 @@ flowchart LR
 | Review | the **code diff** | the **intent change** (doc) and then the code |
 
 > ✅ **State in this generator** (with `methodology: spdd`): the loop is **wired** and is
-> **propose-and-review**: **logic/behavior** → edit the Canvas and propagate with the **sdd-code-maintenance**
-> skill; **refactor/drift** → **`/sdd-sync`** (the **sdd-spec-sync** skill) folds the code back into the
+> **propose-and-review**: **logic/behavior** → edit the Canvas and propagate with the **aiws-sdd-code-maintenance**
+> skill; **refactor/drift** → **`/aiws-sdd-sync`** (the **aiws-sdd-spec-sync** skill) folds the code back into the
 > Canvas and reports drift. It proposes diffs; **you approve** — it never rewrites silently (Safety gate +
 > *human review load-bearing*).
 

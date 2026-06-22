@@ -1,0 +1,10 @@
+id: aiws-sdd-test-generation
+gating:
+  sdd:
+    enabled: true
+    vendorSkills: true
+    schema: reasons
+profile:
+  userType: [business, technical]
+routing: false
+templated: true

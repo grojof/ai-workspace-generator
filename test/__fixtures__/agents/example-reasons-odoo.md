@@ -178,31 +178,31 @@ Load skills by their *trigger*, not preemptively. Selection for the **technical*
 |-------|------|------|
 | `aiws-secure-commit` | committing changes | always |
 | `aiws-sdd-*` | planning/implementing a non-trivial change | suggested |
-| `sdd-init` | scaffolding a new app's layout | suggested |
-| `sdd-spec-capture` | capturing requirements as a REASONS spec | suggested |
-| `sdd-spec-review` | revising a spec / signing it off (status lifecycle) | suggested |
-| `sdd-code-generation` | generating code from a signed-off spec | suggested |
-| `sdd-code-maintenance` | propagating a spec change into code | suggested |
-| `sdd-test-generation` | generating tests from the spec's §5 | suggested |
-| `sdd-self-review` | validating before IT handoff | suggested |
-| `sdd-handoff` | packaging the app for IT review | suggested |
+| `aiws-sdd-init` | scaffolding a new app's layout | suggested |
+| `aiws-sdd-spec-capture` | capturing requirements as a REASONS spec | suggested |
+| `aiws-sdd-spec-review` | revising a spec / signing it off (status lifecycle) | suggested |
+| `aiws-sdd-code-generation` | generating code from a signed-off spec | suggested |
+| `aiws-sdd-code-maintenance` | propagating a spec change into code | suggested |
+| `aiws-sdd-test-generation` | generating tests from the spec's §5 | suggested |
+| `aiws-sdd-self-review` | validating before IT handoff | suggested |
+| `aiws-sdd-handoff` | packaging the app for IT review | suggested |
 | `aiws-living-docs` | after finishing a task or when project state changed | suggested |
 | `aiws-workspace-guide` | new here — how this workspace works | suggested |
 | `aiws-configure-workspace` | configuring or re-configuring the workspace (analyze an existing repo, or set up a new one) | suggested |
 | `aiws-dependency-upgrade` | before any version bump or migration (assess first) | on-demand · high risk |
-| `sdd-onboarding` | starting a new app / choosing profile A or B | on-demand |
-| `sdd-spec-schema` | authoring/validating a spec in REASONS mode | on-demand |
+| `aiws-sdd-onboarding` | starting a new app / choosing profile A or B | on-demand |
+| `aiws-sdd-spec-schema` | authoring/validating a spec in REASONS mode | on-demand |
 | `aiws-vscode-setup` | setting up VS Code / extensions | on-demand |
 | `find-skills` | discovering/installing skills from the open ecosystem (npx skills) | on-demand |
 | `mcp-builder` | building or evaluating an MCP server (tools, resources, Node or Python, best practices) | on-demand |
 | `odoo-18.0` | developing Odoo 18 modules / addons (models, views, security, OWL, reports, tests) | on-demand |
 | `skill-creator` | authoring, structuring or evaluating a Claude skill (SKILL.md, references, packaging) | on-demand |
-| `sdd-audit-security` | security audit of a REASONS spec/app | advanced |
-| `sdd-audit-style` | style audit of a REASONS spec/app | advanced |
-| `sdd-audit-stack` | stack audit of a REASONS spec/app | advanced |
-| `sdd-audit-architecture` | architecture audit of a REASONS spec/app | advanced |
-| `sdd-reverse-engineering` | recovering a spec from code that lacks one | advanced |
-| `sdd-migrate` | adopting this generator on a legacy non-Git SDD repo | advanced |
+| `aiws-sdd-audit-security` | security audit of a REASONS spec/app | advanced |
+| `aiws-sdd-audit-style` | style audit of a REASONS spec/app | advanced |
+| `aiws-sdd-audit-stack` | stack audit of a REASONS spec/app | advanced |
+| `aiws-sdd-audit-architecture` | architecture audit of a REASONS spec/app | advanced |
+| `aiws-sdd-reverse-engineering` | recovering a spec from code that lacks one | advanced |
+| `aiws-sdd-migrate` | adopting this generator on a legacy non-Git SDD repo | advanced |
 
 > `always` skills are the baseline; `suggested` ones activate by context; `on-demand` only when asked.
 > Don't activate skills that don't apply to this profile.

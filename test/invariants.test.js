@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url";
 import { dirname, join, resolve } from "node:path";
 import { ConfigSchema } from "../dist/config/schema.js";
 import { generate } from "../dist/generate/index.js";
+import { loadPacks, hasStackBinding } from "../dist/generate/stackPacks.js";
 
 // These tests pin the *stable contracts* the architecture promises in AGENTS.md
 // ("managed-region block ids are a stable contract", "idempotency is sacred",
@@ -228,6 +229,21 @@ test("invariant · generated output carries no legacy command tokens (aiws- name
   } finally {
     rmSync(cwd, { recursive: true, force: true });
   }
+});
+
+// ── Contract: authored base packs live in the reserved aiws- namespace (0014 F2a) ──
+// `aiws-` marks artifacts WE author. A bundled pack must therefore be either namespaced, a vendored
+// upstream pack (`base:` — keeps its ecosystem id so `skills sync` maps it + attribution is honest), or a
+// stack pack (stack-bound — keyed to a real technology, legitimately overridable). A future authored pack
+// that forgets the prefix fails here. The runtime impersonation guard (reject external aiws-) lands in F2c.
+
+test("invariant · every authored, non-stack bundled pack is in the aiws- namespace", () => {
+  const offenders = [];
+  for (const { manifest } of loadPacks()) {
+    const exempt = manifest.id.startsWith("aiws-") || Boolean(manifest.base) || hasStackBinding(manifest);
+    if (!exempt) offenders.push(manifest.id);
+  }
+  assert.deepEqual(offenders, [], `authored base packs missing the aiws- prefix: ${offenders.join(", ")}`);
 });
 
 // ── Contract 3: binary skill assets ship byte-for-byte ──────────────────────

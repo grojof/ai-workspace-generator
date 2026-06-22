@@ -70,12 +70,12 @@ function syncCommand(config: Config): string {
     "",
     "# /aiws-sdd-sync",
     "",
-    "Run the **sdd-spec-sync** skill: compare the code against the active REASONS Canvas, report drift, and",
+    "Run the **aiws-sdd-spec-sync** skill: compare the code against the active REASONS Canvas, report drift, and",
     "**propose** folding non-behavioural changes back into the affected Canvas sections. Propose-and-review —",
     "no edits to spec or code without your approval.",
     "",
     "> **Logic/behaviour changes go the other way:** *fix the prompt first*, then propagate with",
-    "> **sdd-code-maintenance**. This command is for code-side, non-behavioural drift only.",
+    "> **aiws-sdd-code-maintenance**. This command is for code-side, non-behavioural drift only.",
     "",
     `> Canvas lives in \`${store.specs}/\`; record the sync under \`${store.changes}/<change>/\`.`,
   ].join("\n");
@@ -165,7 +165,7 @@ export function generateSdd(cwd: string, config: Config): WriteResult[] {
     for (const p of phases) {
       results.push(writeFile(resolve(cwd, `.claude/commands/${aiwsId(p.name)}.md`), commandFile(p, config)));
     }
-    // SPDD adds the code→prompt sync command (the closed loop); the prompt→code half reuses sdd-code-maintenance.
+    // SPDD adds the code→prompt sync command (the closed loop); the prompt→code half reuses aiws-sdd-code-maintenance.
     if (config.sdd.methodology === "spdd") {
       results.push(writeFile(resolve(cwd, ".claude/commands/aiws-sdd-sync.md"), syncCommand(config)));
     }
