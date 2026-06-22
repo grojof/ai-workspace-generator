@@ -34,6 +34,7 @@ export interface Strings {
     livingDocs: string;
     onboarding: string;
     vscodeExtensions: string;
+    manifest: string;
   };
   phases: Phase[];
 }
@@ -59,6 +60,7 @@ const en: Strings = {
     livingDocs: "Living docs: /aiws-doc-sync + project state.",
     onboarding: "Onboarding: index of the AI workspace.",
     vscodeExtensions: "Recommended VS Code extensions.",
+    manifest: "Integrity manifest of base-owned artifacts.",
   },
   phases: [
     { name: "sdd-constitution", summary: "Establish project principles (greenfield bootstrap).", does: "Capture the project's non-negotiable principles and guardrails in the project's `constitution.md`. Do this once when a project is born; later specs and designs must honor it. (Idea borrowed from Spec-Kit; only for new projects.)" },
@@ -95,6 +97,7 @@ const es: Strings = {
     livingDocs: "Docs vivas: /aiws-doc-sync + estado del proyecto.",
     onboarding: "Onboarding: índice del workspace de IA.",
     vscodeExtensions: "Extensiones recomendadas de VS Code.",
+    manifest: "Manifiesto de integridad de los artefactos base.",
   },
   phases: [
     { name: "sdd-constitution", summary: "Establecer los principios del proyecto (arranque greenfield).", does: "Captura los principios y límites no-negociables del proyecto en el `constitution.md` del proyecto. Hazlo una sola vez al nacer el proyecto; las specs y diseños posteriores deben respetarlo. (Idea tomada de Spec-Kit; solo para proyectos nuevos.)" },

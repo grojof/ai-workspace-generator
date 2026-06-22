@@ -84,7 +84,18 @@ Re-renders all artifacts from `workspace.config.yaml`. Idempotent.
 
 ### `doctor` — lint the workspace
 Checks the `AGENTS.md` token budget, adapter presence (incl. each child repo's `CLAUDE.md` in multi-repo),
-known MCPs and orphaned managed blocks.
+known MCPs and orphaned managed blocks. `doctor --strict` also runs `verify`.
+
+### `verify` — base integrity gate
+Recomputes `.ai-workspace/manifest.json` and reports tampering with base-owned artifacts — edits **inside**
+`aiws:*` managed regions, renamed/removed markers, changes to owned `aiws-*` skills/commands, or deletions.
+Your own prose **outside** the markers and user-owned files are ignored. Non-zero exit on any error → drop it
+into CI as a gate. Run `ai-workspace sync` to restore canonical content (and refresh the manifest).
+
+```bash
+ai-workspace verify            # CI gate: fails if base artifacts were tampered with
+ai-workspace doctor --strict   # lint + integrity in one
+```
 
 ### `add` / `remove` — modules
 Add or remove a module and regenerate. `type` ∈ `language | framework | environment | mcp`; `id` from the

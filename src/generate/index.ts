@@ -5,6 +5,7 @@ import { renderTemplate, setLocale } from "../render/engine.js";
 import { writeFile, writeIfMissing, writeManaged, type WriteResult } from "../render/writer.js";
 import { composeBlocks } from "./agents.js";
 import { aiwsBlockId } from "./naming.js";
+import { writeManifest } from "./manifest.js";
 import { buildClaudeMcp, buildVscodeMcp, buildCodexMcp, buildOpencodeMcp } from "./mcp.js";
 import { generateScope } from "./scope.js";
 import { generateSdd } from "./sdd.js";
@@ -114,6 +115,11 @@ export function generate(cwd: string, config: Config): GenerateResult {
   // Onboarding — rendered last so it can list every artifact across all repos.
   const onboarding = renderTemplate("shared/ai-workspace.md.eta", { ...config, paths: docsPaths(config), artifacts });
   add(writeFile(resolve(cwd, "AI-WORKSPACE.md"), onboarding), t.desc.onboarding);
+
+  // Integrity manifest — the LAST step: fingerprints every base-owned artifact now on disk (ADR 0003 Part E).
+  // Skipped in dry-run. Listed in `artifacts` after this point only if written.
+  const manifest = writeManifest(cwd, artifacts.map((a) => a.path));
+  if (manifest) add(manifest, t.desc.manifest);
 
   return { artifacts };
 }
