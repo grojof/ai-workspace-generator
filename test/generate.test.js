@@ -82,7 +82,7 @@ test("learn purpose generates the tutor skill and learning block", () => {
   try {
     generate(cwd, ConfigSchema.parse({ project: { name: "t", purpose: "learn" } }));
     assert.match(readFileSync(resolve(cwd, "AGENTS.md"), "utf8"), /ai-workspace:begin:learning/);
-    assert.ok(readFileSync(resolve(cwd, ".claude/skills/learn/SKILL.md"), "utf8"));
+    assert.ok(readFileSync(resolve(cwd, ".claude/skills/aiws-learn/SKILL.md"), "utf8"));
   } finally {
     rmSync(cwd, { recursive: true, force: true });
   }
@@ -255,10 +255,10 @@ test("package builds a plugin + marketplace + org-skill zips; idempotent and val
     assert.equal(mkt.plugins[0].name, "acme-portal");
     assert.equal(mkt.metadata.pluginRoot, "./plugins");
     // skills + commands are projected into the plugin.
-    assert.ok(existsSync(resolve(cwd, "plugins/acme-portal/skills/living-docs/SKILL.md")));
+    assert.ok(existsSync(resolve(cwd, "plugins/acme-portal/skills/aiws-living-docs/SKILL.md")));
     assert.ok(existsSync(resolve(cwd, "plugins/acme-portal/commands/commit.md")));
     // per-skill org zips staged, SKILL.md at the zip root (local-file-header name follows the signature).
-    const zipPath = resolve(cwd, "dist/org-skills/living-docs.zip");
+    const zipPath = resolve(cwd, "dist/org-skills/aiws-living-docs.zip");
     assert.ok(existsSync(zipPath));
     const buf = readFileSync(zipPath);
     assert.equal(buf.readUInt32LE(0), 0x04034b50); // first local file header
@@ -429,9 +429,9 @@ test("configure-workspace skill + /configure command are generated and routed", 
   const cwd = tmpRepo();
   try {
     generate(cwd, ConfigSchema.parse({ project: { name: "t" } }));
-    assert.ok(readFileSync(resolve(cwd, ".claude/skills/configure-workspace/SKILL.md"), "utf8"));
+    assert.ok(readFileSync(resolve(cwd, ".claude/skills/aiws-configure-workspace/SKILL.md"), "utf8"));
     assert.ok(readFileSync(resolve(cwd, ".claude/commands/configure.md"), "utf8"));
-    const skill = readFileSync(resolve(cwd, ".claude/skills/configure-workspace/SKILL.md"), "utf8");
+    const skill = readFileSync(resolve(cwd, ".claude/skills/aiws-configure-workspace/SKILL.md"), "utf8");
     assert.match(skill, /ai-workspace detect --json/);
     assert.match(skill, /never write or move files/i);
     assert.match(readFileSync(resolve(cwd, "AGENTS.md"), "utf8"), /configure-workspace/);
@@ -450,7 +450,7 @@ test("package (0004): multi-repo aggregates root + child skills/agents into one 
     runPackage(cwd);
     const plug = resolve(cwd, "plugins/multi-workspace");
     // Root workflow skill + each child's stack skills all land in the single umbrella plugin.
-    assert.ok(existsSync(resolve(plug, "skills/living-docs/SKILL.md")), "root workflow skill missing");
+    assert.ok(existsSync(resolve(plug, "skills/aiws-living-docs/SKILL.md")), "root workflow skill missing");
     assert.ok(existsSync(resolve(plug, "skills/odoo-18.0/SKILL.md")), "app-a odoo skill missing");
     assert.ok(existsSync(resolve(plug, "skills/frontend-ui-dark-ts/SKILL.md")), "app-b react skill missing");
     // Companion subagents from a child's stack pack are aggregated too.

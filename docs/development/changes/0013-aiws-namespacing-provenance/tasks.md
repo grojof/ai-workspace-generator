@@ -6,13 +6,12 @@
 - [x] Centralised `frontmatter()` → `skillFrontmatter` in `skills.ts` + `guides.ts` + `governance.ts`: every generated skill now carries `source: aiws@<TEMPLATES_VERSION>`. Verified (`source: aiws@0.36.0`).
 - [x] Bump `TEMPLATES_VERSION` → 0.36.0; `npm test` green (79/79).
 
-**Increment 2 (next):** the `aiws-` rename (collision fix, fixture-touching).
-- [ ] Skill emission → `aiwsId`: `skills.ts` (sdd-* + living-docs), `governance.ts` (secure-commit, dependency-upgrade), `guides.ts` (workspace-guide, configure-workspace, vscode-setup) — folder + `name` + body heading + in-body skill-name refs.
-- [ ] `src/modules/skills.ts`: registry ids → `aiws-*` (non-pack rows).
-- [ ] `templates/core/routing.md.eta`: skill-name references → `aiws-*`.
-- [ ] Reserved-namespace guard for external packs/blocks (+ test) — may move to F2 with external sources.
-- [ ] Tests: `generate.test.js` id asserts → `aiws-*`; add "routed non-pack ids start with aiws-".
-- [ ] Regenerate `test/__fixtures__/agents/*.md` (skill-routing block); block-order golden unchanged. `doctor` green.
+**Increment 2 (done):** the `aiws-` rename (collision fix, fixture-touching).
+- [x] Skill emission → `aiwsId`: `skills.ts` (sdd-* via `aiwsId(p.name)` + `aiws-living-docs`), `governance.ts` (`aiws-secure-commit`, `aiws-dependency-upgrade`), `guides.ts` (`aiws-workspace-guide`, `aiws-configure-workspace`, `aiws-vscode-setup`), `learning.ts` (`aiws-learn` + frontmatter centralised) — folder + `name` + body heading + in-body skill-name refs.
+- [x] `src/modules/skills.ts`: 8 non-pack registry ids → `aiws-*` (pack rows left for F2).
+- [x] `templates/core/routing.md.eta`: skill-name references → `aiws-*`.
+- [x] Tests: `generate.test.js` + `multi-repo.test.js` skill-path asserts → `aiws-*`. Regenerated `test/__fixtures__/agents/*.md` (skill-routing block only; block-order golden unchanged). 79/79 green; `doctor` 0/0 (AGENTS.md 5787/6000). Verified: all base skills emit as `aiws-*` (packs `find-skills`/`mcp-builder`/`skill-creator` remain → F2).
+- [ ] Reserved-namespace guard (+ test) — deferred to F2 (lands with external/git pack sources).
 
 ## F1a.2 — commands + prose sweep (next)
 - [ ] Command/prompt files → `/aiws-*`; sweep prose (workflow, orchestrator, layers, skill bodies).

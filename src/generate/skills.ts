@@ -3,7 +3,7 @@ import type { Config } from "../config/schema.js";
 import { writeFile, writeIfMissing, type WriteResult } from "../render/writer.js";
 import { phasesFor } from "./sdd.js";
 import { docsPaths } from "./paths.js";
-import { skillFrontmatter as frontmatter } from "./naming.js";
+import { skillFrontmatter as frontmatter, aiwsId } from "./naming.js";
 import type { Phase } from "../i18n/strings.js";
 
 // AI skill → English only (token efficiency).
@@ -18,7 +18,7 @@ function sddSkill(p: Phase, config: Config): string {
       : `- Artifacts live in \`${store.changes}/<change>/\` and are versioned in git.`,
     "- Follow the SDD lifecycle and conventions in AGENTS.md and `_shared/sdd-convention.md`.",
   ];
-  return [frontmatter(p.name, `${p.summary} ${trigger}`), `## ${p.name}`, "", p.does, "", ...lines].join("\n");
+  return [frontmatter(aiwsId(p.name), `${p.summary} ${trigger}`), `## ${aiwsId(p.name)}`, "", p.does, "", ...lines].join("\n");
 }
 
 // AI skill (shared convention) → English only (token efficiency).
@@ -49,7 +49,7 @@ Rules:
 // AI skill → English only (token efficiency).
 function livingDocsSkillBody(config: Config): string {
   const p = docsPaths(config);
-  return `## living-docs
+  return `## aiws-living-docs
 
 Maintain an always-current, token-cheap snapshot of the project so agents get context without
 re-scanning the repo.
@@ -75,7 +75,7 @@ export function generateSkills(cwd: string, config: Config): WriteResult[] {
 
   if (config.sdd.enabled && config.sdd.vendorSkills) {
     for (const p of phasesFor(config)) {
-      results.push(writeFile(resolve(cwd, `.claude/skills/${p.name}/SKILL.md`), sddSkill(p, config)));
+      results.push(writeFile(resolve(cwd, `.claude/skills/${aiwsId(p.name)}/SKILL.md`), sddSkill(p, config)));
     }
     results.push(
       writeIfMissing(
@@ -93,8 +93,8 @@ export function generateSkills(cwd: string, config: Config): WriteResult[] {
     const desc = "Keep the living docs (project status) current so the AI always has fresh project context. Trigger: after finishing a task or when project state changed.";
     results.push(
       writeFile(
-        resolve(cwd, ".claude/skills/living-docs/SKILL.md"),
-        frontmatter("living-docs", desc) + livingDocsSkillBody(config),
+        resolve(cwd, ".claude/skills/aiws-living-docs/SKILL.md"),
+        frontmatter("aiws-living-docs", desc) + livingDocsSkillBody(config),
       ),
     );
   }

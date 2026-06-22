@@ -9,9 +9,9 @@ import { skillFrontmatter as frontmatter } from "./naming.js";
  * policy declared in AGENTS.md, plus a commit-msg git hook for hard enforcement.
  */
 
-// --- dependency-upgrade skill (AI-facing → English only) ---------------------
+// --- aiws-dependency-upgrade skill (AI-facing → English only) ---------------------
 
-const DEP_UPGRADE = `## dependency-upgrade
+const DEP_UPGRADE = `## aiws-dependency-upgrade
 
 Rigorously assess whether a version bump or migration is **feasible and worth it** — before touching
 anything. Never upgrade or migrate on your own initiative: it is a deliberate change requiring user
@@ -33,12 +33,12 @@ The user asks to update a dependency/language/framework, migrate, or resolve a v
 > If the migration can't be done safely, say so clearly and propose the conservative path.
 `;
 
-// --- secure-commit skill -----------------------------------------------------
+// --- aiws-secure-commit skill -----------------------------------------------------
 
 // AI skill → English only (token efficiency).
 function secureCommit(config: Config): string {
   const c = config.workflow.commits;
-  return `## secure-commit
+  return `## aiws-secure-commit
 
 Create commits following the project policy. ${c.automate === "with-approval" ? "Prepare and **ask for approval** before committing." : "**Never** commit automatically; leave it to the user."}
 
@@ -64,7 +64,7 @@ description: Create a commit following the project policy (no co-author, with ap
 
 # /commit
 
-Follow the \`secure-commit\` skill and the commit policy in AGENTS.md. Prepare a commit with the current
+Follow the \`aiws-secure-commit\` skill and the commit policy in AGENTS.md. Prepare a commit with the current
 task's changes, show me the message and ${config.workflow.commits.automate === "with-approval" ? "wait for my approval before running it" : "let me commit"}.
 Never add Co-Authored-By or use --no-verify.
 `;
@@ -72,12 +72,12 @@ Never add Co-Authored-By or use --no-verify.
 
 function upgradeDepsCommand(): string {
   return `---
-description: Assess a version bump/migration with the dependency-upgrade skill (feasibility + security).
+description: Assess a version bump/migration with the aiws-dependency-upgrade skill (feasibility + security).
 ---
 
 # /upgrade-deps
 
-Follow the \`dependency-upgrade\` skill. Do not change anything yet: investigate feasibility, compatibility
+Follow the \`aiws-dependency-upgrade\` skill. Do not change anything yet: investigate feasibility, compatibility
 and security (use context7), give me a verdict with the long-term recommendation, and wait for my decision.
 `;
 }
@@ -120,18 +120,18 @@ export function generateGovernance(cwd: string, config: Config): WriteResult[] {
   if (config.targets.includes("claude")) {
     results.push(
       writeFile(
-        resolve(cwd, ".claude/skills/dependency-upgrade/SKILL.md"),
+        resolve(cwd, ".claude/skills/aiws-dependency-upgrade/SKILL.md"),
         frontmatter(
-          "dependency-upgrade",
+          "aiws-dependency-upgrade",
           "Assess feasibility and security of version bumps/migrations before touching anything. Trigger: when asked to update dependencies, migrate, or resolve version conflicts.",
         ) + depUpgradeBody,
       ),
     );
     results.push(
       writeFile(
-        resolve(cwd, ".claude/skills/secure-commit/SKILL.md"),
+        resolve(cwd, ".claude/skills/aiws-secure-commit/SKILL.md"),
         frontmatter(
-          "secure-commit",
+          "aiws-secure-commit",
           "Create commits per policy (no co-author, with approval, conventional). Trigger: when committing changes.",
         ) + secureCommit(config),
       ),

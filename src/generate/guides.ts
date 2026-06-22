@@ -71,7 +71,7 @@ description: Guide to using this AI workspace (SDD, skills, MCP) — great for b
 
 Explain how to work with this workspace based on the user's level and goal. For beginners, start with
 concepts and a concrete SDD example. For a change request, propose the right flow (SDD or direct) and
-walk them through it. Lean on the \`ai-workspace-guide\` skill and \`AI-WORKSPACE.md\`.
+walk them through it. Lean on the \`aiws-workspace-guide\` skill and \`AI-WORKSPACE.md\`.
 `;
 
 const GUIDE_PROMPT_EN = `---
@@ -145,7 +145,7 @@ description: Guided workspace configuration — analyze an existing repo (or set
 
 # /configure
 
-Drive the \`configure-workspace\` skill: analyze the repo (\`ai-workspace detect --json\` + read the tree),
+Drive the \`aiws-configure-workspace\` skill: analyze the repo (\`ai-workspace detect --json\` + read the tree),
 propose a \`workspace.config.yaml\` + skill set + conflict report, and apply only after the user approves.
 Never move or overwrite files without explicit approval.
 `;
@@ -157,7 +157,7 @@ description: Guided workspace configuration — analyze an existing repo and pro
 
 Analyze this repository and propose a \`workspace.config.yaml\` + skill set, then apply only after approval.
 Seed detection with \`ai-workspace detect --json\`; use \`find-skills\` for gaps; never move files without
-explicit approval. Follow the \`configure-workspace\` skill.
+explicit approval. Follow the \`aiws-configure-workspace\` skill.
 `;
 
 // AI skill/command/prompt → English only (token efficiency).
@@ -171,9 +171,9 @@ export function generateGuides(cwd: string, config: Config): WriteResult[] {
   const configureDesc = "Configure or re-configure this AI workspace: analyze an existing repo (or set up a new one) and propose a workspace.config.yaml + skill set. Trigger: when the user wants to set up, configure, or re-detect the workspace.";
 
   if (config.targets.includes("claude")) {
-    results.push(writeFile(resolve(cwd, ".claude/skills/ai-workspace-guide/SKILL.md"), frontmatter("ai-workspace-guide", desc) + guideBody));
+    results.push(writeFile(resolve(cwd, ".claude/skills/aiws-workspace-guide/SKILL.md"), frontmatter("aiws-workspace-guide", desc) + guideBody));
     results.push(writeFile(resolve(cwd, ".claude/commands/aiws-guide.md"), GUIDE_CMD_EN));
-    results.push(writeFile(resolve(cwd, ".claude/skills/configure-workspace/SKILL.md"), frontmatter("configure-workspace", configureDesc) + CONFIGURE_SKILL_EN));
+    results.push(writeFile(resolve(cwd, ".claude/skills/aiws-configure-workspace/SKILL.md"), frontmatter("aiws-configure-workspace", configureDesc) + CONFIGURE_SKILL_EN));
     results.push(writeFile(resolve(cwd, ".claude/commands/configure.md"), CONFIGURE_CMD_EN));
   }
   if (config.targets.includes("copilot")) {
@@ -250,7 +250,7 @@ export function generateVscode(cwd: string, config: Config): WriteResult[] {
 
   if (config.targets.includes("claude")) {
     const desc = "Set up VS Code (recommended extensions and profiles) to work well with this workspace. Trigger: when the user asks about extensions, VS Code profiles, or preparing the editor.";
-    results.push(writeFile(resolve(cwd, ".claude/skills/vscode-setup/SKILL.md"), frontmatter("vscode-setup", desc) + VSCODE_SKILL_EN));
+    results.push(writeFile(resolve(cwd, ".claude/skills/aiws-vscode-setup/SKILL.md"), frontmatter("aiws-vscode-setup", desc) + VSCODE_SKILL_EN));
   }
   return results;
 }

@@ -155,10 +155,10 @@ the work over telling the user to run a command (mention the command only as an 
 | The user says (in any wording)… | You do… |
 |---------------------------------|---------|
 | A small, well-understood change | Implement directly, then refresh living docs. |
-| "update / upgrade / bump / migrate / install a newer version" | **Do NOT just do it.** Run the `dependency-upgrade` assessment first (feasibility + security), then await the decision. |
-| "commit / save / guarda los cambios", or you just finished a change | Use the **secure-commit** flow: prepare a conventional commit, no co-author, and ask for approval before committing. |
-| "I'm new / how does this work / explain SDD / how do I start" | Use the **ai-workspace-guide**. |
-| "set up the editor / which extensions / profiles" | Use the **vscode-setup** guidance. |
+| "update / upgrade / bump / migrate / install a newer version" | **Do NOT just do it.** Run the `aiws-dependency-upgrade` assessment first (feasibility + security), then await the decision. |
+| "commit / save / guarda los cambios", or you just finished a change | Use the **aiws-secure-commit** flow: prepare a conventional commit, no co-author, and ask for approval before committing. |
+| "I'm new / how does this work / explain SDD / how do I start" | Use the **aiws-workspace-guide**. |
+| "set up the editor / which extensions / profiles" | Use the **aiws-vscode-setup** guidance. |
 | Anything risky, a conflict, or version/migration change | Honor the **Safety gate**: stop, verify feasibility, recommend, await decision. |
 | You finished a task and project state changed | Refresh the living docs (`docs/development/status/*`). |
 
@@ -173,11 +173,11 @@ Load skills by their *trigger*, not preemptively. Selection for the **technical*
 
 | Skill | When | Load |
 |-------|------|------|
-| `secure-commit` | committing changes | always |
-| `ai-workspace-guide` | new here — how this workspace works | suggested |
-| `configure-workspace` | configuring or re-configuring the workspace (analyze an existing repo, or set up a new one) | suggested |
-| `dependency-upgrade` | before any version bump or migration (assess first) | on-demand · high risk |
-| `vscode-setup` | setting up VS Code / extensions | on-demand |
+| `aiws-secure-commit` | committing changes | always |
+| `aiws-workspace-guide` | new here — how this workspace works | suggested |
+| `aiws-configure-workspace` | configuring or re-configuring the workspace (analyze an existing repo, or set up a new one) | suggested |
+| `aiws-dependency-upgrade` | before any version bump or migration (assess first) | on-demand · high risk |
+| `aiws-vscode-setup` | setting up VS Code / extensions | on-demand |
 | `find-skills` | discovering/installing skills from the open ecosystem (npx skills) | on-demand |
 | `mcp-builder` | building or evaluating an MCP server (tools, resources, Node or Python, best practices) | on-demand |
 | `skill-creator` | authoring, structuring or evaluating a Claude skill (SKILL.md, references, packaging) | on-demand |

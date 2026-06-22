@@ -158,10 +158,10 @@ the work over telling the user to run a command (mention the command only as an 
 | "let's start this project / set the ground rules", and `docs/development/constitution.md` is still the seed | First establish the **constitution** (project principles) — Spec-Kit-style bootstrap, once — then proceed. |
 | "let's build / add / implement <feature>", anything non-trivial | Run the **SDD flow** (explore → propose → **clarify** → spec → design → tasks → apply → verify → archive). It's a methodology, not a tool — artifacts are Markdown in `docs/development/`. |
 | A small, well-understood change | Implement directly, then refresh living docs. |
-| "update / upgrade / bump / migrate / install a newer version" | **Do NOT just do it.** Run the `dependency-upgrade` assessment first (feasibility + security), then await the decision. |
-| "commit / save / guarda los cambios", or you just finished a change | Use the **secure-commit** flow: prepare a conventional commit, no co-author, and ask for approval before committing. |
-| "I'm new / how does this work / explain SDD / how do I start" | Use the **ai-workspace-guide**. |
-| "set up the editor / which extensions / profiles" | Use the **vscode-setup** guidance. |
+| "update / upgrade / bump / migrate / install a newer version" | **Do NOT just do it.** Run the `aiws-dependency-upgrade` assessment first (feasibility + security), then await the decision. |
+| "commit / save / guarda los cambios", or you just finished a change | Use the **aiws-secure-commit** flow: prepare a conventional commit, no co-author, and ask for approval before committing. |
+| "I'm new / how does this work / explain SDD / how do I start" | Use the **aiws-workspace-guide**. |
+| "set up the editor / which extensions / profiles" | Use the **aiws-vscode-setup** guidance. |
 | Anything risky, a conflict, or version/migration change | Honor the **Safety gate**: stop, verify feasibility, recommend, await decision. |
 | You finished a task and project state changed | Refresh the living docs (`docs/development/status/*`). |
 
@@ -176,8 +176,8 @@ Load skills by their *trigger*, not preemptively. Selection for the **technical*
 
 | Skill | When | Load |
 |-------|------|------|
-| `secure-commit` | committing changes | always |
-| `sdd-*` | planning/implementing a non-trivial change | suggested |
+| `aiws-secure-commit` | committing changes | always |
+| `aiws-sdd-*` | planning/implementing a non-trivial change | suggested |
 | `sdd-init` | scaffolding a new app's layout | suggested |
 | `sdd-spec-capture` | capturing requirements as a REASONS spec | suggested |
 | `sdd-spec-review` | revising a spec / signing it off (status lifecycle) | suggested |
@@ -186,13 +186,13 @@ Load skills by their *trigger*, not preemptively. Selection for the **technical*
 | `sdd-test-generation` | generating tests from the spec's §5 | suggested |
 | `sdd-self-review` | validating before IT handoff | suggested |
 | `sdd-handoff` | packaging the app for IT review | suggested |
-| `living-docs` | after finishing a task or when project state changed | suggested |
-| `ai-workspace-guide` | new here — how this workspace works | suggested |
-| `configure-workspace` | configuring or re-configuring the workspace (analyze an existing repo, or set up a new one) | suggested |
-| `dependency-upgrade` | before any version bump or migration (assess first) | on-demand · high risk |
+| `aiws-living-docs` | after finishing a task or when project state changed | suggested |
+| `aiws-workspace-guide` | new here — how this workspace works | suggested |
+| `aiws-configure-workspace` | configuring or re-configuring the workspace (analyze an existing repo, or set up a new one) | suggested |
+| `aiws-dependency-upgrade` | before any version bump or migration (assess first) | on-demand · high risk |
 | `sdd-onboarding` | starting a new app / choosing profile A or B | on-demand |
 | `sdd-spec-schema` | authoring/validating a spec in REASONS mode | on-demand |
-| `vscode-setup` | setting up VS Code / extensions | on-demand |
+| `aiws-vscode-setup` | setting up VS Code / extensions | on-demand |
 | `find-skills` | discovering/installing skills from the open ecosystem (npx skills) | on-demand |
 | `mcp-builder` | building or evaluating an MCP server (tools, resources, Node or Python, best practices) | on-demand |
 | `odoo-18.0` | developing Odoo 18 modules / addons (models, views, security, OWL, reports, tests) | on-demand |

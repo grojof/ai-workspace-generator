@@ -81,7 +81,7 @@ test("multi-repo: root is canonical, each child gets its adapter + stack packs",
     assert.ok(readFileSync(resolve(cwd, ".claude/skills/mcp-builder/SKILL.md"), "utf8"));
     assert.equal(existsSync(resolve(cwd, "app-a/.claude/skills/mcp-builder/SKILL.md")), false);
     // SDD workflow skills + commands also live at the root.
-    assert.ok(readFileSync(resolve(cwd, ".claude/skills/configure-workspace/SKILL.md"), "utf8"));
+    assert.ok(readFileSync(resolve(cwd, ".claude/skills/aiws-configure-workspace/SKILL.md"), "utf8"));
 
     // Root AGENTS.md skill-routing documents the UNION of both children's stack packs.
     const agents = readFileSync(resolve(cwd, "AGENTS.md"), "utf8");

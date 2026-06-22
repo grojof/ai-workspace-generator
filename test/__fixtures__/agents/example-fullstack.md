@@ -158,10 +158,10 @@ the work over telling the user to run a command (mention the command only as an 
 | "let's start this project / set the ground rules", and `docs/development/constitution.md` is still the seed | First establish the **constitution** (project principles) — Spec-Kit-style bootstrap, once — then proceed. |
 | "let's build / add / implement <feature>", anything non-trivial | Run the **SDD flow** (explore → propose → **clarify** → spec → design → tasks → apply → verify → archive). It's a methodology, not a tool — artifacts are Markdown in `docs/development/`. |
 | A small, well-understood change | Implement directly, then refresh living docs. |
-| "update / upgrade / bump / migrate / install a newer version" | **Do NOT just do it.** Run the `dependency-upgrade` assessment first (feasibility + security), then await the decision. |
-| "commit / save / guarda los cambios", or you just finished a change | Use the **secure-commit** flow: prepare a conventional commit, no co-author, and ask for approval before committing. |
-| "I'm new / how does this work / explain SDD / how do I start" | Use the **ai-workspace-guide**. |
-| "set up the editor / which extensions / profiles" | Use the **vscode-setup** guidance. |
+| "update / upgrade / bump / migrate / install a newer version" | **Do NOT just do it.** Run the `aiws-dependency-upgrade` assessment first (feasibility + security), then await the decision. |
+| "commit / save / guarda los cambios", or you just finished a change | Use the **aiws-secure-commit** flow: prepare a conventional commit, no co-author, and ask for approval before committing. |
+| "I'm new / how does this work / explain SDD / how do I start" | Use the **aiws-workspace-guide**. |
+| "set up the editor / which extensions / profiles" | Use the **aiws-vscode-setup** guidance. |
 | Anything risky, a conflict, or version/migration change | Honor the **Safety gate**: stop, verify feasibility, recommend, await decision. |
 | You finished a task and project state changed | Refresh the living docs (`docs/development/status/*`). |
 
@@ -176,13 +176,13 @@ Load skills by their *trigger*, not preemptively. Selection for the **technical*
 
 | Skill | When | Load |
 |-------|------|------|
-| `secure-commit` | committing changes | always |
-| `sdd-*` | planning/implementing a non-trivial change | suggested |
-| `living-docs` | after finishing a task or when project state changed | suggested |
-| `ai-workspace-guide` | new here — how this workspace works | suggested |
-| `configure-workspace` | configuring or re-configuring the workspace (analyze an existing repo, or set up a new one) | suggested |
-| `dependency-upgrade` | before any version bump or migration (assess first) | on-demand · high risk |
-| `vscode-setup` | setting up VS Code / extensions | on-demand |
+| `aiws-secure-commit` | committing changes | always |
+| `aiws-sdd-*` | planning/implementing a non-trivial change | suggested |
+| `aiws-living-docs` | after finishing a task or when project state changed | suggested |
+| `aiws-workspace-guide` | new here — how this workspace works | suggested |
+| `aiws-configure-workspace` | configuring or re-configuring the workspace (analyze an existing repo, or set up a new one) | suggested |
+| `aiws-dependency-upgrade` | before any version bump or migration (assess first) | on-demand · high risk |
+| `aiws-vscode-setup` | setting up VS Code / extensions | on-demand |
 | `find-skills` | discovering/installing skills from the open ecosystem (npx skills) | on-demand |
 | `frontend-design` | designing or polishing a web frontend (layout, typography, color, spacing, visual taste) | on-demand |
 | `frontend-ui-dark-ts` | working with the frontend-ui-dark-ts stack | on-demand |
