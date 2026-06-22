@@ -9,7 +9,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "echo \"Recordatorio: ejecuta /doc-sync para refrescar las docs vivas si cambió el estado del proyecto.\""
+            "command": "echo \"Recordatorio: ejecuta /aiws-doc-sync para refrescar las docs vivas si cambió el estado del proyecto.\""
           }
         ]
       }
