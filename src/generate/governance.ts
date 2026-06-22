@@ -62,7 +62,7 @@ function commitCommand(config: Config): string {
 description: Create a commit following the project policy (no co-author, with approval).
 ---
 
-# /commit
+# /aiws-commit
 
 Follow the \`aiws-secure-commit\` skill and the commit policy in AGENTS.md. Prepare a commit with the current
 task's changes, show me the message and ${config.workflow.commits.automate === "with-approval" ? "wait for my approval before running it" : "let me commit"}.
@@ -75,7 +75,7 @@ function upgradeDepsCommand(): string {
 description: Assess a version bump/migration with the aiws-dependency-upgrade skill (feasibility + security).
 ---
 
-# /upgrade-deps
+# /aiws-upgrade-deps
 
 Follow the \`aiws-dependency-upgrade\` skill. Do not change anything yet: investigate feasibility, compatibility
 and security (use context7), give me a verdict with the long-term recommendation, and wait for my decision.
@@ -136,13 +136,13 @@ export function generateGovernance(cwd: string, config: Config): WriteResult[] {
         ) + secureCommit(config),
       ),
     );
-    results.push(writeFile(resolve(cwd, ".claude/commands/commit.md"), commitCommand(config)));
-    results.push(writeFile(resolve(cwd, ".claude/commands/upgrade-deps.md"), upgradeDepsCommand()));
+    results.push(writeFile(resolve(cwd, ".claude/commands/aiws-commit.md"), commitCommand(config)));
+    results.push(writeFile(resolve(cwd, ".claude/commands/aiws-upgrade-deps.md"), upgradeDepsCommand()));
   }
 
   if (config.targets.includes("copilot")) {
-    results.push(writeFile(resolve(cwd, ".github/prompts/commit.prompt.md"), commandPrompt(commitCommand(config).split("---\n").pop() ?? "")));
-    results.push(writeFile(resolve(cwd, ".github/prompts/upgrade-deps.prompt.md"), commandPrompt(upgradeDepsCommand().split("---\n").pop() ?? "")));
+    results.push(writeFile(resolve(cwd, ".github/prompts/aiws-commit.prompt.md"), commandPrompt(commitCommand(config).split("---\n").pop() ?? "")));
+    results.push(writeFile(resolve(cwd, ".github/prompts/aiws-upgrade-deps.prompt.md"), commandPrompt(upgradeDepsCommand().split("---\n").pop() ?? "")));
   }
 
   if (config.workflow.commits.gitHook) {

@@ -90,7 +90,7 @@ export async function runInit(cwd: string, options: InitOptions = {}): Promise<v
     });
     bail(m);
     mode = m as "simple" | "advanced";
-    note("For the richest setup, run the configure-workspace skill (/configure) and let the AI propose your config.", "AI-guided (recommended)");
+    note("For the richest setup, run the aiws-configure-workspace skill (/aiws-configure) and let the AI propose your config.", "AI-guided (recommended)");
   }
 
   let inputs: WizardInputs;
@@ -279,7 +279,7 @@ export async function runInit(cwd: string, options: InitOptions = {}): Promise<v
     }
 
     const ld = await confirm({
-      message: "Add autonomous living docs (/doc-sync + project state)?",
+      message: "Add autonomous living docs (/aiws-doc-sync + project state)?",
       initialValue: true,
     });
     bail(ld);

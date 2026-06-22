@@ -3,6 +3,7 @@ import type { Config } from "../config/schema.js";
 import { writeFile, writeIfMissing, type WriteResult } from "../render/writer.js";
 import { docsPaths } from "./paths.js";
 import { strings, type Phase } from "../i18n/strings.js";
+import { aiwsId } from "./naming.js";
 
 export type { Phase } from "../i18n/strings.js";
 
@@ -31,7 +32,7 @@ function commandFile(p: Phase, config: Config): string {
     `description: ${p.summary}`,
     "---",
     "",
-    `# /${p.name}`,
+    `# /${aiwsId(p.name)}`,
     "",
     p.does,
     "",
@@ -67,7 +68,7 @@ function syncCommand(config: Config): string {
     "description: SPDD sync — fold non-behavioural code changes back into the REASONS Canvas (code→prompt).",
     "---",
     "",
-    "# /sdd-sync",
+    "# /aiws-sdd-sync",
     "",
     "Run the **sdd-spec-sync** skill: compare the code against the active REASONS Canvas, report drift, and",
     "**propose** folding non-behavioural changes back into the affected Canvas sections. Propose-and-review —",
@@ -162,16 +163,16 @@ export function generateSdd(cwd: string, config: Config): WriteResult[] {
 
   if (config.targets.includes("claude")) {
     for (const p of phases) {
-      results.push(writeFile(resolve(cwd, `.claude/commands/${p.name}.md`), commandFile(p, config)));
+      results.push(writeFile(resolve(cwd, `.claude/commands/${aiwsId(p.name)}.md`), commandFile(p, config)));
     }
     // SPDD adds the code→prompt sync command (the closed loop); the prompt→code half reuses sdd-code-maintenance.
     if (config.sdd.methodology === "spdd") {
-      results.push(writeFile(resolve(cwd, ".claude/commands/sdd-sync.md"), syncCommand(config)));
+      results.push(writeFile(resolve(cwd, ".claude/commands/aiws-sdd-sync.md"), syncCommand(config)));
     }
   }
   if (config.targets.includes("copilot")) {
     for (const p of phases) {
-      results.push(writeFile(resolve(cwd, `.github/prompts/${p.name}.prompt.md`), copilotPrompt(p, config)));
+      results.push(writeFile(resolve(cwd, `.github/prompts/${aiwsId(p.name)}.prompt.md`), copilotPrompt(p, config)));
     }
   }
 

@@ -20,7 +20,7 @@ para ser predecibles para herramientas y para la IA; el **contenido** va en el i
 - \`${p.development}/\` — **proceso de desarrollo** (mantenido con IA):
   - \`${p.specs}/\` — especificaciones vigentes (la verdad actual del comportamiento).
   - \`${p.changes}/\` — cambios SDD en curso (\`${p.archive}/\` para los completados).
-  - \`${p.status}/\` — foto viva del proyecto (\`PROJECT-STATE.md\`, \`ARCHITECTURE.md\`); refréscala con \`/doc-sync\`.
+  - \`${p.status}/\` — foto viva del proyecto (\`PROJECT-STATE.md\`, \`ARCHITECTURE.md\`); refréscala con \`/aiws-doc-sync\`.
 `
       : `# Documentation
 
@@ -31,7 +31,7 @@ predictable for tooling and the AI; the **content** is in the project's language
 - \`${p.development}/\` — **development process** (AI-maintained):
   - \`${p.specs}/\` — current specifications (the source of truth for behavior).
   - \`${p.changes}/\` — in-flight SDD changes (\`${p.archive}/\` for completed ones).
-  - \`${p.status}/\` — living project snapshot (\`PROJECT-STATE.md\`, \`ARCHITECTURE.md\`); refresh with \`/doc-sync\`.
+  - \`${p.status}/\` — living project snapshot (\`PROJECT-STATE.md\`, \`ARCHITECTURE.md\`); refresh with \`/aiws-doc-sync\`.
 `;
   return [writeIfMissing(resolve(cwd, "docs/README.md"), body)];
 }

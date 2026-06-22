@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 import { dirname, join, resolve } from "node:path";
@@ -175,6 +175,56 @@ test("invariant · user text outside managed markers survives regeneration", () 
     }
     // Blocks still intact after the round-trip.
     assert.match(after, /ai-workspace:begin:core/);
+  } finally {
+    rmSync(cwd, { recursive: true, force: true });
+  }
+});
+
+// ── Contract: generated commands use the reserved aiws- namespace (0013 F1a.2) ──
+// Every generated slash command / prompt must be /aiws-*. This guard scans ALL
+// generated markdown/json and fails on any legacy command token, catching missed
+// prose references during the rename. `/aiws-sdd-explore` does not contain `/sdd-`,
+// so aiws-prefixed commands never false-trigger.
+
+test("invariant · generated output carries no legacy command tokens (aiws- namespace)", () => {
+  const cwd = tmpRepo();
+  try {
+    // Maximal-ish config: SDD + living docs + learn + governance + stack layers.
+    generate(
+      cwd,
+      ConfigSchema.parse({
+        project: { name: "t", purpose: "learn" },
+        company: "example",
+        stack: {
+          languages: [{ id: "typescript", version: "latest" }],
+          frameworks: [{ id: "react", version: "latest" }],
+          environments: [{ id: "docker", version: "latest" }],
+        },
+      }),
+    );
+    // Match only actual legacy command names (the negative lookahead avoids file paths like
+    // `_shared/sdd-convention.md` or `.githooks/commit-msg`).
+    const legacy = [
+      /\/sdd-(explore|propose|clarify|spec|design|tasks|apply|verify|archive|constitution|sync)(?![-\w])/,
+      /\/doc-sync(?![-\w])/,
+      /\/commit(?![-\w])/,
+      /\/upgrade-deps(?![-\w])/,
+      /\/configure(?![-\w])/,
+      /\/learn(?![-\w])/,
+    ];
+    for (const rel of readdirSync(cwd, { recursive: true })) {
+      const p = resolve(cwd, rel.toString());
+      if (!/\.(md|json)$/.test(p)) continue;
+      let txt;
+      try {
+        txt = readFileSync(p, "utf8");
+      } catch {
+        continue; // directory entry
+      }
+      for (const re of legacy) {
+        assert.doesNotMatch(txt, re, `legacy command token ${re} in ${rel}`);
+      }
+    }
   } finally {
     rmSync(cwd, { recursive: true, force: true });
   }

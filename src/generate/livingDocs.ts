@@ -10,7 +10,7 @@ function docSyncCommand(config: Config): string {
 description: Refresh the living docs (project state + architecture) so the AI has fresh context.
 ---
 
-# /doc-sync
+# /aiws-doc-sync
 
 Update the project's living documentation so any agent gets accurate context cheaply.
 
@@ -41,39 +41,39 @@ function projectStateSeed(config: Config): string {
   if (config.language === "es") {
     return `# Estado del proyecto — ${name}
 
-> Foto viva mantenida con \`/doc-sync\`. Léela antes de escanear el repo.
+> Foto viva mantenida con \`/aiws-doc-sync\`. Léela antes de escanear el repo.
 
 <!-- ai-workspace:begin:overview -->
 ## Visión general
-${config.project.description || "_Describe el proyecto aquí, o ejecuta /doc-sync para generarlo._"}
+${config.project.description || "_Describe el proyecto aquí, o ejecuta /aiws-doc-sync para generarlo._"}
 
 ## Mapa de módulos
-_Ejecuta \`/doc-sync\` para rellenarlo._
+_Ejecuta \`/aiws-doc-sync\` para rellenarlo._
 
 ## Registro de decisiones
 _ADRs ligeros aquí (fecha · decisión · porqué)._
 
 ## Estado actual
-_Ejecuta \`/doc-sync\` para rellenarlo._
+_Ejecuta \`/aiws-doc-sync\` para rellenarlo._
 <!-- ai-workspace:end:overview -->
 `;
   }
   return `# Project State — ${name}
 
-> Living snapshot maintained via \`/doc-sync\`. Read this before scanning the repo.
+> Living snapshot maintained via \`/aiws-doc-sync\`. Read this before scanning the repo.
 
 <!-- ai-workspace:begin:overview -->
 ## Overview
-${config.project.description || "_Describe the project here, or run /doc-sync to generate._"}
+${config.project.description || "_Describe the project here, or run /aiws-doc-sync to generate._"}
 
 ## Module map
-_Run \`/doc-sync\` to populate._
+_Run \`/aiws-doc-sync\` to populate._
 
 ## Decisions log
 _Lightweight ADRs go here (date · decision · why)._
 
 ## Current status
-_Run \`/doc-sync\` to populate._
+_Run \`/aiws-doc-sync\` to populate._
 <!-- ai-workspace:end:overview -->
 `;
 }
@@ -81,8 +81,8 @@ _Run \`/doc-sync\` to populate._
 function architectureSeed(config: Config): string {
   const name = config.project.name;
   const es = config.language === "es";
-  const placeholder = es ? "_Reemplázalo con la arquitectura real vía `/doc-sync`._" : "_Replace with the real architecture via `/doc-sync`._";
-  const heading = es ? "Maintenido con `/doc-sync`. Usa Mermaid para los diagramas." : "Maintained via `/doc-sync`. Use Mermaid for diagrams.";
+  const placeholder = es ? "_Reemplázalo con la arquitectura real vía `/aiws-doc-sync`._" : "_Replace with the real architecture via `/aiws-doc-sync`._";
+  const heading = es ? "Maintenido con `/aiws-doc-sync`. Usa Mermaid para los diagramas." : "Maintained via `/aiws-doc-sync`. Use Mermaid for diagrams.";
   return `# ${es ? "Arquitectura" : "Architecture"} — ${name}
 
 > ${heading}
@@ -99,17 +99,17 @@ ${placeholder}
 `;
 }
 
-/** Scaffold the living-docs system: /doc-sync command/prompt + seed docs (user-owned). */
+/** Scaffold the living-docs system: /aiws-doc-sync command/prompt + seed docs (user-owned). */
 export function generateLivingDocs(cwd: string, config: Config): WriteResult[] {
   const results: WriteResult[] = [];
   if (!config.livingDocs) return results;
   const status = docsPaths(config).status;
 
   if (config.targets.includes("claude")) {
-    results.push(writeFile(resolve(cwd, ".claude/commands/doc-sync.md"), docSyncCommand(config)));
+    results.push(writeFile(resolve(cwd, ".claude/commands/aiws-doc-sync.md"), docSyncCommand(config)));
   }
   if (config.targets.includes("copilot")) {
-    results.push(writeFile(resolve(cwd, ".github/prompts/doc-sync.prompt.md"), docSyncPrompt(config)));
+    results.push(writeFile(resolve(cwd, ".github/prompts/aiws-doc-sync.prompt.md"), docSyncPrompt(config)));
   }
 
   results.push(writeIfMissing(resolve(cwd, `${status}/PROJECT-STATE.md`), projectStateSeed(config)));

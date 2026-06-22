@@ -3,11 +3,11 @@
 A methodology where the **structured prompt — the REASONS Canvas — is a first-class, version-controlled,
 maintained artifact** (Thoughtworks/SPDD). It extends spec-driven development: the prompt captures not just
 *what* the system does but the chosen **approach, structure, norms and safeguards**, and is kept in sync
-with the code. Same in-repo store and `/sdd-*` flow; **no external CLI is required or installed**.
+with the code. Same in-repo store and `/aiws-sdd-*` flow; **no external CLI is required or installed**.
 
 **When reality diverges, fix the prompt first — then the code.** The loop is **propose-and-review** (it
 proposes diffs; you approve — no silent rewrites): **logic/behaviour** → edit the Canvas, then propagate with
-the **sdd-code-maintenance** skill; **refactor/drift** → **`/sdd-sync`** (sdd-spec-sync) folds code changes
+the **sdd-code-maintenance** skill; **refactor/drift** → **`/aiws-sdd-sync`** (sdd-spec-sync) folds code changes
 back into the Canvas.<% } else { %>## Spec-Driven Development (SDD)
 
 A lightweight **methodology — not a tool dependency**. We adopt the best *ideas* from two SDD projects
@@ -38,10 +38,10 @@ flowchart LR
 <% } %>- Project *mode* governs the one-time ramp; per-feature, the size/risk of the change decides whether the
   full flow is worth it.
 
-**Commands** (Claude: `/sdd-*`; Copilot: prompt files in `.github/prompts/`)
-<% if (constitution) { %>- `/sdd-constitution` — define the project's principles (once).
-<% } %>- `/sdd-explore <topic>` — investigate before committing.
-- `/sdd-propose` → `/sdd-clarify` → `/sdd-spec` + `/sdd-design` → `/sdd-tasks` → `/sdd-apply` → `/sdd-verify` → `/sdd-archive`.
+**Commands** (Claude: `/aiws-sdd-*`; Copilot: prompt files in `.github/prompts/`)
+<% if (constitution) { %>- `/aiws-sdd-constitution` — define the project's principles (once).
+<% } %>- `/aiws-sdd-explore <topic>` — investigate before committing.
+- `/aiws-sdd-propose` → `/aiws-sdd-clarify` → `/aiws-sdd-spec` + `/aiws-sdd-design` → `/aiws-sdd-tasks` → `/aiws-sdd-apply` → `/aiws-sdd-verify` → `/aiws-sdd-archive`.
 
 **Artifacts** live in <% if (it.sdd.backend === "none") { %>the conversation (not persisted — enable a backend to keep them).<% } else { %>`<%= it.paths.changes %>/<change-name>/` and are **versioned in git** (reviewable in PRs, readable by any AI tool). The store follows OpenSpec's *layout* (specs + changes + archive) as a convention — it is **not** the OpenSpec CLI.<% } %>
 
@@ -54,6 +54,6 @@ flowchart LR
 <% } %><% if (it.sdd.schema === "reasons") { %>- **Builder workflow (author side).** Go idea → app with the on-demand skills: **sdd-init** (scaffold) → **sdd-spec-capture** (interview → spec) → **sdd-spec-review** (sign-off → `user-reviewed`) → **sdd-code-generation** → **sdd-test-generation** → **sdd-self-review** → **sdd-handoff**; **sdd-code-maintenance** propagates later spec edits. **sdd-reverse-engineering** recovers a spec from code that lacks one.
 - **Spec lifecycle (`status`).** REASONS specs carry a `status`: `draft → user-reviewed → it-approved → implemented → retired`. **sdd-spec-review** drives the transitions — owner sign-off promotes `draft → user-reviewed` (code/tests generate from there); all four **sdd-audit-\*** green is the gate for `it-approved`.
 <% } %><% if (it.sdd.schema === "reasons") { %>- **Audits (reviewer side).** Before approving a spec, run the **sdd-audit-security / -style / -stack / -architecture** skills against the control catalogue (loaded on demand). All green is the precondition for sign-off.
-<% } %>- After implementing, run `/sdd-verify` against the spec, then `/sdd-archive` (folds the delta into `<%= it.paths.specs %>/`).
+<% } %>- After implementing, run `/aiws-sdd-verify` against the spec, then `/aiws-sdd-archive` (folds the delta into `<%= it.paths.specs %>/`).
 <% if (it.sdd.backend === "hybrid") { %>- Engram (if installed) augments cross-session memory; the in-repo files remain canonical.
 <% } %>

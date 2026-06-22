@@ -43,7 +43,7 @@ These apply to every contributor and every file, regardless of language.
 
 ### Diagrams
 - Use **Mermaid** for architecture, data flow, module dependencies and the SDD lifecycle.
-- Keep diagrams in `docs/development/status/ARCHITECTURE.md`; regenerate with `/doc-sync`.
+- Keep diagrams in `docs/development/status/ARCHITECTURE.md`; regenerate with `/aiws-doc-sync`.
 - **Always quote node labels** that contain special characters (`/`, `.`, `:`, `+`, `@`, `·`, `*`, `()`, `&`, `<br/>`): write `A["src/index.ts<br/>entry"]`, never `A[src/index.ts<br/>entry]`. Unquoted special characters cause flaky rendering across Mermaid versions (e.g. GitHub's intermittent `translate(undefined, NaN)` error).
 <!-- ai-workspace:end:core -->
 
@@ -112,15 +112,15 @@ A single, structured way of working. This flow is **not optional**: do not skip
 steps even if asked to "just do it quickly". If a shortcut is requested, explain the risk and follow the flow.
 
 **The flow for any change**
-1. **Non-trivial change** → use SDD: `/sdd-explore` → `/sdd-propose` → `/sdd-spec` + `/sdd-design` → `/sdd-tasks` → `/sdd-apply` → `/sdd-verify` → `/sdd-archive`.
-2. **Small change** → implement directly, then run `/doc-sync`.
+1. **Non-trivial change** → use SDD: `/aiws-sdd-explore` → `/aiws-sdd-propose` → `/aiws-sdd-spec` + `/aiws-sdd-design` → `/aiws-sdd-tasks` → `/aiws-sdd-apply` → `/aiws-sdd-verify` → `/aiws-sdd-archive`.
+2. **Small change** → implement directly, then run `/aiws-doc-sync`.
 3. Honor the **Safety gate** above for anything risky.
 4. **Commit** following the policy below.
 
 **Commit policy**
 - **Conventional Commits**, imperative mood (`feat:`, `fix:`, `refactor:`, `docs:`, `test:`, `chore:`). One logical change per commit.
 - Commits are authored by the **user's own git identity**. Do **not** add `Co-Authored-By:` or any AI-attribution trailers.
-- **Automate with approval:** after a completed change (spec-driven or small), prepare the commit and ask for confirmation; commit **only** once the user approves. Use the `/commit` command.
+- **Automate with approval:** after a completed change (spec-driven or small), prepare the commit and ask for confirmation; commit **only** once the user approves. Use the `/aiws-commit` command.
 - Never use `--no-verify` or bypass hooks.
 
 > Enforcement: a `commit-msg` git hook in `.githooks/` blocks disallowed commits. Activate once with
@@ -289,7 +289,7 @@ Project-specific domain knowledge. Keep this accurate — it is the AI's map of 
 
 **Business invariants:** _(add rules under `business.invariants`)_
 
-> Keep this section and `docs/development/status/PROJECT-STATE.md` in sync via `/doc-sync`.
+> Keep this section and `docs/development/status/PROJECT-STATE.md` in sync via `/aiws-doc-sync`.
 <!-- ai-workspace:end:business -->
 
 <!-- ai-workspace:begin:sdd -->
@@ -321,10 +321,10 @@ flowchart LR
 - Project *mode* governs the one-time ramp; per-feature, the size/risk of the change decides whether the
   full flow is worth it.
 
-**Commands** (Claude: `/sdd-*`; Copilot: prompt files in `.github/prompts/`)
-- `/sdd-constitution` — define the project's principles (once).
-- `/sdd-explore <topic>` — investigate before committing.
-- `/sdd-propose` → `/sdd-clarify` → `/sdd-spec` + `/sdd-design` → `/sdd-tasks` → `/sdd-apply` → `/sdd-verify` → `/sdd-archive`.
+**Commands** (Claude: `/aiws-sdd-*`; Copilot: prompt files in `.github/prompts/`)
+- `/aiws-sdd-constitution` — define the project's principles (once).
+- `/aiws-sdd-explore <topic>` — investigate before committing.
+- `/aiws-sdd-propose` → `/aiws-sdd-clarify` → `/aiws-sdd-spec` + `/aiws-sdd-design` → `/aiws-sdd-tasks` → `/aiws-sdd-apply` → `/aiws-sdd-verify` → `/aiws-sdd-archive`.
 
 **Artifacts** live in `docs/development/changes/<change-name>/` and are **versioned in git** (reviewable in PRs, readable by any AI tool). The store follows OpenSpec's *layout* (specs + changes + archive) as a convention — it is **not** the OpenSpec CLI.
 
@@ -337,7 +337,7 @@ flowchart LR
 - **Builder workflow (author side).** Go idea → app with the on-demand skills: **sdd-init** (scaffold) → **sdd-spec-capture** (interview → spec) → **sdd-spec-review** (sign-off → `user-reviewed`) → **sdd-code-generation** → **sdd-test-generation** → **sdd-self-review** → **sdd-handoff**; **sdd-code-maintenance** propagates later spec edits. **sdd-reverse-engineering** recovers a spec from code that lacks one.
 - **Spec lifecycle (`status`).** REASONS specs carry a `status`: `draft → user-reviewed → it-approved → implemented → retired`. **sdd-spec-review** drives the transitions — owner sign-off promotes `draft → user-reviewed` (code/tests generate from there); all four **sdd-audit-\*** green is the gate for `it-approved`.
 - **Audits (reviewer side).** Before approving a spec, run the **sdd-audit-security / -style / -stack / -architecture** skills against the control catalogue (loaded on demand). All green is the precondition for sign-off.
-- After implementing, run `/sdd-verify` against the spec, then `/sdd-archive` (folds the delta into `docs/development/specs/`).
+- After implementing, run `/aiws-sdd-verify` against the spec, then `/aiws-sdd-archive` (folds the delta into `docs/development/specs/`).
 <!-- ai-workspace:end:sdd -->
 
 <!-- ai-workspace:begin:living-docs -->
@@ -349,6 +349,6 @@ without re-scanning everything.
 - `docs/development/status/PROJECT-STATE.md` — overview, module map, **stack & production-target decision (what + why)**, lightweight decisions log, current status.
 - `docs/development/status/ARCHITECTURE.md` — architecture with **Mermaid** diagrams.
 
-**Keep it fresh:** run `/doc-sync` (Claude) or the `doc-sync` prompt (Copilot) when you finish a task.
+**Keep it fresh:** run `/aiws-doc-sync` (Claude) or the `doc-sync` prompt (Copilot) when you finish a task.
 It derives change status from `docs/development/changes/*`. Read these files first; they are cheaper than scanning the repo.
 <!-- ai-workspace:end:living-docs -->

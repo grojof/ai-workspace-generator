@@ -4,7 +4,7 @@ import { writeFile, type WriteResult } from "../render/writer.js";
 import { docsPaths } from "./paths.js";
 import { skillFrontmatter as frontmatter } from "./naming.js";
 
-/** Learning mode: a tutor skill + /learn command, generated only when purpose === "learn". */
+/** Learning mode: a tutor skill + /aiws-learn command, generated only when purpose === "learn". */
 
 const LEARN_SKILL_EN = `## aiws-learn — tutor
 
@@ -30,7 +30,7 @@ function learnCommand(): string {
 description: Tutor mode — learn a topic with explanations, exercises and cases (uses the learn skill).
 ---
 
-# /learn
+# /aiws-learn
 
 Act as a tutor following the \`aiws-learn\` skill. Ask goal and level, explain from fundamentals, and pose
 exercises/questions waiting for my answers. Topic: $ARGUMENTS
@@ -51,10 +51,10 @@ export function generateLearning(cwd: string, config: Config): WriteResult[] {
 
   if (config.targets.includes("claude")) {
     results.push(writeFile(resolve(cwd, ".claude/skills/aiws-learn/SKILL.md"), frontmatter("aiws-learn", desc) + learnBody));
-    results.push(writeFile(resolve(cwd, ".claude/commands/learn.md"), learnCommand()));
+    results.push(writeFile(resolve(cwd, ".claude/commands/aiws-learn.md"), learnCommand()));
   }
   if (config.targets.includes("copilot")) {
-    results.push(writeFile(resolve(cwd, ".github/prompts/learn.prompt.md"), learnPrompt()));
+    results.push(writeFile(resolve(cwd, ".github/prompts/aiws-learn.prompt.md"), learnPrompt()));
   }
   return results;
 }

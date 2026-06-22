@@ -64,7 +64,7 @@ re-scanning the repo.
 3. Rewrite only content inside \`ai-workspace:begin/end\` markers; preserve manual notes outside.
 4. Keep it concise and scannable — this is read often.
 
-Invoke via the \`/doc-sync\` command (Claude) or the \`doc-sync\` prompt (Copilot).
+Invoke via the \`/aiws-doc-sync\` command (Claude) or the \`aiws-doc-sync\` prompt (Copilot).
 `;
 }
 

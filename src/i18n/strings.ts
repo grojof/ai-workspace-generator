@@ -40,7 +40,7 @@ export interface Strings {
 
 const en: Strings = {
   scopeHeader: "Managed by ai-workspace — edit workspace.config.yaml (scope:) and run sync.",
-  docSyncReminder: "Reminder: run /doc-sync to refresh the living docs if project state changed.",
+  docSyncReminder: "Reminder: run /aiws-doc-sync to refresh the living docs if project state changed.",
   desc: {
     agents: "Single source of truth for all AI agents.",
     claudeAdapter: "Claude Code adapter (imports @AGENTS.md).",
@@ -56,7 +56,7 @@ const en: Strings = {
     ignore: "AI-context / git ignore (managed).",
     sdd: "SDD methodology: commands + spec store (Markdown in the repo, no external CLI).",
     skill: "Vendored skill (.claude/skills/).",
-    livingDocs: "Living docs: /doc-sync + project state.",
+    livingDocs: "Living docs: /aiws-doc-sync + project state.",
     onboarding: "Onboarding: index of the AI workspace.",
     vscodeExtensions: "Recommended VS Code extensions.",
   },
@@ -76,7 +76,7 @@ const en: Strings = {
 
 const es: Strings = {
   scopeHeader: "Gestionado por ai-workspace — edita workspace.config.yaml (scope:) y ejecuta sync.",
-  docSyncReminder: "Recordatorio: ejecuta /doc-sync para refrescar las docs vivas si cambió el estado del proyecto.",
+  docSyncReminder: "Recordatorio: ejecuta /aiws-doc-sync para refrescar las docs vivas si cambió el estado del proyecto.",
   desc: {
     agents: "Fuente única de verdad para todos los agentes de IA.",
     claudeAdapter: "Adaptador de Claude Code (importa @AGENTS.md).",
@@ -92,7 +92,7 @@ const es: Strings = {
     ignore: "Exclusiones de contexto IA / git (gestionadas).",
     sdd: "Metodología SDD: comandos + almacén de specs (Markdown en el repo, sin CLI externo).",
     skill: "Skill vendorizada (.claude/skills/).",
-    livingDocs: "Docs vivas: /doc-sync + estado del proyecto.",
+    livingDocs: "Docs vivas: /aiws-doc-sync + estado del proyecto.",
     onboarding: "Onboarding: índice del workspace de IA.",
     vscodeExtensions: "Extensiones recomendadas de VS Code.",
   },

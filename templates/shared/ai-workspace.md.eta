@@ -34,8 +34,8 @@ flowchart TD
   AG --> CO[".github/copilot-instructions.md<br/>generated mirror"]
   GEN --> MCP[".mcp.json / .vscode/mcp.json"]
   GEN --> IGN[".claudeignore / .copilotignore"]
-<% if (it.sdd.enabled) { %>  GEN --> SDD["SDD methodology: <%= it.paths.development %>/ + /sdd-* commands (no external CLI)"]
-<% } %><% if (it.livingDocs) { %>  GEN --> DOCS["<%= it.paths.status %>/*  ·  /doc-sync"]
+<% if (it.sdd.enabled) { %>  GEN --> SDD["SDD methodology: <%= it.paths.development %>/ + /aiws-sdd-* commands (no external CLI)"]
+<% } %><% if (it.livingDocs) { %>  GEN --> DOCS["<%= it.paths.status %>/*  ·  /aiws-doc-sync"]
 <% } %>
 ```
 
@@ -49,13 +49,13 @@ flowchart TD
 - **Add a stack module:** `ai-workspace add <module>`.
 - **Upgrade templates:** `ai-workspace upgrade` (shows a diff first).
 - **Check health:** `ai-workspace doctor` (token budgets, broken refs).
-<% if (it.sdd.enabled) { %>- **Plan a change:** `/sdd-explore` → `/sdd-propose` → `/sdd-clarify` → … → `/sdd-archive` (a methodology — artifacts are Markdown in `<%= it.paths.development %>/`, no external CLI).
-<% } %><% if (it.livingDocs) { %>- **Refresh project state for the AI:** `/doc-sync`.
+<% if (it.sdd.enabled) { %>- **Plan a change:** `/aiws-sdd-explore` → `/aiws-sdd-propose` → `/aiws-sdd-clarify` → … → `/aiws-sdd-archive` (a methodology — artifacts are Markdown in `<%= it.paths.development %>/`, no external CLI).
+<% } %><% if (it.livingDocs) { %>- **Refresh project state for the AI:** `/aiws-doc-sync`.
 <% } %>
 
 ## Governance & commits
 - **Project mode:** <%= it.project.mode %> — <%= it.project.mode === "existing" ? "conservative versions; upgrade only via assessment" : "current stable versions" %>.
-- **Commits:** <%= it.workflow.commits.coAuthor ? "with" : "no" %> co-author trailers; <%= it.workflow.commits.automate === "with-approval" ? "committed only after your approval (use /commit)" : "manual (you commit)" %>.
+- **Commits:** <%= it.workflow.commits.coAuthor ? "with" : "no" %> co-author trailers; <%= it.workflow.commits.automate === "with-approval" ? "committed only after your approval (use /aiws-commit)" : "manual (you commit)" %>.
 - **Safety gate:** the AI must stop and ask before version bumps, migrations, conflicts or risky changes.
 <% if (it.workflow.commits.gitHook) { %>- **Enforcement:** activate the commit hook once → `git config core.hooksPath .githooks`
 <% } %>

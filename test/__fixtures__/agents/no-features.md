@@ -43,7 +43,7 @@ These apply to every contributor and every file, regardless of language.
 
 ### Diagrams
 - Use **Mermaid** for architecture, data flow, module dependencies and the SDD lifecycle.
-- Keep diagrams in `docs/development/status/ARCHITECTURE.md`; regenerate with `/doc-sync`.
+- Keep diagrams in `docs/development/status/ARCHITECTURE.md`; regenerate with `/aiws-doc-sync`.
 - **Always quote node labels** that contain special characters (`/`, `.`, `:`, `+`, `@`, `·`, `*`, `()`, `&`, `<br/>`): write `A["src/index.ts<br/>entry"]`, never `A[src/index.ts<br/>entry]`. Unquoted special characters cause flaky rendering across Mermaid versions (e.g. GitHub's intermittent `translate(undefined, NaN)` error).
 <!-- ai-workspace:end:core -->
 
@@ -112,14 +112,14 @@ A single, structured way of working. This flow is **not optional**: do not skip
 steps even if asked to "just do it quickly". If a shortcut is requested, explain the risk and follow the flow.
 
 **The flow for any change**
-1. Plan briefly, implement the smallest correct change, then run `/doc-sync`.
+1. Plan briefly, implement the smallest correct change, then run `/aiws-doc-sync`.
 3. Honor the **Safety gate** above for anything risky.
 4. **Commit** following the policy below.
 
 **Commit policy**
 - **Conventional Commits**, imperative mood (`feat:`, `fix:`, `refactor:`, `docs:`, `test:`, `chore:`). One logical change per commit.
 - Commits are authored by the **user's own git identity**. Do **not** add `Co-Authored-By:` or any AI-attribution trailers.
-- **Automate with approval:** after a completed change (spec-driven or small), prepare the commit and ask for confirmation; commit **only** once the user approves. Use the `/commit` command.
+- **Automate with approval:** after a completed change (spec-driven or small), prepare the commit and ask for confirmation; commit **only** once the user approves. Use the `/aiws-commit` command.
 - Never use `--no-verify` or bypass hooks.
 
 > Enforcement: a `commit-msg` git hook in `.githooks/` blocks disallowed commits. Activate once with
@@ -231,5 +231,5 @@ Project-specific domain knowledge. Keep this accurate — it is the AI's map of 
 
 **Business invariants:** _(add rules under `business.invariants`)_
 
-> Keep this section and `docs/development/status/PROJECT-STATE.md` in sync via `/doc-sync`.
+> Keep this section and `docs/development/status/PROJECT-STATE.md` in sync via `/aiws-doc-sync`.
 <!-- ai-workspace:end:business -->

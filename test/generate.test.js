@@ -256,7 +256,7 @@ test("package builds a plugin + marketplace + org-skill zips; idempotent and val
     assert.equal(mkt.metadata.pluginRoot, "./plugins");
     // skills + commands are projected into the plugin.
     assert.ok(existsSync(resolve(cwd, "plugins/acme-portal/skills/aiws-living-docs/SKILL.md")));
-    assert.ok(existsSync(resolve(cwd, "plugins/acme-portal/commands/commit.md")));
+    assert.ok(existsSync(resolve(cwd, "plugins/acme-portal/commands/aiws-commit.md")));
     // per-skill org zips staged, SKILL.md at the zip root (local-file-header name follows the signature).
     const zipPath = resolve(cwd, "dist/org-skills/aiws-living-docs.zip");
     assert.ok(existsSync(zipPath));
@@ -430,7 +430,7 @@ test("configure-workspace skill + /configure command are generated and routed", 
   try {
     generate(cwd, ConfigSchema.parse({ project: { name: "t" } }));
     assert.ok(readFileSync(resolve(cwd, ".claude/skills/aiws-configure-workspace/SKILL.md"), "utf8"));
-    assert.ok(readFileSync(resolve(cwd, ".claude/commands/configure.md"), "utf8"));
+    assert.ok(readFileSync(resolve(cwd, ".claude/commands/aiws-configure.md"), "utf8"));
     const skill = readFileSync(resolve(cwd, ".claude/skills/aiws-configure-workspace/SKILL.md"), "utf8");
     assert.match(skill, /ai-workspace detect --json/);
     assert.match(skill, /never write or move files/i);
