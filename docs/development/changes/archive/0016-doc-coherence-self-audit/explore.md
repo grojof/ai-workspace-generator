@@ -21,15 +21,15 @@ audit found is *detected automatically* instead of by luck. Three capabilities:
 
 ## Current state / affected areas
 
-**`doctor` ([src/commands/doctor.ts](../../../../src/commands/doctor.ts))** checks: AGENTS.md present + token
+**`doctor` ([src/commands/doctor.ts](../../../../../src/commands/doctor.ts))** checks: AGENTS.md present + token
 budget, orphaned managed blocks, CLAUDE.md / copilot present, stack ids known to the registry, commit-msg
 hook. It does **not** check dangling references, orphan files, or anything under `docs/`.
 
-**Living docs ([src/generate/livingDocs.ts](../../../../src/generate/livingDocs.ts))** only seed/refresh
+**Living docs ([src/generate/livingDocs.ts](../../../../../src/generate/livingDocs.ts))** only seed/refresh
 `docs/development/status/PROJECT-STATE.md` + `ARCHITECTURE.md`. The `doc-sync` command/skill points only
 there. `docs/project/` (USAGE, EXTENDING, MAINTAINING, DISTRIBUTION, ARCHITECTURE, decisions…) is **hand-
 authored and unmanaged** — exactly where this audit found drift (the stale `MAINTAINING` plugin section).
-`config.docs.project` already exists in [paths.ts](../../../../src/generate/paths.ts) but nothing maintains it.
+`config.docs.project` already exists in [paths.ts](../../../../../src/generate/paths.ts) but nothing maintains it.
 
 **No structure contract exists.** Nothing declares the expected doc layout, so a stray file (top-level
 `commands/aiws.md`, a dead `INGEST-RECONCILE.md` link) is invisible to tooling. The integrity **manifest**

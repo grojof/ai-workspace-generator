@@ -79,5 +79,7 @@ mantenimiento mínimo. **Sin datos de negocio reales.**
   (exigidos en CI), `any→unknown` en el borde de detección, eliminó el self-plugin redundante y revivió el
   `CHANGELOG`. PR #52 (**0016a**) añadió el **contrato de docs** (`docs.contract`, default; el README raíz es el
   índice `authored`) y checks de coherencia en `doctor` (refs colgantes + huérfanos, `warn`, `docCoherence.ts`),
-  con `doc-sync` cubriendo `docs/project/`. TEMPLATES_VERSION **0.49.0**. Pendiente: 0016b (`aiws-audit` read-only),
-  0016c (split de AGENTS.md, diferido).
+  con `doc-sync` cubriendo `docs/project/`. **0016b** (PR #54) añadió la skill **`aiws-audit`** + `/aiws-audit`:
+  autoauditoría **read-only** fechada en `docs/development/audits/` (compone `doctor`/`verify`/`reconcile` + el
+  contrato) — el repo se autoalimenta. TEMPLATES_VERSION **0.50.0**; AGENTS.md 5903/6000. **0016 entregado**
+  (a + backlog + b); solo **0016c (split de AGENTS.md) diferido** hasta que un bloque reviente el budget.
