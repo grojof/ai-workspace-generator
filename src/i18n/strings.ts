@@ -121,10 +121,25 @@ const en: Strings = {
       summary: "Write requirements & scenarios (delta spec).",
       does: "Capture WHAT must be true in the change's `spec.md`. Requirements with acceptance scenarios.",
       description:
-        "Specify WHAT must be true — testable requirements and acceptance scenarios — as a delta against the current specs. Use after clarify; the spec, not the code, is the source of truth for behaviour. Avoid HOW (that is design).",
+        "Specify WHAT must be true as a delta against the current specs — testable requirements and acceptance scenarios in the OpenSpec delta format. Use after clarify; the spec, not the code, is the source of truth for behaviour. Avoid HOW (that is design).",
       reads: ["proposal.md", "clarify.md", "the current `specs/` baseline this change deltas"],
-      produces: { file: "spec.md", sections: ["Requirements (RFC 2119 MUST/SHOULD/MAY)", "Acceptance scenarios (Given / When / Then)", "Success criteria (measurable, SC-001…)", "Out of scope"] },
-      quality: ["Every requirement is verifiable", "Scenarios are concrete (Given/When/Then), not vague", "Success criteria are measurable", "Describes WHAT, never HOW"],
+      produces: {
+        file: "spec.md",
+        sections: [
+          "Delta headers: `## ADDED Requirements` / `## MODIFIED Requirements` / `## REMOVED Requirements`",
+          "Under each: `### Requirement: <name>` stating the rule in RFC 2119 terms (MUST / SHOULD / MAY)",
+          "Each requirement has `#### Scenario: <name>` — GIVEN … WHEN … THEN …",
+          "`[NEEDS CLARIFICATION: …]` inline for anything still open",
+          "Success criteria (measurable, SC-001…)",
+          "Out of scope",
+        ],
+      },
+      quality: [
+        "Uses the ADDED/MODIFIED/REMOVED delta format against the current `specs/`",
+        "Every requirement is verifiable and uses an RFC 2119 keyword",
+        "Each requirement has at least one Given/When/Then scenario",
+        "No open `[NEEDS CLARIFICATION]` remain; success criteria are measurable; describes WHAT, never HOW",
+      ],
     },
     {
       name: "sdd-design",

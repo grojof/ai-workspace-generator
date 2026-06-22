@@ -62,6 +62,37 @@ Layout:
 Rules:
 - One change folder per logical change. Keep the spec as the source of truth for behavior.
 - Archive a change only after verify passes; fold its delta into \`${s.specs}/\`.
+
+## Delta spec format (OpenSpec)
+
+A change's \`spec.md\` is a **delta** against the current \`${s.specs}/\`, not a full rewrite. Use the three
+delta headers, and under each a requirement + at least one scenario:
+
+\`\`\`markdown
+## ADDED Requirements
+### Requirement: <name>
+The system MUST … (RFC 2119: MUST/SHALL · SHOULD · MAY)
+#### Scenario: <name>
+- GIVEN <state> WHEN <action> THEN <outcome> AND <…>
+
+## MODIFIED Requirements
+### Requirement: <name>            (Previously: <old behaviour>)
+
+## REMOVED Requirements
+### Requirement: <name>            (Reason: <…>)
+\`\`\`
+
+- Mark anything still open inline with \`[NEEDS CLARIFICATION: <question>]\` — resolve before sign-off.
+- Add measurable **Success Criteria** (\`SC-001…\`).
+
+## Archive merge rules
+
+When archiving (after verify passes), fold the delta into \`${s.specs}/\` deterministically, then move the
+change folder to \`${s.archive}/<date-name>/\` preserving its full context:
+
+- **ADDED** → append the requirement to the matching domain spec.
+- **MODIFIED** → replace the existing requirement's body.
+- **REMOVED** → delete the requirement.
 `;
 }
 

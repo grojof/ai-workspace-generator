@@ -13,10 +13,15 @@
 - [x] `test/sdd-skill-quality.test.js` (3): rich intent-based skill + template + quality bar (no circular
       trigger); thin command; substantive copilot prompt. `TEMPLATES_VERSION` → 0.41.0. 97/97 green.
 
-## 0012b — spec/delta format hardening (next)
-- [ ] OpenSpec deltas (ADDED/MODIFIED/REMOVED, `### Requirement:` / `#### Scenario:` GIVEN/WHEN/THEN, RFC 2119) +
-      Spec-Kit `[NEEDS CLARIFICATION]` + Success Criteria in the generated `spec.md` template, the `aiws-sdd-spec`
-      / `aiws-sdd-archive` skills, and `_shared/sdd-convention.md` (with the archive merge rules).
+## 0012b — spec/delta format hardening (done)
+- [x] `aiws-sdd-spec` produce template + quality now use the OpenSpec **delta** format: `## ADDED/MODIFIED/REMOVED
+      Requirements`, `### Requirement:` (RFC 2119), `#### Scenario:` GIVEN/WHEN/THEN, inline `[NEEDS CLARIFICATION]`,
+      measurable Success Criteria. (`aiws-sdd-archive` already carries the ADDED→append / MODIFIED→replace /
+      REMOVED→delete merge rules from 0012a.)
+- [x] `_shared/sdd-convention.md` documents the delta format + the archive merge rules. (Still `writeIfMissing`;
+      0012d makes it regenerated so existing repos get the update.)
+- [x] `test/sdd-skill-quality.test.js` extended (delta headers / Requirement / Scenario / NEEDS CLARIFICATION in
+      the skill; convention documents format + merge rules). `TEMPLATES_VERSION` → 0.42.0. 98/98 green.
 
 ## 0012c — per-agent modernization
 - [ ] Slim the Copilot mirror (`.github/copilot-instructions.md`) now that Copilot reads `AGENTS.md` natively;

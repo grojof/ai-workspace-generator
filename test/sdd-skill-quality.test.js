@@ -28,6 +28,27 @@ test("sdd skill · rich, intent-based, with template + quality bar (not a circul
     assert.match(skill, /## Quality bar/);
     assert.match(skill, /- \[ \] Every requirement is verifiable/);
     assert.match(skill, /RFC 2119/);
+    // 0012b: the spec is a delta in the OpenSpec format with NEEDS CLARIFICATION markers.
+    assert.match(skill, /## ADDED Requirements/);
+    assert.match(skill, /### Requirement:/);
+    assert.match(skill, /#### Scenario:/);
+    assert.match(skill, /\[NEEDS CLARIFICATION/);
+  } finally {
+    rmSync(cwd, { recursive: true, force: true });
+  }
+});
+
+test("sdd convention · documents the delta format + archive merge rules (0012b)", () => {
+  const cwd = tmpRepo();
+  try {
+    generate(cwd, ConfigSchema.parse({ project: { name: "t" } }));
+    const conv = readFileSync(resolve(cwd, ".claude/skills/_shared/sdd-convention.md"), "utf8");
+    assert.match(conv, /## Delta spec format \(OpenSpec\)/);
+    assert.match(conv, /## ADDED Requirements/);
+    assert.match(conv, /## Archive merge rules/);
+    assert.match(conv, /\*\*ADDED\*\* → append/);
+    assert.match(conv, /\*\*MODIFIED\*\* → replace/);
+    assert.match(conv, /\*\*REMOVED\*\* → delete/);
   } finally {
     rmSync(cwd, { recursive: true, force: true });
   }
