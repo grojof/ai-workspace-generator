@@ -53,6 +53,7 @@ Layout:
 - \`${s.changes}/<name>/\`   — an in-flight change
   - \`explore.md\`  · investigation and options
   - \`proposal.md\` · intent, scope, approach, risks
+  - \`clarify.md\`  · questions + decisions that resolve ambiguity before the spec
   - \`spec.md\`     · requirements + acceptance scenarios (WHAT)
   - \`design.md\`   · technical design + Mermaid diagrams (HOW)
   - \`tasks.md\`    · ordered checklist (progress)

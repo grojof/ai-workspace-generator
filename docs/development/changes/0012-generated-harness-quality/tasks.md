@@ -23,10 +23,17 @@
 - [x] `test/sdd-skill-quality.test.js` extended (delta headers / Requirement / Scenario / NEEDS CLARIFICATION in
       the skill; convention documents format + merge rules). `TEMPLATES_VERSION` → 0.42.0. 98/98 green.
 
-## 0012c — per-agent modernization
-- [ ] Slim the Copilot mirror (`.github/copilot-instructions.md`) now that Copilot reads `AGENTS.md` natively;
-      keep path-scoped `instructions/*` + prompts. `clarify` consistency across blocks. Optional read-only
-      `/aiws-sdd-analyze` (cross-checks proposal/spec/design/tasks).
+## 0012c — per-agent modernization (done)
+- [x] **Slimmed the Copilot mirror** to a thin pointer: `.github/copilot-instructions.md` is now one block that
+      points to `AGENTS.md` (Copilot reads it natively → a full mirror double-loaded). The additive surface —
+      path-scoped `instructions/*.instructions.md` (`applyTo`) + `prompts/*` — is kept.
+- [x] **`clarify` consistency:** added `/aiws-sdd-clarify` to the SDD flow in the `workflow` block, and
+      `clarify.md` to the `_shared/sdd-convention.md` store layout.
+- [x] Tests (`generate.test.js`): thin-pointer mirror (1 block, points to AGENTS.md, no governance blocks,
+      instructions kept) + clarify in the flow. Byte baselines regenerated. `TEMPLATES_VERSION` → 0.43.0. USAGE
+      updated. 100/100 green.
+- [ ] **Deferred:** optional read-only `/aiws-sdd-analyze` (a new phase changes the orchestrator block + byte
+      fixtures; small follow-up, low urgency) — left as a note, not blocking.
 
 ## 0012d — lean floor + eval rubric + convention regeneration
 - [ ] A couple of substantive base references even without `reasons`; optional per-skill eval rubric; regenerate

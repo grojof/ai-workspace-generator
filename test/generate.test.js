@@ -624,3 +624,33 @@ test("commit-msg hook is generated and blocks co-author", () => {
     rmSync(cwd, { recursive: true, force: true });
   }
 });
+
+test("copilot mirror is a thin pointer, not a full mirror; path-scoped instructions kept (0012c)", () => {
+  const cwd = tmpRepo();
+  try {
+    generate(cwd, ConfigSchema.parse({ project: { name: "t" }, language: "en", targets: ["copilot"], stack: { languages: [{ id: "typescript", version: "latest" }] } }));
+    const mirror = readFileSync(resolve(cwd, ".github/copilot-instructions.md"), "utf8");
+    // Thin pointer: exactly one managed block, points to AGENTS.md, does NOT re-emit governance blocks.
+    assert.equal((mirror.match(/ai-workspace:begin:/g) || []).length, 1);
+    assert.match(mirror, /reads \*\*AGENTS\.md\*\* natively/);
+    assert.match(mirror, /instructions\/\*\.instructions\.md/);
+    assert.doesNotMatch(mirror, /ai-workspace:begin:aiws:safety/);
+    assert.doesNotMatch(mirror, /ai-workspace:begin:aiws:workflow/);
+    // The genuinely additive surface (path-scoped instructions) is still generated.
+    assert.ok(readFileSync(resolve(cwd, ".github/instructions/typescript.instructions.md"), "utf8"));
+  } finally {
+    rmSync(cwd, { recursive: true, force: true });
+  }
+});
+
+test("the SDD flow includes the clarify phase (0012c consistency)", () => {
+  const cwd = tmpRepo();
+  try {
+    generate(cwd, ConfigSchema.parse({ project: { name: "t" } }));
+    const agents = readFileSync(resolve(cwd, "AGENTS.md"), "utf8");
+    // explore → propose → clarify → spec in the workflow flow.
+    assert.match(agents, /aiws-sdd-propose`? → `?\/aiws-sdd-clarify`? → `?\/aiws-sdd-spec/);
+  } finally {
+    rmSync(cwd, { recursive: true, force: true });
+  }
+});

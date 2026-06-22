@@ -25,16 +25,31 @@ export interface Artifact {
   status: WriteResult["status"];
 }
 
+// Copilot reads AGENTS.md natively (root, primary) since late 2025 — a full mirror would load the same
+// content twice. So this file is a THIN pointer (0012c): repo-wide rules stay in AGENTS.md; only the
+// genuinely additive surface (path-scoped instructions + prompts) lives under .github/.
 function copilotHeader(es: boolean): string {
   return es
     ? `# GitHub Copilot — instrucciones del repositorio
 
-> Espejo generado de **AGENTS.md** (fuente única de verdad). No lo edites a mano — edita \`AGENTS.md\`
-> y ejecuta \`ai-workspace sync\`. El contenido fuera de los marcadores se preserva.`
+> Copilot lee **AGENTS.md** de forma nativa (raíz, primario). La guía completa vive allí — este fichero se
+> mantiene **fino a propósito** para no cargar el mismo contenido dos veces.
+>
+> - Reglas de todo el repo → \`AGENTS.md\`.
+> - Reglas por ruta → \`.github/instructions/*.instructions.md\` (\`applyTo\`).
+> - Prompts de tarea → \`.github/prompts/*.prompt.md\`.
+>
+> Edita \`AGENTS.md\` y ejecuta \`ai-workspace sync\`. El contenido fuera de los marcadores se preserva.`
     : `# GitHub Copilot — repository instructions
 
-> Generated mirror of **AGENTS.md** (single source of truth). Do not edit by hand — edit \`AGENTS.md\`
-> and run \`ai-workspace sync\`. Content outside the markers is preserved.`;
+> Copilot reads **AGENTS.md** natively (root, primary). The full guidance lives there — this file stays
+> **thin on purpose** so the same content is not loaded twice.
+>
+> - Repository-wide rules → \`AGENTS.md\`.
+> - Path-scoped rules → \`.github/instructions/*.instructions.md\` (\`applyTo\`).
+> - Task prompts → \`.github/prompts/*.prompt.md\`.
+>
+> Edit \`AGENTS.md\` and run \`ai-workspace sync\`; content outside the markers is preserved.`;
 }
 
 function rel(cwd: string, abs: string): string {
@@ -156,10 +171,8 @@ function generateWorkspace(cwd: string, config: Config, add: (r: WriteResult, de
   // 3. Copilot adapter — mirror of AGENTS.md body (union stack). Copilot reads a single workspace-root file
   //    (no nested discovery), so it stays workspace-level and covers every repo's stack.
   if (config.targets.includes("copilot")) {
-    const copilotBlocks = [
-      { id: aiwsBlockId("copilot-header"), content: copilotHeader(es) },
-      ...blocks.filter((b) => b.id !== aiwsBlockId("header")),
-    ];
+    // Thin pointer, not a mirror (0012c): Copilot reads AGENTS.md natively, so we don't re-emit the blocks.
+    const copilotBlocks = [{ id: aiwsBlockId("copilot-header"), content: copilotHeader(es) }];
     add(writeManaged(resolve(cwd, ".github/copilot-instructions.md"), "html", copilotBlocks), t.desc.copilot);
     if (config.vscode) add(buildVscodeMcpFile(cwd, config), t.desc.vscodeMcp);
 
