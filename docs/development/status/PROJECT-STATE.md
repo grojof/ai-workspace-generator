@@ -66,7 +66,10 @@ mantenimiento mínimo. **Sin datos de negocio reales.**
   commands `aiws-*`); `ai-workspace verify` / `doctor --strict` recomputan y salen con error ante manipulación
   (CI gate). Parte E **completa** = detectar (`verify`) + auto-sanar (`sync --check` previsualiza el diff antes de
   sobrescribir) + confinar (el hook `safetyGuard` también vigila Write/Edit a ficheros base propios del
-  manifiesto; AGENTS.md no se vigila). Hechos: F1 (namespace + migración), F2a (packs `sdd-*` → `aiws-sdd-*` +
-  invariante), F2b (`relation`), F3+F3c (manifiesto + `verify` + auto-sanación + confinamiento).
-  TEMPLATES_VERSION 0.40.0. Pendientes: **F2c** (packs git de empresa + `company` → objeto + guard runtime;
-  requiere spec/design propio — Safety gate), **F4** (`aiws-reconcile`, depende de F2c).
+  manifiesto; AGENTS.md no se vigila). Los packs git de empresa (`company.packs: [git+url#ref]`) se vendorizan con `ai-workspace packs sync`
+  (pinneados, commiteados en `.ai-workspace/packs/`); `ai-workspace reconcile` clasifica los overlays de
+  empresa vs base (🔵 único / 🟢 redundante / 🟡 conflicto / ⚠️ drift) y la skill `aiws-reconcile` lo convierte
+  en propose-and-review. **ADR 0003 COMPLETO (A–F):** A tenencia · B namespace+procedencia · C `relation` ·
+  D extender/actualizar (packs git) · E integridad (manifiesto+`verify`+auto-sanación+confinamiento) ·
+  F reconciliación. TEMPLATES_VERSION 0.46.0. Pendiente (cierre): aplicar las foundations a este propio repo
+  (dogfood) + release, al final.
