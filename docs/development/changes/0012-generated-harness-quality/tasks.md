@@ -35,6 +35,15 @@
 - [ ] **Deferred:** optional read-only `/aiws-sdd-analyze` (a new phase changes the orchestrator block + byte
       fixtures; small follow-up, low urgency) — left as a note, not blocking.
 
-## 0012d — lean floor + eval rubric + convention regeneration
-- [ ] A couple of substantive base references even without `reasons`; optional per-skill eval rubric; regenerate
-      `_shared/sdd-convention.md` (stop `writeIfMissing`).
+## 0012d — lean floor + eval rubric + convention regeneration (done)
+- [x] **Regenerated `_shared/sdd-convention.md`** (`writeIfMissing` → `writeFile`): existing repos now get
+      convention updates on `sync` — it's OUR canonical reference, not a user scaffold. (Test proves a stale copy
+      is restored.)
+- [x] **Eval rubric documented** (the lean choice over per-skill files): an "Evaluating a skill" section in the
+      convention — each phase's **Quality bar** IS its rubric; judge with Typical / Edge / Anti scenarios.
+- [x] **Lean floor:** satisfied by 0012a/b — the default (`lean`) tier already gets the rich phase skills + the
+      delta-format convention + the eval pattern (covered by the default-config tests).
+- [x] `TEMPLATES_VERSION` → 0.44.0. 101/101 green.
+
+> **0012 complete** (a–d). Only deferral: optional read-only `/aiws-sdd-analyze` (noted in 0012c) — a small,
+> low-urgency follow-up that would churn the orchestrator block + byte fixtures.
