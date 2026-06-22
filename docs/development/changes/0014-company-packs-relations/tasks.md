@@ -41,4 +41,16 @@
 - [x] `test/company-packs.test.js` (4, hermetic local-git): ref parsing; string→object normalisation; end-to-end
       sync→vendor→generate-emits; impostor `aiws-*` rejected. `TEMPLATES_VERSION` → 0.45.0. 105/105. EXTENDING + USAGE.
 
-> **F2 complete** (a/b/c). Next foundation: **F4** `aiws-reconcile` (base ↔ company overlay, propose-and-review).
+> **F2 complete** (a/b/c).
+
+## F4 — aiws-reconcile (done)
+- [x] `src/commands/reconcile.ts`: `reconcile(cwd)` classifies each company overlay (`loadCompanyPacks` +
+      `packRelation` vs `baseCatalogIds`): `new`/`extends` → 🔵 unique; `overrides:` of a live base id → 🟡
+      conflict; `overrides:` of a missing id → 🟢 redundant; plus ⚠️ drift surfaced from `verify`. `ai-workspace
+      reconcile` prints the report (read-only).
+- [x] Generated **`aiws-reconcile` skill + `/aiws-reconcile` command** (gated to `company.id !== "none"`),
+      propose-and-review (runs the CLI, proposes per finding, waits for approval, never auto-applies) + registry row.
+- [x] `test/reconcile.test.js` (3): classification; clean repo ⇒ none; skill/command generated only with an org +
+      propose-and-review wording. Byte baselines regenerated. `TEMPLATES_VERSION` → 0.46.0. 108/108. ADR 0003 marked implemented.
+
+> **ADR 0003 foundations COMPLETE (A–F).** Remaining: dogfood-regen + release (end-of-line).

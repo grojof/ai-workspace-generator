@@ -98,6 +98,16 @@ ai-workspace verify            # CI gate: fails if base artifacts were tampered 
 ai-workspace doctor --strict   # lint + integrity in one
 ```
 
+### `reconcile` — company overlay vs base
+After a base upgrade or `packs sync`, classifies each company overlay against the current base: 🔵 **unique**
+(keep), 🟢 **redundant** (overrides a base skill that's gone — stale), 🟡 **conflict** (overrides a live base
+skill — you decide), ⚠️ **drift** (a base file edited out of band). Read-only — the generated `aiws-reconcile`
+skill turns it into a **propose-and-review** flow (nothing auto-applied). Only meaningful with an org set.
+
+```bash
+ai-workspace reconcile
+```
+
 ### `add` / `remove` — modules
 Add or remove a module and regenerate. `type` ∈ `language | framework | environment | mcp`; `id` from the
 catalog (see `list`).

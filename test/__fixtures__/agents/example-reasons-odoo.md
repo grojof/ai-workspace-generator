@@ -192,6 +192,7 @@ Load skills by their *trigger*, not preemptively. Selection for the **technical*
 | `aiws-dependency-upgrade` | before any version bump or migration (assess first) | on-demand · high risk |
 | `aiws-sdd-onboarding` | starting a new app / choosing profile A or B | on-demand |
 | `aiws-sdd-spec-schema` | authoring/validating a spec in REASONS mode | on-demand |
+| `aiws-reconcile` | after a base upgrade / `packs sync`, to audit company overlays vs the base | on-demand |
 | `aiws-vscode-setup` | setting up VS Code / extensions | on-demand |
 | `find-skills` | discovering/installing skills from the open ecosystem (npx skills) | on-demand |
 | `mcp-builder` | building or evaluating an MCP server (tools, resources, Node or Python, best practices) | on-demand |
