@@ -49,6 +49,21 @@ Therefore:
 - Treat block ids as permanent public API. Prefer changing *content* over changing *ids*.
 - If you must rename/remove, publish a **migration** and mark it as a major change in the changelog.
 
+### Orphaned *files* from a removed generation path (0018)
+
+The same "never deletes" rule applies to whole **files**, not just managed blocks. Change **0018** stopped
+emitting the per-stack bodies `references/stack/<id>.md` and the per-stack Copilot projections
+`.github/instructions/<id>.instructions.md` (the prose moved into one `references/engineering-practices.md` +
+skill packs). `sync`/`generate` **do not delete** files they no longer author — so a repo generated before
+0018 keeps those files on disk as **orphans**.
+
+- They are **safe to delete by hand**: `rm -r references/stack` and remove any stale stack
+  `.github/instructions/<lang|fw|env>.instructions.md` (keep the per-**repo** `<repoSlug>.instructions.md`
+  from multi-repo, change 0005 — those are still generated).
+- `doctor` may surface them under its dangling/orphan checks; that is the migration nudge, not a defect.
+- This is deliberate: automated deletion in `sync` would break the "idempotency is sacred / never deletes
+  user-side content" contract and is Safety-gate-adjacent. Document-only migration is the chosen path.
+
 ### The `aiws:` block-id namespace ([ADR 0003](decisions/0003-foundations-tenancy-provenance-reconciliation.md) F1b)
 
 Governance-spine blocks composed into `AGENTS.md` / `CLAUDE.md` / Copilot carry the reserved `aiws:`

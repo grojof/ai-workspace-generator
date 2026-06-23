@@ -59,10 +59,11 @@ Update this file as the capability evolves.
   otherwise each repo's effective stack is its own `stack` or the root default.
 - **Per-repo generation** (change 0003) wires `resolveRepos()` into `generate()`. Generation splits into:
   - **Workspace-level** (root, once, composed over `unionStack(config)` so it covers every repo's stack):
-    `AGENTS.md`, the root `CLAUDE.md` bridge (`@AGENTS.md`), Copilot instructions + the TS path-scoped
-    instruction, `.mcp.json`/`.vscode/mcp.json`, `.claude/settings.json` + safety hook, SDD module, vendored
-    workflow skills, **non-stack** skill packs (sdd-*/corp-*), living docs, docs index, governance,
-    guides/learning/VS Code, scope/format files, `AI-WORKSPACE.md` (rendered last).
+    `AGENTS.md`, the root `CLAUDE.md` bridge (`@AGENTS.md`), Copilot instructions, the engineering-practices
+    baseline (`references/engineering-practices.md`, change 0018), `.mcp.json`/`.vscode/mcp.json`,
+    `.claude/settings.json` + safety hook, SDD module, vendored workflow skills, **non-stack** skill packs
+    (sdd-*/corp-*), living docs, docs index, governance, guides/learning/VS Code, scope/format files,
+    `AI-WORKSPACE.md` (rendered last).
   - **Repo-level** (per `resolveRepos()` entry, over the repo's effective stack): a child `CLAUDE.md` that
     imports the root via `agentsImportPath(path)` (`a/` → `@../AGENTS.md`), and the **stack-bound** skill
     packs for that repo. Empty `repos[]` ⇒ the single `.` entry adds stack packs at the root, byte-identical
@@ -94,6 +95,24 @@ Update this file as the capability evolves.
 - `doctor` validates configured stack ids against the registry (parity with the MCP check) and warns on
   unknown ids; the `add`/`remove` help lists all four module types (`language|framework|environment|mcp`).
 
+## Stack rendering & engineering baseline (change 0018)
+- **Engineering-practices baseline.** Generation MUST emit one evergreen, **language-agnostic**
+  `references/engineering-practices.md` ("rules with teeth": change discipline, data & migrations, secrets &
+  supply chain, input & boundaries, error handling, testing, observability, performance), reached by a lean
+  hub pointer block `aiws:engineering-practices` (after `harness-engineering`). It MUST NOT restate the Layer-0
+  *Universal conventions* — the hub states the stance, the reference carries the depth.
+- **Per-stack blocks are context7 pointers.** Each active stack entry keeps its managed block id
+  (`lang-*`/`fw-*`/`env-*`, no migration) but its content is a single inline **context7 pointer** line
+  (`stackPointer`). No per-stack prose body (`references/stack/<id>.md`) and no per-stack Copilot
+  `.github/instructions/<id>.instructions.md` projection are generated. (The per-**repo** `applyTo` instruction
+  of change 0005 is unrelated and unchanged.)
+- **Stack/project specifics live in skill packs.** Stack- and project-specific rules are delivered via skill
+  packs / skill groups (ours or a company's), the documented extension path — not per-stack templates.
+- **Non-destructive migration.** `sync`/`generate` only write; they MUST NOT delete files they no longer author.
+  Repos generated before 0018 keep their now-orphaned `references/stack/*.md` / per-stack `*.instructions.md` —
+  documented as safe to remove (see `MAINTAINING.md`). The 12 `templates/{languages,frameworks,environments}/
+  */layer.md.eta` and the `stackBody`/`generateStackReferences` path are removed.
+
 ## Acceptance (enforced)
 - Wizard options derive from the registry (`config.test.js`, `registry.test.js`, build).
 - `configure-workspace` skill + `/configure` are generated and routed (`generate.test.js`).
@@ -110,3 +129,6 @@ Update this file as the capability evolves.
   yields no Claude/Copilot files; `vscode: false` omits `.vscode/*`, default unchanged (`generate.test.js`).
 - Generation is idempotent and preserves out-of-band user text; single-repo `AGENTS.md` is byte-identical to
   the captured baseline (`invariants.test.js`, `block-manifest.test.js`).
+- Stack rendering (0018): `references/engineering-practices.md` + the `aiws:engineering-practices` hub pointer
+  are generated; each stack block is a single context7 pointer (no body file, no per-stack Copilot instruction);
+  no `layer.md.eta` remains (`stack-references.test.js`, `registry.test.js`, `invariants.test.js`).

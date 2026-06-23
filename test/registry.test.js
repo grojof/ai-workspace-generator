@@ -11,22 +11,23 @@ function templatePath(kind, id) {
   return resolve(dir, `${kind}/${id}/layer.md.eta`);
 }
 
-// AI-facing artifacts are English-only (token efficiency), so bundled modules ship a single base
-// template — no per-language mirror. Human docs are localized elsewhere.
-test("every bundled language has a base template", () => {
-  for (const m of LANGUAGES.filter((x) => x.bundled)) {
-    assert.ok(existsSync(templatePath("languages", m.id)), `missing base template for ${m.id}`);
+// 0018: the per-stack prose matrix was removed. The craft depth now lives in the language-agnostic
+// `references/engineering-practices.md` baseline + skill packs; AGENTS.md keeps only a context7 pointer per
+// stack id. No module ships a per-stack `layer.md.eta` anymore — these guards encode SC-003.
+test("no language ships a per-stack layer template (0018)", () => {
+  for (const m of LANGUAGES) {
+    assert.equal(existsSync(templatePath("languages", m.id)), false, `stale layer template for ${m.id}`);
   }
 });
 
-test("every bundled framework has a base template", () => {
-  for (const m of FRAMEWORKS.filter((x) => x.bundled)) {
-    assert.ok(existsSync(templatePath("frameworks", m.id)), `missing base template for ${m.id}`);
+test("no framework ships a per-stack layer template (0018)", () => {
+  for (const m of FRAMEWORKS) {
+    assert.equal(existsSync(templatePath("frameworks", m.id)), false, `stale layer template for ${m.id}`);
   }
 });
 
-test("every bundled environment has a base template", () => {
-  for (const m of ENVIRONMENTS.filter((x) => x.bundled)) {
-    assert.ok(existsSync(templatePath("environments", m.id)), `missing base template for ${m.id}`);
+test("no environment ships a per-stack layer template (0018)", () => {
+  for (const m of ENVIRONMENTS) {
+    assert.equal(existsSync(templatePath("environments", m.id)), false, `stale layer template for ${m.id}`);
   }
 });

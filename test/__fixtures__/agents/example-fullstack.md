@@ -146,6 +146,17 @@ prose — keeping guidance at the **right altitude**: specific enough to steer, 
 > Before adding to this file, ask: *what failure does this prevent?* If there isn't one, don't add it.
 <!-- ai-workspace:end:aiws:harness-engineering -->
 
+<!-- ai-workspace:begin:aiws:engineering-practices -->
+## Engineering practices (Layer 0 — craft baseline)
+
+Beyond the Layer-0 *stance* above, a language-agnostic **craft baseline** carries the depth — change
+discipline, data & migrations, secrets & supply chain, input & boundaries, error handling, testing,
+observability and performance, as concrete "rules with teeth". Load it on demand; don't inline it here.
+Stack- and project-specific rules are **not** in the baseline by design — they live in **skill packs**.
+
+Rules → [references/engineering-practices.md](references/engineering-practices.md).
+<!-- ai-workspace:end:aiws:engineering-practices -->
+
 <!-- ai-workspace:begin:aiws:routing -->
 ## Intent routing (Layer 0)
 
@@ -198,27 +209,27 @@ Load skills by their *trigger*, not preemptively. Selection for the **technical*
 
 <!-- ai-workspace:begin:aiws:lang-typescript -->
 ## typescript (Layer 1 — language) · target vlatest
-Rules → [references/stack/typescript.md](references/stack/typescript.md) (applies to `**/*.ts, **/*.tsx`).
+> Query **context7** for `typescript@latest` best practices.
 <!-- ai-workspace:end:aiws:lang-typescript -->
 
 <!-- ai-workspace:begin:aiws:lang-go -->
 ## go (Layer 1 — language) · target vlatest
-Rules → [references/stack/go.md](references/stack/go.md) (applies to `**/*.go`).
+> Query **context7** for `go@latest` best practices.
 <!-- ai-workspace:end:aiws:lang-go -->
 
 <!-- ai-workspace:begin:aiws:fw-react -->
 ## react (Layer 2 — framework) · target vlatest
-Rules → [references/stack/react.md](references/stack/react.md) (applies to `**/*.tsx, **/*.jsx`).
+> Query **context7** for `react@latest` best practices.
 <!-- ai-workspace:end:aiws:fw-react -->
 
 <!-- ai-workspace:begin:aiws:env-wsl -->
 ## wsl (Layer 3 — environment) · latest
-Rules → [references/stack/wsl.md](references/stack/wsl.md).
+> Query **context7** for `wsl` setup and best practices.
 <!-- ai-workspace:end:aiws:env-wsl -->
 
 <!-- ai-workspace:begin:aiws:env-docker -->
 ## docker (Layer 3 — environment) · latest
-Rules → [references/stack/docker.md](references/stack/docker.md).
+> Query **context7** for `docker` setup and best practices.
 <!-- ai-workspace:end:aiws:env-docker -->
 
 <!-- ai-workspace:begin:aiws:company-overlay -->

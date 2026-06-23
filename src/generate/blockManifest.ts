@@ -40,6 +40,9 @@ export const BLOCK_MANIFEST: readonly BlockEntry[] = [
   { kind: "template", id: "workflow", template: "core/workflow.md.eta" },
   // Harness-engineering stance + the ratchet principle (how the instruction set may grow). Always on.
   { kind: "template", id: "harness-engineering", template: "core/harness-engineering.md.eta" },
+  // Craft baseline (0018): language-agnostic engineering practices "with teeth", reached by a lean pointer.
+  // The depth lives in `references/engineering-practices.md`; stack/project specifics live in skill packs.
+  { kind: "template", id: "engineering-practices", template: "core/engineering-practices.md.eta" },
   { kind: "template", id: "routing", template: "core/routing.md.eta" },
   // Skill routing: which skills to surface for the active profile (derived from the skill registry).
   { kind: "render", id: "skill-routing", render: (config) => renderSkillRouting(config) },
@@ -53,9 +56,9 @@ export const BLOCK_MANIFEST: readonly BlockEntry[] = [
     when: (c) =>
       c.project.mode === "new" && c.stack.languages.length === 0 && c.stack.frameworks.length === 0,
   },
-  // Layers 1-3: one block per stack entry. The body lives in `references/stack/<id>.md` (0017a); the block
-  // keeps only a resolving pointer. Block ids are unchanged (no migration); `generateStackReferences` writes
-  // the referenced bodies + the Copilot `applyTo` projection.
+  // Layers 1-3: one block per stack entry. The block content is a single inline context7 pointer (0018); the
+  // per-stack prose body and Copilot projection were removed (craft depth now lives in the engineering-practices
+  // baseline + skill packs). Block ids are unchanged — no migration.
   {
     kind: "expand",
     expand: (config) =>

@@ -146,6 +146,17 @@ prose — keeping guidance at the **right altitude**: specific enough to steer, 
 > Before adding to this file, ask: *what failure does this prevent?* If there isn't one, don't add it.
 <!-- ai-workspace:end:aiws:harness-engineering -->
 
+<!-- ai-workspace:begin:aiws:engineering-practices -->
+## Engineering practices (Layer 0 — craft baseline)
+
+Beyond the Layer-0 *stance* above, a language-agnostic **craft baseline** carries the depth — change
+discipline, data & migrations, secrets & supply chain, input & boundaries, error handling, testing,
+observability and performance, as concrete "rules with teeth". Load it on demand; don't inline it here.
+Stack- and project-specific rules are **not** in the baseline by design — they live in **skill packs**.
+
+Rules → [references/engineering-practices.md](references/engineering-practices.md).
+<!-- ai-workspace:end:aiws:engineering-practices -->
+
 <!-- ai-workspace:begin:aiws:routing -->
 ## Intent routing (Layer 0)
 
@@ -236,7 +247,7 @@ to mind, and do not start coding before it is decided.
 
 <!-- ai-workspace:begin:aiws:env-odoo -->
 ## odoo (Layer 3 — environment) · latest
-Rules → [references/stack/odoo.md](references/stack/odoo.md).
+> Query **context7** for `odoo` setup and best practices.
 <!-- ai-workspace:end:aiws:env-odoo -->
 
 <!-- ai-workspace:begin:aiws:company-overlay -->

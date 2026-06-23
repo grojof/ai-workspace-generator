@@ -197,12 +197,12 @@ Load skills by their *trigger*, not preemptively. Selection for the **technical*
 
 <!-- ai-workspace:begin:aiws:lang-typescript -->
 ## typescript (Layer 1 — language) · target vlatest
-Rules → [references/stack/typescript.md](references/stack/typescript.md) (applies to `**/*.ts, **/*.tsx`).
+> Query **context7** for `typescript@latest` best practices.
 <!-- ai-workspace:end:aiws:lang-typescript -->
 
 <!-- ai-workspace:begin:aiws:env-node-runtime -->
 ## node-runtime (Layer 3 — environment) · latest
-Rules → [references/stack/node-runtime.md](references/stack/node-runtime.md).
+> Query **context7** for `node-runtime` setup and best practices.
 <!-- ai-workspace:end:aiws:env-node-runtime -->
 
 <!-- ai-workspace:begin:aiws:company -->
@@ -346,3 +346,14 @@ Guard-rails that always apply when working on this generator:
 ### Diagrams (repo docs)
 - Repo docs use **Mermaid** (GitHub-native) — quote labels with special chars (`·`, `<br/>`); enforced by `test/docs-mermaid.test.js`. Corporate palette: dark `#143a80`, accent `#e4b632`.
 - Business/client deliverables use the corporate **draw.io** standard — not for code-repo docs.
+
+<!-- ai-workspace:begin:aiws:engineering-practices -->
+## Engineering practices (Layer 0 — craft baseline)
+
+Beyond the Layer-0 *stance* above, a language-agnostic **craft baseline** carries the depth — change
+discipline, data & migrations, secrets & supply chain, input & boundaries, error handling, testing,
+observability and performance, as concrete "rules with teeth". Load it on demand; don't inline it here.
+Stack- and project-specific rules are **not** in the baseline by design — they live in **skill packs**.
+
+Rules → [references/engineering-practices.md](references/engineering-practices.md).
+<!-- ai-workspace:end:aiws:engineering-practices -->

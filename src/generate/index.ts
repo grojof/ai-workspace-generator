@@ -16,7 +16,7 @@ import { generateGuides, generateVscode } from "./guides.js";
 import { generateGovernance } from "./governance.js";
 import { generateLearning } from "./learning.js";
 import { generateDocsIndex } from "./docsIndex.js";
-import { generateStackReferences } from "./references.js";
+import { generateEngineeringBaseline } from "./references.js";
 import { docsPaths } from "./paths.js";
 import { strings } from "../i18n/strings.js";
 
@@ -179,13 +179,13 @@ function generateWorkspace(cwd: string, config: Config, add: (r: WriteResult, de
   // 1. AGENTS.md — single source of truth, composed managed blocks (union stack).
   add(writeManaged(resolve(cwd, "AGENTS.md"), "html", blocks), t.desc.agents);
 
-  // 1b. Stack detail (0017a): the per-stack bodies live in `references/stack/<id>.md`; AGENTS.md carries only
-  //     pointers. Generated for every target (the pointer must resolve); Copilot also gets an `applyTo`
-  //     projection where a file glob exists. One source (`stackBody`) feeds all of them.
-  const stackRefDesc = es
-    ? "Detalle de stack (reglas por lenguaje/framework/entorno) referenciado desde AGENTS.md."
-    : "Stack detail (per-language/framework/environment rules) referenced from AGENTS.md.";
-  for (const r of generateStackReferences(cwd, config, wsConfig.stack)) add(r, stackRefDesc);
+  // 1b. Engineering-practices baseline (0018): one evergreen, language-agnostic reference reached by a lean
+  //     pointer from the AGENTS.md hub. Replaces the per-stack prose bodies; stack/project specifics live in
+  //     skill packs. AGENTS.md keeps only a context7 pointer per stack id (no body file, no Copilot projection).
+  const baselineDesc = es
+    ? "Baseline de prácticas de ingeniería (agnóstica de lenguaje) referenciada desde AGENTS.md."
+    : "Engineering-practices baseline (language-agnostic) referenced from AGENTS.md.";
+  add(generateEngineeringBaseline(cwd, config), baselineDesc);
 
   // 2. Claude adapter (root). Claude Code reads CLAUDE.md, not AGENTS.md, so the root gets a CLAUDE.md that
   //    imports @AGENTS.md (a bridge — no stack skills here; child repos get their own in the repo phase).

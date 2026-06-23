@@ -53,6 +53,7 @@ test("invariant · AGENTS.md block order is a stable contract (golden)", () => {
       "aiws:safety",
       "aiws:workflow",
       "aiws:harness-engineering",
+      "aiws:engineering-practices",
       "aiws:routing",
       "aiws:skill-routing",
       "aiws:lang-typescript",
@@ -104,8 +105,8 @@ test("invariant · tech-selection block is greenfield-gated (new + empty stack o
 });
 
 test("invariant · the Layer-0 core prefix is fixed and config-independent", () => {
-  // Whatever the stack/company/features, the first eight blocks never move:
-  // they are the governance spine every downstream repo relies on.
+  // Whatever the stack/company/features, the fixed Layer-0 prefix never moves:
+  // it is the governance spine every downstream repo relies on.
   const prefix = [
     "aiws:header",
     "aiws:core",
@@ -114,6 +115,7 @@ test("invariant · the Layer-0 core prefix is fixed and config-independent", () 
     "aiws:safety",
     "aiws:workflow",
     "aiws:harness-engineering",
+    "aiws:engineering-practices",
     "aiws:routing",
     "aiws:skill-routing",
   ];
