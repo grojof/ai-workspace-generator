@@ -1,8 +1,0 @@
-## Node runtime (Layer 3 — environment)
-
-- Manage Node versions with **nvm** (or fnm/Volta). Pin the version in `.nvmrc`; run `nvm use`.
-- Prefer the project's lockfile (npm/pnpm/yarn) — commit it; install with `npm ci` in CI.
-- Don't install global packages for project tooling; use `devDependencies` and `npx`.
-- One Node major per project; document it. Match CI to the local version.
-
-> For setup specifics on your OS, query **context7** (or the nvm docs).

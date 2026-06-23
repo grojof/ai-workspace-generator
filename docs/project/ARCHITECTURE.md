@@ -49,9 +49,10 @@ source — the namespace is added at compose time.
 |-------|-----------------|---------------|------------------------|
 | 0 · Core | [`templates/core/`](../../templates/core/) | always active | `aiws:header`, `aiws:core` |
 | 0 · Profile | [`templates/profile/`](../../templates/profile/) | `profile` | `aiws:profile` |
-| 1 · Language | [`templates/languages/<id>/`](../../templates/languages/) | `stack.languages` | `aiws:lang-<id>` |
-| 2 · Framework | [`templates/frameworks/<id>/`](../../templates/frameworks/) | `stack.frameworks` | `aiws:fw-<id>` |
-| 3 · Environments | [`templates/environments/<id>/`](../../templates/environments/) | `stack.environments` | `aiws:env-<id>` |
+| 0 · Engineering baseline | [`templates/core/engineering-practices.md.eta`](../../templates/core/engineering-practices.md.eta) (hub) + [`templates/references/`](../../templates/references/) (depth) | always active | `aiws:engineering-practices` |
+| 1 · Language | _none — context7 pointer_ | `stack.languages` | `aiws:lang-<id>` |
+| 2 · Framework | _none — context7 pointer_ | `stack.frameworks` | `aiws:fw-<id>` |
+| 3 · Environments | _none — context7 pointer_ | `stack.environments` | `aiws:env-<id>` |
 | 4 · Company (overlay) | [`templates/company/<org>/`](../../templates/company/) | `company` (`example`, or your own org) | `aiws:company-overlay` |
 | 4 · Company (conventions) | [`templates/company/`](../../templates/company/) | `conventions` | `aiws:company` |
 | 5 · Business | [`templates/business/`](../../templates/business/) | `business` | `aiws:business` |
@@ -59,12 +60,15 @@ source — the namespace is added at compose time.
 More feature blocks: `aiws:sdd` (if `sdd.enabled`), `aiws:living-docs` (if `livingDocs`), and `imported` (added by
 `ai-workspace import`).
 
-**Progressive disclosure (0017a).** Layers 1–3 (`lang-*`/`fw-*`/`env-*`) don't inline their rules in AGENTS.md
-anymore — the body lives in a neutral `references/stack/<id>.md` and the block keeps only a resolving **pointer**.
-One source ([`src/generate/references.ts`](../../src/generate/references.ts) `stackBody`) feeds every projection:
-the reference file (read by Claude/Codex/opencode via the pointer) and, where a file glob exists, a Copilot
-`.github/instructions/<id>.instructions.md` (`applyTo`) that loads by path. Layer-0 governance stays inline; the
-pointer is guarded by `doctor`'s dangling-reference check.
+**Engineering baseline + context7 pointers (0018).** The per-stack prose matrix was removed. The durable craft
+depth now lives in one evergreen, language-agnostic [`references/engineering-practices.md`](../../templates/references/engineering-practices.md.eta)
+("rules with teeth"), reached by a lean **hub pointer** block (`aiws:engineering-practices`) — the same
+progressive-disclosure pattern 0017a introduced. Layers 1–3 (`lang-*`/`fw-*`/`env-*`) keep their block ids (no
+migration) but their content is now a single inline **context7 pointer** per stack id
+([`src/generate/references.ts`](../../src/generate/references.ts) `stackPointer`); no per-stack body file and no
+Copilot `*.instructions.md` projection are generated. Stack- and project-specific rules are the user's job by
+design — they live in **skill packs / skill groups** (see [EXTENDING](EXTENDING.md)). Layer-0 governance stays
+inline; the hub pointer is guarded by `doctor`'s dangling-reference check.
 
 The `sdd` block supports two **methodologies** (`sdd.methodology`): `sdd` (spec-driven, default) and `spdd`
 (Structured-Prompt-Driven — the REASONS Canvas prompt as a versioned artifact). They are **orthogonal** to

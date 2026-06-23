@@ -130,7 +130,8 @@ test("multi-repo (0005): each child gets a Copilot path-scoped applyTo instructi
     assert.match(a, /applyTo: "app-a\/\*\*"/);
     assert.match(a, /app-a/);
     assert.ok(readFileSync(resolve(multi, ".github/instructions/app-b.instructions.md"), "utf8"));
-    // Single-repo: no per-repo instruction (only the TS one when typescript is present).
+    // Single-repo: no per-repo instruction. The per-stack projection was removed in 0018 — a single-repo TS
+    // workspace emits no `.github/instructions/*.instructions.md` at all.
     generate(
       single,
       ConfigSchema.parse({
@@ -138,7 +139,7 @@ test("multi-repo (0005): each child gets a Copilot path-scoped applyTo instructi
         stack: { languages: [{ id: "typescript", version: "latest" }] },
       }),
     );
-    assert.ok(readFileSync(resolve(single, ".github/instructions/typescript.instructions.md"), "utf8"));
+    assert.equal(existsSync(resolve(single, ".github/instructions/typescript.instructions.md")), false);
     assert.equal(existsSync(resolve(single, ".github/instructions/app-a.instructions.md")), false);
   } finally {
     rmSync(multi, { recursive: true, force: true });

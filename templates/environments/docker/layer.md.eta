@@ -1,8 +1,0 @@
-## Docker (Layer 3 — environment) · containers
-
-- Reproducible envs via `Dockerfile` + `docker-compose.yml`. Pin base image tags (no bare `latest`).
-- Multi-stage builds; small final images. Use `.dockerignore` (node_modules, .git, build output).
-- Never bake secrets into images; pass them via env/secrets at runtime.
-- One concern per container; use compose for local DB/services.
-
-> For image/setup specifics, query **context7** (or the Docker docs).

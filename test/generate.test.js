@@ -820,8 +820,9 @@ test("copilot mirror is a thin pointer, not a full mirror; path-scoped instructi
     assert.match(mirror, /instructions\/\*\.instructions\.md/);
     assert.doesNotMatch(mirror, /ai-workspace:begin:aiws:safety/);
     assert.doesNotMatch(mirror, /ai-workspace:begin:aiws:workflow/);
-    // The genuinely additive surface (path-scoped instructions) is still generated.
-    assert.ok(readFileSync(resolve(cwd, ".github/instructions/typescript.instructions.md"), "utf8"));
+    // 0018: the per-stack instruction projection was removed — a single-repo TS workspace emits none. The
+    // path-scoped surface remains for multi-repo children (covered in multi-repo.test.js).
+    assert.equal(existsSync(resolve(cwd, ".github/instructions/typescript.instructions.md")), false);
   } finally {
     rmSync(cwd, { recursive: true, force: true });
   }

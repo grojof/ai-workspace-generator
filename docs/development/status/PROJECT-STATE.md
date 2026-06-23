@@ -52,9 +52,12 @@ mantenimiento mínimo. **Sin datos de negocio reales.**
   `docs/project/`. El store SDD queda fuera de alcance.
 - **Autoauditoría (0016b)** — skill `aiws-audit` + `/aiws-audit`: informe **read-only** fechado en
   `docs/development/audits/` que compone `doctor`/`verify`/`reconcile` + el contrato. Bucle autoalimentado.
-- **Progressive disclosure (0017)** — AGENTS.md = hub Layer-0 inline + **punteros**; detalle de stack en
-  `references/stack/<id>.md` (`src/generate/references.ts`, una fuente) proyectado al loader nativo de cada
-  target (Copilot `applyTo`; resto leen el puntero); detalle de tarea delegado a las skills cross-tool.
+- **Progressive disclosure (0017)** — AGENTS.md = hub Layer-0 inline + **punteros**; detalle de tarea delegado
+  a las skills cross-tool.
+- **Baseline de ingeniería (0018)** — la matriz de prosa por-stack se eliminó: la profundidad de oficio vive en
+  **un** `references/engineering-practices.md` agnóstico de lenguaje (puntero hub `aiws:engineering-practices`),
+  y cada stack queda como una **línea context7 inline** en AGENTS.md (sin fichero de cuerpo ni proyección
+  Copilot). Lo específico de stack/dominio → **skill packs** (camino diseñado).
 
 ## Decisiones vigentes
 
@@ -95,3 +98,13 @@ mantenimiento mínimo. **Sin datos de negocio reales.**
   detalle REASONS duplicado del orquestador SDD → puntero a las skills cross-tool (REASONS −~170 tok). Layer-0
   de gobernanza **siempre inline**; los punteros los vigila el check de refs de 0016a; skills validadas contra
   el Agent Skills spec (`skill-spec.test.js`). TEMPLATES_VERSION **0.52.0**; AGENTS.md 5678/6000.
+- **Baseline de ingeniería, poda de la prosa por-stack (0018):** se reemplazó la matriz de 12 `layer.md.eta`
+  por **un** `references/engineering-practices.md` rico y agnóstico de lenguaje ("reglas con dientes": disciplina
+  de cambios, datos/migraciones, secretos/supply-chain, límites, errores, testing, observabilidad, rendimiento),
+  alcanzado por un puntero hub lean (`aiws:engineering-practices`, tras `harness-engineering`). Los bloques
+  `lang-*/fw-*/env-*` **conservan sus ids** pero su contenido es ahora una **línea context7 inline**; se eliminó
+  `stackBody`/`generateStackReferences`/los mapas de glob y la proyección Copilot `*.instructions.md` por-stack.
+  Lo específico de stack/dominio es trabajo del usuario **por diseño** → **skill packs / grupos** (estilo Odoo).
+  Migración **no destructiva**: `sync` no borra los `references/stack/*.md` ni `*.instructions.md` previos (ver
+  [MAINTAINING](../../project/MAINTAINING.md)). El **wizard** (simplificación) y el **install headless** quedan
+  como follow-ups (0019). TEMPLATES_VERSION **0.53.0**; AGENTS.md ~5828/6000. **Aplicado al propio repo (dogfood).**

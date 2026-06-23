@@ -13,57 +13,38 @@ generated a workspace.
 
 ---
 
-## Add a language module (e.g. Go)
+## Add a stack module (language / framework / environment)
 
-A language works **without** a template (a generic block is emitted). Adding a template only enriches the guide.
+Since **0018** a stack module carries **no prose template**. Registering a language (`lang-<id>`), framework
+(`fw-<id>`) or environment (`env-<id>`) only drives its **functional** outputs; the AGENTS.md block is a single
+inline **context7 pointer** (`stackPointer` in [`references.ts`](../../src/generate/references.ts)). The durable
+craft rules live once in the language-agnostic [engineering-practices baseline](#the-engineering-practices-baseline);
+**stack- and project-specific** rules belong in a **skill pack** (next section), not a per-stack template.
 
-1. **Register it** in [`src/modules/registry.ts`](../../src/modules/registry.ts):
+1. **Register it** in [`src/modules/registry.ts`](../../src/modules/registry.ts) under `LANGUAGES` /
+   `FRAMEWORKS` / `ENVIRONMENTS` (with its `vscodeExtensions` / `vscodeFormatter` where relevant):
    ```ts
-   export const LANGUAGES: ModuleEntry[] = [
-     // …
-     { id: "go", label: "Go", bundled: true },
-   ];
+   { id: "go", label: "Go", bundled: true, vscodeExtensions: ["golang.go"], vscodeFormatter: "golang.go" },
    ```
-2. **Write the fragment** in `templates/languages/go/layer.md.eta` (and its translation in
-   `templates/i18n/es/languages/go/layer.md.eta`). It receives the config and the entry as `it.entry`:
-   ```eta
-   ## Go (Layer 1 — language) · target v<%= it.entry.version %>
+2. Optionally add **detection** in [`src/detect/stack.ts`](../../src/detect/stack.ts) (e.g. `go.mod` → go) so
+   `detect` seeds the wizard.
+3. **Done.** `add language go` + `sync` emits the `lang-go` block (heading + context7 line) and wires the
+   functional outputs. No template, no `layer.md.eta`.
 
-   - Format with `gofmt`/`goimports`; lint with `go vet`. CI fails on diffs.
-   - Errors are values: wrap them with `%w`, never ignore them.
-
-   > Query **context7** for `go@<%= it.entry.version %>`.
-   ```
-3. **Done.** `composeBlocks` autodiscovers the template via `templateExists`; no code to touch.
-
-**Test:** `ai-workspace add language go` in a test repo and check the `lang-go` block in AGENTS.md.
-
-**Implications:** existing users only get it by adding Go (`add language go`) and running `sync`. If you edited
-an *existing* template, they get it on their next `sync`/`upgrade` (their manual notes outside the block survive).
+**To ship opinionated, decision-bearing rules for that stack** (e.g. "App Router by default", an Odoo module
+layout), author a **stack pack** — see below.
 
 ---
 
-## Add a framework module (e.g. Next.js)
+## The engineering-practices baseline
 
-Identical to a language, in `templates/frameworks/<id>/layer.md.eta`, registered in `FRAMEWORKS`. The block id
-is `fw-<id>` and the (template-less) fallback is handled by `renderFramework` in
-[`agents.ts`](../../src/generate/agents.ts).
-
-**Implications:** same as languages. Adding the template never breaks repos that don't use the framework.
-
----
-
-## Add an environment module (e.g. WSL, Docker, a database)
-
-Environments are Layer 3 — a dimension parallel to languages/frameworks (block id `env-<id>`), for
-tooling/runtime conventions (OS, version managers, containers, databases). Same mechanism:
-
-1. Register it in `ENVIRONMENTS` in [`src/modules/registry.ts`](../../src/modules/registry.ts).
-2. Optionally add `templates/environments/<id>/layer.md.eta` (+ `templates/i18n/es/...`). Without a template,
-   a generic block pointing to context7 is emitted.
-3. Optionally add detection in [`src/detect/stack.ts`](../../src/detect/stack.ts) (e.g. `Dockerfile` → docker).
-
-Keep these blocks **short** — setup conventions and gotchas, with version detail delegated to context7.
+The one evergreen, language-agnostic craft reference is
+[`templates/references/engineering-practices.md.eta`](../../templates/references/engineering-practices.md.eta)
+(rendered to `references/engineering-practices.md`), reached by the lean hub block
+[`templates/core/engineering-practices.md.eta`](../../templates/core/engineering-practices.md.eta)
+(`aiws:engineering-practices`). Edit the rules there — it must **not** restate Layer-0 *Universal conventions*,
+and it stays **stack-agnostic** (anything stack-specific goes in a stack pack). Bump `TEMPLATES_VERSION` after
+editing.
 
 ## Add an AGENTS.md block (principle / feature)
 
